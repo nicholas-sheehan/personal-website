@@ -47,7 +47,7 @@ LETTERBOXD_LIMIT = 5  # recent films to show
 INSTAPAPER_CONSUMER_KEY = os.environ.get("INSTAPAPER_CONSUMER_KEY", "YOUR_CONSUMER_KEY")
 INSTAPAPER_CONSUMER_SECRET = os.environ.get("INSTAPAPER_CONSUMER_SECRET", "YOUR_CONSUMER_SECRET")
 INSTAPAPER_TOKEN_FILE = ".instapaper_tokens"
-INSTAPAPER_LIMIT = 10  # max articles to show
+INSTAPAPER_LIMIT = 5  # max articles to show
 
 INDEX_PATH = "index.html"
 
@@ -146,7 +146,8 @@ def build_film_html(films: list[dict]) -> str:
         t = html.escape(film["title"])
         y = f' ({html.escape(film["year"])})' if film["year"] else ""
         stars = _star_rating(film["rating"])
-        rating_span = f' <span class="stars">{stars}</span>' if stars else ""
+        aria = f' aria-label="Rated {film["rating"]} out of 5"' if film["rating"] and stars else ""
+        rating_span = f' <span class="stars"{aria}>{stars}</span>' if stars else ""
         lines.append(f'          <li><em>{t}</em>{y}{rating_span}</li>')
     return "\n".join(lines)
 
@@ -278,7 +279,10 @@ def build_article_html(articles: list[dict]) -> str:
     for article in articles:
         t = html.escape(article["title"])
         u = html.escape(article["url"])
-        lines.append(f'          <li><a href="{u}" target="_blank" rel="noopener noreferrer">{t}</a></li>')
+        domain = urllib.parse.urlparse(article["url"]).hostname or ""
+        domain = domain.removeprefix("www.")
+        source = f' <span class="source">— {html.escape(domain)}</span>' if domain else ""
+        lines.append(f'          <li><a href="{u}" target="_blank" rel="noopener noreferrer">{t}</a>{source}</li>')
     return "\n".join(lines)
 
 

@@ -83,33 +83,6 @@ h2 {
   margin-bottom: 0.75rem;
 }
 
-h3 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.3;
-  color: #1a1a1a;
-  margin-bottom: 0.5rem;
-}
-
-h4 {
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.4;
-  color: #2a2a2a;
-  margin-bottom: 0.4rem;
-}
-
-h5 {
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: 1.4;
-  color: #4a4a4a;
-  margin-bottom: 0.35rem;
-}
-
 
 /* --- Bio --- */
 
@@ -159,6 +132,11 @@ h5 {
   color: #b0b0a8;
   font-size: 0.85rem;
   margin-left: 0.25rem;
+}
+
+.reading .source {
+  font-size: 0.85rem;
+  color: #999;
 }
 
 .reading a {
