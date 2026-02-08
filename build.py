@@ -260,7 +260,7 @@ def fetch_instapaper_starred(tokens: dict) -> list[dict]:
 
     articles = []
     for item in data:
-        if item.get("type") != "bookmark":
+        if not isinstance(item, dict) or item.get("type") != "bookmark":
             continue
         articles.append({
             "title": item.get("title", "Untitled"),
