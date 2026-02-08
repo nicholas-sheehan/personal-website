@@ -258,8 +258,9 @@ def fetch_instapaper_starred(tokens: dict) -> list[dict]:
     with urllib.request.urlopen(req, timeout=15) as resp:
         data = json.loads(resp.read().decode())
 
+    bookmarks = data.get("bookmarks", data) if isinstance(data, dict) else data
     articles = []
-    for item in data:
+    for item in bookmarks:
         if not isinstance(item, dict) or item.get("type") != "bookmark":
             continue
         articles.append({
