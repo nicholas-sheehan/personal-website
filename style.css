@@ -1,0 +1,312 @@
+/* ──────────────────────────────────────────────
+   Nic — personal site
+   Minimal, clean, responsive.
+   ────────────────────────────────────────────── */
+
+/* --- Reset & base --- */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;               /* 16 px baseline */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family:
+    "Inter",
+    "Helvetica Neue",
+    Arial,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-weight: 400;
+  line-height: 1.7;
+  color: #1a1a1a;
+  background: #fafaf9;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* --- Layout --- */
+
+main {
+  display: flex;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 4rem 1.5rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 34rem;              /* ~544 px — comfortable reading width */
+}
+
+
+/* --- Hero / header --- */
+
+.hero {
+  margin-bottom: 2.5rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: #111;
+}
+
+.tagline {
+  margin-top: 0.5rem;
+  font-size: 1.05rem;
+  color: #6b6b6b;
+}
+
+
+/* --- Headings --- */
+
+h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: #111;
+  margin-bottom: 0.75rem;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #2a2a2a;
+  margin-bottom: 0.4rem;
+}
+
+h5 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  color: #4a4a4a;
+  margin-bottom: 0.35rem;
+}
+
+
+/* --- Bio --- */
+
+.bio {
+  margin-bottom: 2.5rem;
+}
+
+.bio p {
+  font-size: 1rem;
+  color: #3a3a3a;
+}
+
+.bio p + p {
+  margin-top: 1rem;
+}
+
+
+/* --- Reading list --- */
+
+.reading {
+  margin-bottom: 2.5rem;
+}
+
+.reading ul {
+  list-style: none;
+  padding: 0;
+}
+
+.reading li {
+  font-size: 0.95rem;
+  color: #3a3a3a;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #eeeeeb;
+}
+
+.reading li:last-child {
+  border-bottom: none;
+}
+
+.reading em {
+  font-style: italic;
+  color: #1a1a1a;
+}
+
+.reading .stars {
+  font-style: normal;
+  color: #b0b0a8;
+  font-size: 0.85rem;
+  margin-left: 0.25rem;
+}
+
+.reading a {
+  color: #1a1a1a;
+  text-decoration-color: #ccc;
+  text-underline-offset: 0.15em;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.reading a:hover {
+  text-decoration-color: #1a1a1a;
+}
+
+
+/* --- Links --- */
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 4rem;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 1.15rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  text-decoration: none;
+  border: 1px solid #d4d4d4;
+  border-radius: 6px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.link:hover {
+  background: #f0f0ee;
+  border-color: #b0b0b0;
+}
+
+.link:focus-visible {
+  outline: 2px solid #888;
+  outline-offset: 2px;
+}
+
+.link-icon {
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+}
+
+.link:hover .link-icon {
+  opacity: 0.8;
+}
+
+
+/* --- Footer / colophon --- */
+
+.colophon {
+  padding-top: 2rem;
+  border-top: 1px solid #e5e5e5;
+}
+
+.colophon p {
+  font-size: 0.8rem;
+  color: #a0a0a0;
+}
+
+
+/* ──────────────────────────────────────────────
+   Responsive
+   ────────────────────────────────────────────── */
+
+/* Small phones (≤ 380 px) */
+@media (max-width: 23.75em) {
+  main {
+    padding: 2.5rem 1.25rem;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .tagline {
+    font-size: 0.95rem;
+  }
+
+  .links {
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .link {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+/* Tablets and up (≥ 640 px) */
+@media (min-width: 40em) {
+  main {
+    padding: 6rem 2rem;
+  }
+
+  h1 {
+    font-size: 2.75rem;
+  }
+
+  .hero {
+    margin-bottom: 3rem;
+  }
+
+  .bio {
+    margin-bottom: 3rem;
+  }
+}
+
+/* Large screens (≥ 1024 px) — keep centered, add breathing room */
+@media (min-width: 64em) {
+  main {
+    padding: 8rem 2rem;
+  }
+}
+
+
+/* ──────────────────────────────────────────────
+   Print
+   ────────────────────────────────────────────── */
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .link {
+    border: 1px solid #999;
+  }
+
+  .link::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75rem;
+    color: #555;
+  }
+
+  .link-icon {
+    display: none;
+  }
+}
