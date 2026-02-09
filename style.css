@@ -41,6 +41,7 @@ body {
 main {
   display: flex;
   justify-content: center;
+  align-items: start;
   min-height: 100dvh;
   padding: 4rem 1.5rem;
 }
@@ -119,8 +120,14 @@ h2 {
 .reading li {
   font-size: 0.95rem;
   color: #3a3a3a;
-  padding: 0.4rem 0;
+  padding: 0.4rem 0.25rem;
   border-bottom: 1px solid #eeeeeb;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.reading li:hover {
+  background: #f5f5f3;
 }
 
 .reading li:last-child {
@@ -212,6 +219,10 @@ h2 {
   color: #a0a0a0;
 }
 
+.colophon p + p {
+  margin-top: 0.25rem;
+}
+
 
 /* ──────────────────────────────────────────────
    Responsive
@@ -265,6 +276,82 @@ h2 {
 @media (min-width: 64em) {
   main {
     padding: 8rem 2rem;
+  }
+}
+
+
+/* ──────────────────────────────────────────────
+   Dark mode
+   ────────────────────────────────────────────── */
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #d8dee9;
+    background: #2e3440;
+  }
+
+  h1, h2 {
+    color: #eceff4;
+  }
+
+  .tagline {
+    color: #9aa5b4;
+  }
+
+  .bio p {
+    color: #b8c1cc;
+  }
+
+  .reading li {
+    color: #b8c1cc;
+    border-bottom-color: #3b4252;
+  }
+
+  .reading li:hover {
+    background: #3b4252;
+  }
+
+  .reading em {
+    color: #d8dee9;
+  }
+
+  .reading .stars {
+    color: #7b8899;
+  }
+
+  .reading .source {
+    color: #7b8899;
+  }
+
+  .reading a {
+    color: #88c0d0;
+    text-decoration-color: #4c566a;
+  }
+
+  .reading a:hover {
+    text-decoration-color: #88c0d0;
+  }
+
+  .link {
+    color: #d8dee9;
+    border-color: #4c566a;
+  }
+
+  .link:hover {
+    background: #3b4252;
+    border-color: #5e6a7a;
+  }
+
+  .link:focus-visible {
+    outline-color: #88c0d0;
+  }
+
+  .colophon {
+    border-top-color: #3b4252;
+  }
+
+  .colophon p {
+    color: #616e7c;
   }
 }
 

@@ -418,7 +418,7 @@ def cmd_build():
     bio = profile.get("description", "")
     avatar_url = profile.get("avatar_url", "")
     if avatar_url:
-        avatar_html = f'        <img class="avatar" src="{html.escape(avatar_url)}?s=160" alt="{name}" width="80" height="80">'
+        avatar_html = f'        <img class="avatar" src="{html.escape(avatar_url)}?s=192" alt="{name}" width="96" height="96">'
         src = inject(src, GRAVATAR_AVATAR_PATTERN, avatar_html, "gravatar-avatar")
     if name:
         src = inject(src, GRAVATAR_NAME_PATTERN, f"        {name}", "gravatar-name")
