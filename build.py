@@ -1,26 +1,36 @@
 #!/usr/bin/env python3
 """
-Build script for nicholassheehan.com
+Build script for nicsheehan.com
 
-Fetches data from three sources and writes them into index.html:
-  1. Goodreads "currently reading" shelf (via RSS — no auth needed)
-  2. Instapaper starred/liked articles (via API — OAuth 1.0a)
+Fetches data from four sources and writes them into index.html:
+  1. Gravatar profile (via REST API — no auth needed)
+  2. Goodreads "currently reading" shelf (via RSS — no auth needed)
   3. Letterboxd recently watched films (via RSS — no auth needed)
+  4. Instapaper starred/liked articles (via API — OAuth 1.0a)
 
 Usage:
-    python build.py              # full build (Goodreads + Instapaper)
+    python build.py              # full build
     python build.py auth         # one-time: exchange Instapaper credentials for OAuth tokens
+
+Setup — Gravatar:
+    Set GRAVATAR_USERNAME below to your Gravatar profile slug.
+    Pulls display_name, job_title, company, location, and description.
 
 Setup — Goodreads:
     Replace GOODREADS_RSS below with your RSS URL.
     Find it at: goodreads.com → My Books → Currently Reading → RSS link
 
+Setup — Letterboxd:
+    Replace LETTERBOXD_RSS below with your RSS URL.
+    Find it at: letterboxd.com → your profile → RSS link
+
 Setup — Instapaper:
     1. Request API credentials at https://www.instapaper.com/main/request_oauth_consumer_token
-    2. Fill in INSTAPAPER_CONSUMER_KEY and INSTAPAPER_CONSUMER_SECRET below
+    2. Set INSTAPAPER_CONSUMER_KEY and INSTAPAPER_CONSUMER_SECRET as env vars
     3. Run:  python build.py auth
        This exchanges your username/password for OAuth tokens (stored in .instapaper_tokens)
        You only need to do this once.
+    For CI, set all four INSTAPAPER_* values as environment variables/secrets.
 """
 
 import base64
