@@ -55,6 +55,7 @@ LETTERBOXD_RSS = "https://letterboxd.com/tonic2/rss/"
 LETTERBOXD_LIMIT = 5  # recent films to show
 
 GRAVATAR_USERNAME = "nicsheehanau"
+GRAVATAR_API_KEY = os.environ.get("GRAVATAR_API_KEY", "")
 
 INSTAPAPER_CONSUMER_KEY = os.environ.get("INSTAPAPER_CONSUMER_KEY", "YOUR_CONSUMER_KEY")
 INSTAPAPER_CONSUMER_SECRET = os.environ.get("INSTAPAPER_CONSUMER_SECRET", "YOUR_CONSUMER_SECRET")
@@ -168,10 +169,13 @@ def build_film_html(films: list[dict]) -> str:
 #  Gravatar (REST API)
 # ══════════════════════════════════════════════════════════════════
 
-def fetch_gravatar(username: str) -> dict:
+def fetch_gravatar(username: str, api_key: str = "") -> dict:
     """Fetch profile data from Gravatar API."""
     url = f"https://api.gravatar.com/v3/profiles/{username}"
-    req = urllib.request.Request(url, headers={"Accept": "application/json"})
+    headers = {"Accept": "application/json"}
+    if api_key:
+        headers["Authorization"] = f"Bearer {api_key}"
+    req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=15) as resp:
         return json.loads(resp.read().decode())
 
@@ -187,6 +191,32 @@ def build_gravatar_tagline(profile: dict) -> str:
     if profile.get("location"):
         parts.append(profile["location"])
     return " · ".join(parts) if parts else ""
+
+
+_ARROW_SVG = '<svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>'
+
+
+def build_gravatar_links_html(profile: dict, email: str = "") -> str:
+    """Build nav link buttons from Gravatar links + optional email."""
+    links = profile.get("links", [])
+    lines = []
+    for link in links:
+        label = html.escape(link["label"])
+        url = html.escape(link["url"])
+        lines.append(
+            f'        <a href="{url}" class="link" target="_blank" rel="noopener noreferrer">\n'
+            f'          <span class="link-label">{label}</span>\n'
+            f'          {_ARROW_SVG}\n'
+            f'        </a>'
+        )
+    if email:
+        lines.append(
+            f'        <a href="mailto:{html.escape(email)}" class="link">\n'
+            f'          <span class="link-label">Email</span>\n'
+            f'          {_ARROW_SVG}\n'
+            f'        </a>'
+        )
+    return "\n".join(lines)
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -333,6 +363,8 @@ def _make_pattern(tag: str) -> re.Pattern:
         re.DOTALL,
     )
 
+GRAVATAR_LINKS_PATTERN = _make_pattern("gravatar-links")
+GRAVATAR_AVATAR_PATTERN = _make_pattern("gravatar-avatar")
 GRAVATAR_NAME_PATTERN = _make_pattern("gravatar-name")
 GRAVATAR_TAGLINE_PATTERN = _make_pattern("gravatar-tagline")
 GRAVATAR_BIO_PATTERN = _make_pattern("gravatar-bio")
@@ -380,10 +412,14 @@ def cmd_build():
 
     # ── Gravatar ──
     print("Fetching Gravatar profile…")
-    profile = fetch_gravatar(GRAVATAR_USERNAME)
+    profile = fetch_gravatar(GRAVATAR_USERNAME, GRAVATAR_API_KEY)
     name = html.escape(profile.get("display_name", ""))
     tagline = html.escape(build_gravatar_tagline(profile))
     bio = profile.get("description", "")
+    avatar_url = profile.get("avatar_url", "")
+    if avatar_url:
+        avatar_html = f'        <img class="avatar" src="{html.escape(avatar_url)}?s=160" alt="{name}" width="80" height="80">'
+        src = inject(src, GRAVATAR_AVATAR_PATTERN, avatar_html, "gravatar-avatar")
     if name:
         src = inject(src, GRAVATAR_NAME_PATTERN, f"        {name}", "gravatar-name")
     if tagline:
@@ -391,7 +427,11 @@ def cmd_build():
     if bio:
         bio_html = f"        <p>{html.escape(bio)}</p>"
         src = inject(src, GRAVATAR_BIO_PATTERN, bio_html, "gravatar-bio")
-    print(f"  Name: {name}, tagline: {tagline}")
+    contact_email = profile.get("contact_info", {}).get("email", "")
+    links_html = build_gravatar_links_html(profile, email=contact_email)
+    if links_html:
+        src = inject(src, GRAVATAR_LINKS_PATTERN, links_html, "gravatar-links")
+    print(f"  Name: {name}, tagline: {tagline}, links: {len(profile.get('links', []))}")
 
     # ── Goodreads ──
     if "YOUR_USER_ID" in GOODREADS_RSS:

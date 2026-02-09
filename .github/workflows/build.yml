@@ -27,6 +27,7 @@ jobs:
 
       - name: Run build script
         env:
+          GRAVATAR_API_KEY: ${{ secrets.GRAVATAR_API_KEY }}
           INSTAPAPER_CONSUMER_KEY: ${{ secrets.INSTAPAPER_CONSUMER_KEY }}
           INSTAPAPER_CONSUMER_SECRET: ${{ secrets.INSTAPAPER_CONSUMER_SECRET }}
           INSTAPAPER_OAUTH_TOKEN: ${{ secrets.INSTAPAPER_OAUTH_TOKEN }}
