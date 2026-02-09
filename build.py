@@ -193,6 +193,37 @@ def build_gravatar_tagline(profile: dict) -> str:
     return " · ".join(parts) if parts else ""
 
 
+SITE_URL = "https://www.nicsheehan.com"
+
+
+def build_jsonld(profile: dict, site_url: str) -> str:
+    """Build a JSON-LD Person schema from Gravatar profile data."""
+    data = {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": profile.get("display_name", ""),
+        "url": site_url,
+    }
+    if profile.get("job_title"):
+        data["jobTitle"] = profile["job_title"]
+    if profile.get("company"):
+        data["worksFor"] = {"@type": "Organization", "name": profile["company"]}
+    if profile.get("location"):
+        data["homeLocation"] = {"@type": "Place", "name": profile["location"]}
+    if profile.get("description"):
+        data["description"] = profile["description"]
+    if profile.get("avatar_url"):
+        data["image"] = profile["avatar_url"]
+    same_as = [profile["profile_url"]]
+    for link in profile.get("links", []):
+        same_as.append(link["url"])
+    for acct in profile.get("verified_accounts", []):
+        if acct.get("url") and acct["url"] not in same_as:
+            same_as.append(acct["url"])
+    data["sameAs"] = same_as
+    return json.dumps(data, indent=2)
+
+
 _ARROW_SVG = '<svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>'
 
 
@@ -363,6 +394,7 @@ def _make_pattern(tag: str) -> re.Pattern:
         re.DOTALL,
     )
 
+JSONLD_PATTERN = _make_pattern("jsonld")
 GRAVATAR_LINKS_PATTERN = _make_pattern("gravatar-links")
 GRAVATAR_AVATAR_PATTERN = _make_pattern("gravatar-avatar")
 GRAVATAR_NAME_PATTERN = _make_pattern("gravatar-name")
@@ -431,6 +463,8 @@ def cmd_build():
     links_html = build_gravatar_links_html(profile, email=contact_email)
     if links_html:
         src = inject(src, GRAVATAR_LINKS_PATTERN, links_html, "gravatar-links")
+    jsonld = build_jsonld(profile, SITE_URL)
+    src = inject(src, JSONLD_PATTERN, f"    <script type=\"application/ld+json\">\n{jsonld}\n    </script>", "jsonld")
     print(f"  Name: {name}, tagline: {tagline}, links: {len(profile.get('links', []))}")
 
     # ── Goodreads ──
