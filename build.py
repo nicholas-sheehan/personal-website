@@ -44,6 +44,8 @@ GOODREADS_RSS = "https://www.goodreads.com/review/list_rss/175639385?shelf=curre
 LETTERBOXD_RSS = "https://letterboxd.com/tonic2/rss/"
 LETTERBOXD_LIMIT = 5  # recent films to show
 
+GRAVATAR_USERNAME = "nicsheehanau"
+
 INSTAPAPER_CONSUMER_KEY = os.environ.get("INSTAPAPER_CONSUMER_KEY", "YOUR_CONSUMER_KEY")
 INSTAPAPER_CONSUMER_SECRET = os.environ.get("INSTAPAPER_CONSUMER_SECRET", "YOUR_CONSUMER_SECRET")
 INSTAPAPER_TOKEN_FILE = ".instapaper_tokens"
@@ -150,6 +152,31 @@ def build_film_html(films: list[dict]) -> str:
         rating_span = f' <span class="stars"{aria}>{stars}</span>' if stars else ""
         lines.append(f'          <li><em>{t}</em>{y}{rating_span}</li>')
     return "\n".join(lines)
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Gravatar (REST API)
+# ══════════════════════════════════════════════════════════════════
+
+def fetch_gravatar(username: str) -> dict:
+    """Fetch profile data from Gravatar API."""
+    url = f"https://api.gravatar.com/v3/profiles/{username}"
+    req = urllib.request.Request(url, headers={"Accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        return json.loads(resp.read().decode())
+
+
+def build_gravatar_tagline(profile: dict) -> str:
+    """Build a tagline from job_title, company, and location."""
+    parts = []
+    if profile.get("job_title"):
+        title = profile["job_title"]
+        if profile.get("company"):
+            title += f' at {profile["company"]}'
+        parts.append(title)
+    if profile.get("location"):
+        parts.append(profile["location"])
+    return " · ".join(parts) if parts else ""
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -296,6 +323,9 @@ def _make_pattern(tag: str) -> re.Pattern:
         re.DOTALL,
     )
 
+GRAVATAR_NAME_PATTERN = _make_pattern("gravatar-name")
+GRAVATAR_TAGLINE_PATTERN = _make_pattern("gravatar-tagline")
+GRAVATAR_BIO_PATTERN = _make_pattern("gravatar-bio")
 GOODREADS_PATTERN = _make_pattern("goodreads")
 LETTERBOXD_PATTERN = _make_pattern("letterboxd")
 INSTAPAPER_PATTERN = _make_pattern("instapaper")
@@ -337,6 +367,21 @@ def cmd_build():
     """Main build: fetch both sources and update index.html."""
     with open(INDEX_PATH, "r", encoding="utf-8") as f:
         src = f.read()
+
+    # ── Gravatar ──
+    print("Fetching Gravatar profile…")
+    profile = fetch_gravatar(GRAVATAR_USERNAME)
+    name = html.escape(profile.get("display_name", ""))
+    tagline = html.escape(build_gravatar_tagline(profile))
+    bio = profile.get("description", "")
+    if name:
+        src = inject(src, GRAVATAR_NAME_PATTERN, f"        {name}", "gravatar-name")
+    if tagline:
+        src = inject(src, GRAVATAR_TAGLINE_PATTERN, f"        {tagline}", "gravatar-tagline")
+    if bio:
+        bio_html = f"        <p>{html.escape(bio)}</p>"
+        src = inject(src, GRAVATAR_BIO_PATTERN, bio_html, "gravatar-bio")
+    print(f"  Name: {name}, tagline: {tagline}")
 
     # ── Goodreads ──
     if "YOUR_USER_ID" in GOODREADS_RSS:
