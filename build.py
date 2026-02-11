@@ -51,9 +51,11 @@ import xml.etree.ElementTree as ET
 # ── Config ────────────────────────────────────────────────────────
 
 GOODREADS_RSS = "https://www.goodreads.com/review/list_rss/175639385?shelf=currently-reading"
+GOODREADS_READ_RSS = "https://www.goodreads.com/review/list_rss/175639385?shelf=read"
+GOODREADS_READ_LIMIT = 5  # recent books from "read" shelf
 
 LETTERBOXD_RSS = "https://letterboxd.com/tonic2/rss/"
-LETTERBOXD_LIMIT = 5  # recent films to show
+LETTERBOXD_LIMIT = 8  # recent films to show
 
 GRAVATAR_USERNAME = "nicsheehanau"
 GRAVATAR_API_KEY = os.environ.get("GRAVATAR_API_KEY", "")
@@ -70,7 +72,7 @@ INDEX_PATH = "index.html"
 #  Goodreads (RSS)
 # ══════════════════════════════════════════════════════════════════
 
-def fetch_goodreads(rss_url: str) -> list[dict]:
+def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
     """Return a list of {title, author} dicts from the RSS feed."""
     req = urllib.request.Request(rss_url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=15) as resp:
@@ -87,6 +89,9 @@ def fetch_goodreads(rss_url: str) -> list[dict]:
         title = title_el.text.strip()
         author = author_el.text.strip() if author_el is not None and author_el.text else "Unknown"
         books.append({"title": title, "author": author})
+
+        if limit and len(books) >= limit:
+            break
 
     return books
 
@@ -401,6 +406,7 @@ GRAVATAR_NAME_PATTERN = _make_pattern("gravatar-name")
 GRAVATAR_TAGLINE_PATTERN = _make_pattern("gravatar-tagline")
 GRAVATAR_BIO_PATTERN = _make_pattern("gravatar-bio")
 GOODREADS_PATTERN = _make_pattern("goodreads")
+GOODREADS_READ_PATTERN = _make_pattern("goodreads-read")
 LETTERBOXD_PATTERN = _make_pattern("letterboxd")
 INSTAPAPER_PATTERN = _make_pattern("instapaper")
 UPDATED_PATTERN = _make_pattern("updated")
@@ -476,6 +482,11 @@ def cmd_build():
         books = fetch_goodreads(GOODREADS_RSS)
         print(f"  Found {len(books)} book(s) on currently-reading shelf.")
         src = inject(src, GOODREADS_PATTERN, build_book_html(books), "goodreads")
+
+        print("Fetching Goodreads read shelf…")
+        read_books = fetch_goodreads(GOODREADS_READ_RSS, limit=GOODREADS_READ_LIMIT)
+        print(f"  Found {len(read_books)} book(s) on read shelf.")
+        src = inject(src, GOODREADS_READ_PATTERN, build_book_html(read_books), "goodreads-read")
 
     # ── Letterboxd ──
     if "YOUR_USERNAME" in LETTERBOXD_RSS:

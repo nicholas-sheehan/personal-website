@@ -140,6 +140,10 @@ h2 {
 
 /* --- Reading sections --- */
 
+.reading-column .reading + .reading {
+  margin-top: 2rem;
+}
+
 .reading {
   margin-bottom: 0;
 }
