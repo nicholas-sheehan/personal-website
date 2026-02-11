@@ -16,9 +16,10 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>N</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Space+Grotesk:wght@600;700&display=swap">
   <link rel="stylesheet" href="style.css">
 <!-- jsonld:start -->
+
 <!-- jsonld:end -->
 </head>
 <body>
@@ -28,16 +29,18 @@
 <!-- gravatar-avatar:start -->
         <img class="avatar" src="https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e?s=192" alt="Nicholas Sheehan" width="96" height="96">
 <!-- gravatar-avatar:end -->
-        <h1>
+        <div class="hero-text">
+          <h1>
 <!-- gravatar-name:start -->
         Nicholas Sheehan
 <!-- gravatar-name:end -->
-        </h1>
-        <p class="tagline">
+          </h1>
+          <p class="tagline mono">
 <!-- gravatar-tagline:start -->
         Content Production Lead at ANZ · Melbourne
 <!-- gravatar-tagline:end -->
-        </p>
+          </p>
+        </div>
       </header>
 
       <section class="bio">
@@ -46,18 +49,30 @@
 <!-- gravatar-bio:end -->
       </section>
 
-      <section class="reading">
-        <h2>Currently reading</h2>
-        <ul>
+      <div class="content-grid">
+        <div class="reading-column">
+          <section class="reading">
+            <h2>Currently reading</h2>
+            <ul>
 <!-- goodreads:start -->
-          <li><em>The Fall</em> — Albert Camus</li>
+            <li><em>The Fall</em> — Albert Camus</li>
 <!-- goodreads:end -->
-        </ul>
-      </section>
+            </ul>
+          </section>
 
-      <section class="reading">
-        <h2>Recently watched</h2>
-        <ul>
+          <section class="reading">
+            <h2>Recently read</h2>
+            <ul>
+<!-- goodreads-read:start -->
+            <li>Loading…</li>
+<!-- goodreads-read:end -->
+            </ul>
+          </section>
+        </div>
+
+        <section class="reading">
+          <h2>Recently watched</h2>
+          <ul>
 <!-- letterboxd:start -->
           <li><em>Marty Supreme</em> (2025) <span class="stars" aria-label="Rated 4.0 out of 5">★★★★</span></li>
           <li><em>Avatar: Fire and Ash</em> (2025) <span class="stars" aria-label="Rated 3.5 out of 5">★★★½</span></li>
@@ -65,21 +80,22 @@
           <li><em>Dead Calm</em> (1989) <span class="stars" aria-label="Rated 3.5 out of 5">★★★½</span></li>
           <li><em>The Story of the Kelly Gang</em> (1906)</li>
 <!-- letterboxd:end -->
-        </ul>
-      </section>
+          </ul>
+        </section>
 
-      <section class="reading">
-        <h2>Reads I recommend</h2>
-        <ul>
+        <section class="reading">
+          <h2>Reads I recommend</h2>
+          <ul>
 <!-- instapaper:start -->
           <li><a href="https://www.nytimes.com/2025/12/18/arts/music/pentridge-prison-radio-station-albums.html?unlocked_article_code=1.908.YPPF.lCmTI-POhF4y&amp;smid=url-share" target="_blank" rel="noopener noreferrer">An Infamous Australian Prison Held the Unexpected: A Record Collection</a> <span class="source">— nytimes.com</span></li>
           <li><a href="https://www.newyorker.com/magazine/2025/11/10/the-runaway-monkeys-upending-the-animal-rights-movement" target="_blank" rel="noopener noreferrer">The Runaway Monkeys Upending the Animal-Rights Movement</a> <span class="source">— newyorker.com</span></li>
-          <li><a href="https://doubleblindmag.com/detroit-psychedelic-healing-shack/" target="_blank" rel="noopener noreferrer">Inside Detroit’s Notorious “Psychedelic Healing Shack”</a> <span class="source">— doubleblindmag.com</span></li>
+          <li><a href="https://doubleblindmag.com/detroit-psychedelic-healing-shack/" target="_blank" rel="noopener noreferrer">Inside Detroit's Notorious "Psychedelic Healing Shack"</a> <span class="source">— doubleblindmag.com</span></li>
           <li><a href="https://www.nytimes.com/interactive/2025/12/13/world/asia/cia-nuclear-device-himalayas-nanda-devi.html" target="_blank" rel="noopener noreferrer">How Did the C.I.A. Lose a Nuclear Device?</a> <span class="source">— nytimes.com</span></li>
-          <li><a href="https://www.vanityfair.com/style/2018/01/from-nazi-germany-to-australia-the-incredible-true-story-of-historys-longest-kayak-journey" target="_blank" rel="noopener noreferrer">The Incredible True Story of History’s Longest Kayak Journey</a> <span class="source">— vanityfair.com</span></li>
+          <li><a href="https://www.vanityfair.com/style/2018/01/from-nazi-germany-to-australia-the-incredible-true-story-of-historys-longest-kayak-journey" target="_blank" rel="noopener noreferrer">The Incredible True Story of History's Longest Kayak Journey</a> <span class="source">— vanityfair.com</span></li>
 <!-- instapaper:end -->
-        </ul>
-      </section>
+          </ul>
+        </section>
+      </div>
 
       <nav class="links" aria-label="Contact and social links">
 <!-- gravatar-links:start -->
@@ -102,7 +118,10 @@
       </nav>
 
       <footer class="colophon">
-        <p>Powered by Gravatar, Goodreads, Letterboxd &amp; Instapaper.</p>
+<!-- updated:start -->
+
+<!-- updated:end -->
+        <p class="credits">Powered by Gravatar, Goodreads, Letterboxd &amp; Instapaper.</p>
       </footer>
     </div>
   </main>
