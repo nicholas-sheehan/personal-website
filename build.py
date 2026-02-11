@@ -224,7 +224,7 @@ def build_jsonld(profile: dict, site_url: str) -> str:
     return json.dumps(data, indent=2)
 
 
-_ARROW_SVG = '<svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>'
+_ARROW_SVG = '<svg class="link-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>'
 
 
 def build_gravatar_links_html(profile: dict, email: str = "") -> str:
@@ -244,7 +244,6 @@ def build_gravatar_links_html(profile: dict, email: str = "") -> str:
         lines.append(
             f'        <a href="mailto:{html.escape(email)}" class="link">\n'
             f'          <span class="link-label">Email</span>\n'
-            f'          {_ARROW_SVG}\n'
             f'        </a>'
         )
     return "\n".join(lines)
