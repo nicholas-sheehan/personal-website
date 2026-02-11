@@ -34,6 +34,7 @@ Setup — Instapaper:
 """
 
 import base64
+from datetime import datetime, timezone
 import hashlib
 import hmac
 import html
@@ -402,6 +403,7 @@ GRAVATAR_BIO_PATTERN = _make_pattern("gravatar-bio")
 GOODREADS_PATTERN = _make_pattern("goodreads")
 LETTERBOXD_PATTERN = _make_pattern("letterboxd")
 INSTAPAPER_PATTERN = _make_pattern("instapaper")
+UPDATED_PATTERN = _make_pattern("updated")
 
 
 def inject(html_src: str, pattern: re.Pattern, new_content: str, label: str) -> str:
@@ -495,6 +497,13 @@ def cmd_build():
         articles = fetch_instapaper_starred(tokens)
         print(f"  Found {len(articles)} starred article(s).")
         src = inject(src, INSTAPAPER_PATTERN, build_article_html(articles), "instapaper")
+
+    # ── Last updated timestamp ──
+    now = datetime.now(timezone.utc)
+    updated_str = now.strftime("%-d %b %Y")
+    updated_html = f'        <p class="updated">Last updated {updated_str}</p>'
+    src = inject(src, UPDATED_PATTERN, updated_html, "updated")
+    print(f"  Timestamp: {updated_str}")
 
     # ── Write ──
     with open(INDEX_PATH, "w", encoding="utf-8") as f:
