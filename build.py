@@ -43,32 +43,43 @@ import os
 import re
 import sys
 import time
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib  # pip install tomli (for Python < 3.11)
 import urllib.parse
 import urllib.request
 import uuid
 import xml.etree.ElementTree as ET
 
-# ── Config ────────────────────────────────────────────────────────
+# ── Config (from site.toml) ───────────────────────────────────────
 
-GOODREADS_RSS = "https://www.goodreads.com/review/list_rss/175639385?shelf=currently-reading"
-GOODREADS_READ_RSS = "https://www.goodreads.com/review/list_rss/175639385?shelf=read"
-GOODREADS_READ_LIMIT = 5  # recent books from "read" shelf
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+_CONFIG_PATH = os.path.join(_SCRIPT_DIR, "site.toml")
 
-LETTERBOXD_RSS = "https://letterboxd.com/tonic2/rss/"
-LETTERBOXD_LIMIT = 8  # recent films to show
+with open(_CONFIG_PATH, "rb") as _f:
+    CONFIG = tomllib.load(_f)
 
-GRAVATAR_USERNAME = "nicsheehanau"
+SITE_URL = CONFIG["site"]["url"]
+
+GOODREADS_RSS = CONFIG["sources"]["goodreads"]["currently_reading_rss"]
+GOODREADS_READ_RSS = CONFIG["sources"]["goodreads"]["read_rss"]
+GOODREADS_READ_LIMIT = CONFIG["sources"]["goodreads"]["read_limit"]
+
+LETTERBOXD_RSS = CONFIG["sources"]["letterboxd"]["rss"]
+LETTERBOXD_LIMIT = CONFIG["sources"]["letterboxd"]["limit"]
+
+GRAVATAR_USERNAME = CONFIG["sources"]["gravatar"]["username"]
 GRAVATAR_API_KEY = os.environ.get("GRAVATAR_API_KEY", "")
 
 INSTAPAPER_CONSUMER_KEY = os.environ.get("INSTAPAPER_CONSUMER_KEY", "YOUR_CONSUMER_KEY")
 INSTAPAPER_CONSUMER_SECRET = os.environ.get("INSTAPAPER_CONSUMER_SECRET", "YOUR_CONSUMER_SECRET")
 INSTAPAPER_TOKEN_FILE = ".instapaper_tokens"
-INSTAPAPER_LIMIT = 5  # max articles to show
+INSTAPAPER_LIMIT = CONFIG["sources"]["instapaper"]["limit"]
 
 INDEX_PATH = "index.html"
 STYLE_PATH = "style.css"
 OG_IMAGE_PATH = "og-image.png"
-OG_IMAGE_URL = "https://www.nicsheehan.com/og-image.png"
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -200,9 +211,6 @@ def build_gravatar_tagline(profile: dict) -> str:
     if profile.get("location"):
         parts.append(profile["location"])
     return " · ".join(parts) if parts else ""
-
-
-SITE_URL = "https://www.nicsheehan.com"
 
 
 def build_jsonld(profile: dict, site_url: str) -> str:
@@ -480,6 +488,38 @@ def build_article_html(articles: list[dict]) -> str:
 
 
 # ══════════════════════════════════════════════════════════════════
+#  Meta & analytics (from TOML config)
+# ══════════════════════════════════════════════════════════════════
+
+def build_meta_html(config: dict) -> str:
+    """Generate meta tags block from TOML config."""
+    site = config["site"]
+    social = config["social"]
+    url = site["url"]
+    og_image = f"{url}/og-image.png"
+    lines = [
+        f'  <title>{html.escape(site["title"])}</title>',
+        f'  <meta name="description" content="{html.escape(site["description"])}">',
+        f'  <link rel="canonical" href="{html.escape(url)}/">',
+        f'  <meta property="og:title" content="{html.escape(site["title"])}">',
+        f'  <meta property="og:description" content="{html.escape(site["description"])}">',
+        f'  <meta property="og:image" content="{html.escape(og_image)}">',
+        f'  <meta property="og:type" content="{html.escape(social["og_type"])}">',
+        f'  <meta property="og:url" content="{html.escape(url)}/">',
+        f'  <meta name="twitter:card" content="{html.escape(social["twitter_card"])}">',
+        f'  <meta name="twitter:title" content="{html.escape(site["title"])}">',
+        f'  <meta name="twitter:description" content="{html.escape(site["description"])}">',
+    ]
+    return "\n".join(lines)
+
+
+def build_analytics_html(config: dict) -> str:
+    """Generate analytics script tag from TOML config."""
+    gc = html.escape(config["analytics"]["goatcounter"])
+    return f'  <script data-goatcounter="https://{gc}.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>'
+
+
+# ══════════════════════════════════════════════════════════════════
 #  HTML injection
 # ══════════════════════════════════════════════════════════════════
 
@@ -489,6 +529,8 @@ def _make_pattern(tag: str) -> re.Pattern:
         re.DOTALL,
     )
 
+META_PATTERN = _make_pattern("meta")
+ANALYTICS_PATTERN = _make_pattern("analytics")
 JSONLD_PATTERN = _make_pattern("jsonld")
 GRAVATAR_LINKS_PATTERN = _make_pattern("gravatar-links")
 GRAVATAR_AVATAR_PATTERN = _make_pattern("gravatar-avatar")
@@ -540,6 +582,14 @@ def cmd_build():
     with open(INDEX_PATH, "r", encoding="utf-8") as f:
         src = f.read()
 
+    # ── Meta tags (from site.toml) ──
+    print("Injecting meta tags from site.toml…")
+    src = inject(src, META_PATTERN, build_meta_html(CONFIG), "meta")
+
+    # ── Analytics (from site.toml) ──
+    print("Injecting analytics from site.toml…")
+    src = inject(src, ANALYTICS_PATTERN, build_analytics_html(CONFIG), "analytics")
+
     # ── Gravatar ──
     print("Fetching Gravatar profile…")
     profile = fetch_gravatar(GRAVATAR_USERNAME, GRAVATAR_API_KEY)
@@ -572,7 +622,7 @@ def cmd_build():
 
     # ── Goodreads ──
     if "YOUR_USER_ID" in GOODREADS_RSS:
-        print("⚠  Skipping Goodreads — update GOODREADS_RSS in build.py first.")
+        print("⚠  Skipping Goodreads — update sources.goodreads in site.toml first.")
     else:
         print("Fetching Goodreads RSS…")
         books = fetch_goodreads(GOODREADS_RSS)
@@ -586,7 +636,7 @@ def cmd_build():
 
     # ── Letterboxd ──
     if "YOUR_USERNAME" in LETTERBOXD_RSS:
-        print("⚠  Skipping Letterboxd — update LETTERBOXD_RSS in build.py first.")
+        print("⚠  Skipping Letterboxd — update sources.letterboxd in site.toml first.")
     else:
         print("Fetching Letterboxd RSS…")
         films = fetch_letterboxd(LETTERBOXD_RSS, LETTERBOXD_LIMIT)
@@ -596,7 +646,7 @@ def cmd_build():
     # ── Instapaper ──
     tokens = load_tokens()
     if INSTAPAPER_CONSUMER_KEY == "YOUR_CONSUMER_KEY":
-        print("⚠  Skipping Instapaper — set your consumer key/secret in build.py first.")
+        print("⚠  Skipping Instapaper — set INSTAPAPER_CONSUMER_KEY env var first.")
     elif tokens is None:
         print("⚠  Skipping Instapaper — run 'python build.py auth' first.")
     else:

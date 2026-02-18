@@ -10,10 +10,11 @@ Personal website for Nicholas Sheehan. A static site that pulls all its content 
 
 | What | Service | How to update |
 |------|---------|---------------|
+| **Site metadata** | `site.toml` | Edit `site.toml` — title, description, OG tags, analytics, and data source URLs. `site.title` and `site.description` are reused for OG and Twitter tags. See inline comments in the file for details. Push or run the build to apply. |
 | **Name, bio, tagline, avatar** | [Gravatar](https://gravatar.com/profile) | Edit your Gravatar profile. Name, job title, company, location, and description are all pulled automatically. |
 | **Nav links** | [Gravatar](https://gravatar.com/profile) | Add/remove/reorder links on your Gravatar profile. Email is pulled from Gravatar contact info. |
 | **Currently reading** | [Goodreads](https://www.goodreads.com) | Update your "Currently Reading" shelf on Goodreads. The site reads your public RSS feed. |
-| **Recently watched** | [Letterboxd](https://letterboxd.com) | Log and rate films on Letterboxd. The 5 most recent entries are shown via RSS. |
+| **Recently watched** | [Letterboxd](https://letterboxd.com) | Log and rate films on Letterboxd. The 8 most recent entries are shown via RSS. |
 | **Reads I recommend** | [Instapaper](https://www.instapaper.com) | Star articles in Instapaper. The 5 most recent starred articles are shown. |
 
 ## When does the site update?
@@ -52,7 +53,8 @@ Goodreads and Letterboxd use public RSS feeds and work without any credentials.
 
 | File | Purpose |
 |------|---------|
-| `index.html` | The site. Contains comment markers (`<!-- source:start/end -->`) where build.py injects content. |
+| `site.toml` | Site config — metadata, OG tags, analytics, and data source URLs. Read by `build.py` at build time. |
+| `index.html` | The site. Contains comment markers (`<!-- tag:start/end -->`) where build.py injects content. |
 | `style.css` | Styling. |
 | `build.py` | Build script that fetches all data and updates index.html. |
 | `CNAME` | Custom domain config for GitHub Pages. |

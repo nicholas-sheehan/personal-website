@@ -1,0 +1,28 @@
+# Site metadata — injected into <title>, <meta>, and OG/Twitter tags by build.py
+[site]
+title = "Nicholas Sheehan | Web professional | Melbourne"  # also used for og:title and twitter:title
+description = "Personal site of Nicholas Sheehan — web manager in Melbourne. Books, films, and recommended reads."  # also og:description and twitter:description
+url = "https://www.nicsheehan.com"  # canonical URL, og:url, og:image base
+lang = "en-AU"
+
+[social]
+og_type = "website"
+twitter_card = "summary"
+
+[analytics]
+goatcounter = "nicsheehan"  # {value}.goatcounter.com
+
+[sources.gravatar]
+username = "nicsheehanau"
+
+[sources.goodreads]
+currently_reading_rss = "https://www.goodreads.com/review/list_rss/175639385?shelf=currently-reading"
+read_rss = "https://www.goodreads.com/review/list_rss/175639385?shelf=read"
+read_limit = 5
+
+[sources.letterboxd]
+rss = "https://letterboxd.com/tonic2/rss/"
+limit = 8
+
+[sources.instapaper]
+limit = 5
