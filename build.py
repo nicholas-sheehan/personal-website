@@ -66,6 +66,7 @@ INSTAPAPER_TOKEN_FILE = ".instapaper_tokens"
 INSTAPAPER_LIMIT = 5  # max articles to show
 
 INDEX_PATH = "index.html"
+STYLE_PATH = "style.css"
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -410,6 +411,7 @@ GOODREADS_READ_PATTERN = _make_pattern("goodreads-read")
 LETTERBOXD_PATTERN = _make_pattern("letterboxd")
 INSTAPAPER_PATTERN = _make_pattern("instapaper")
 UPDATED_PATTERN = _make_pattern("updated")
+STYLE_PATTERN = _make_pattern("style")
 
 
 def inject(html_src: str, pattern: re.Pattern, new_content: str, label: str) -> str:
@@ -508,6 +510,14 @@ def cmd_build():
         articles = fetch_instapaper_starred(tokens)
         print(f"  Found {len(articles)} starred article(s).")
         src = inject(src, INSTAPAPER_PATTERN, build_article_html(articles), "instapaper")
+
+    # ── Inline CSS ──
+    if os.path.exists(STYLE_PATH):
+        print("Inlining style.css…")
+        with open(STYLE_PATH, "r", encoding="utf-8") as f:
+            css = f.read()
+        style_html = f"  <style>\n{css}  </style>"
+        src = inject(src, STYLE_PATTERN, style_html, "style")
 
     # ── Last updated timestamp ──
     now = datetime.now(timezone.utc)
