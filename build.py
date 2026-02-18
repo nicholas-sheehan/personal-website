@@ -67,6 +67,8 @@ INSTAPAPER_LIMIT = 5  # max articles to show
 
 INDEX_PATH = "index.html"
 STYLE_PATH = "style.css"
+OG_IMAGE_PATH = "og-image.png"
+OG_IMAGE_URL = "https://www.nicsheehan.com/og-image.png"
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -229,6 +231,93 @@ def build_jsonld(profile: dict, site_url: str) -> str:
             same_as.append(acct["url"])
     data["sameAs"] = same_as
     return json.dumps(data, indent=2)
+
+
+def generate_og_image(profile: dict, output_path: str):
+    """Generate a 1200x630 OG image with avatar, name, and tagline."""
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+        import io
+    except ImportError:
+        print("  ⚠  Pillow not installed — skipping OG image generation.")
+        return False
+
+    WIDTH, HEIGHT = 1200, 630
+    BG_COLOR = (10, 10, 10)  # #0a0a0a
+    TEXT_PRIMARY = (229, 229, 229)  # #e5e5e5
+    TEXT_SECONDARY = (163, 163, 163)  # #a3a3a3
+    ACCENT = (59, 130, 246)  # #3b82f6
+
+    img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
+    draw = ImageDraw.Draw(img)
+
+    # Load fonts — try common paths, fall back to default
+    def load_font(size, bold=False):
+        paths = [
+            # macOS
+            "/System/Library/Fonts/Helvetica.ttc",
+            "/System/Library/Fonts/SFNSText.ttf",
+            # Ubuntu/GitHub Actions
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold
+            else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        ]
+        for p in paths:
+            try:
+                return ImageFont.truetype(p, size)
+            except (OSError, IOError):
+                continue
+        return ImageFont.load_default()
+
+    font_name = load_font(54, bold=True)
+    font_tagline = load_font(24)
+
+    # Download and composite avatar
+    avatar_url = profile.get("avatar_url", "")
+    avatar_size = 180
+    avatar_x, avatar_y = 100, (HEIGHT - avatar_size) // 2
+
+    if avatar_url:
+        try:
+            req = urllib.request.Request(f"{avatar_url}?s=400",
+                                        headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                avatar_data = resp.read()
+            avatar = Image.open(io.BytesIO(avatar_data)).resize(
+                (avatar_size, avatar_size), Image.LANCZOS
+            )
+
+            # Circular mask
+            mask = Image.new("L", (avatar_size, avatar_size), 0)
+            mask_draw = ImageDraw.Draw(mask)
+            mask_draw.ellipse((0, 0, avatar_size, avatar_size), fill=255)
+
+            # Blue ring
+            ring_pad = 4
+            ring_r = avatar_size // 2 + ring_pad
+            cx, cy = avatar_x + avatar_size // 2, avatar_y + avatar_size // 2
+            draw.ellipse(
+                (cx - ring_r, cy - ring_r, cx + ring_r, cy + ring_r),
+                outline=ACCENT, width=3,
+            )
+
+            img.paste(avatar, (avatar_x, avatar_y), mask)
+        except Exception as e:
+            print(f"  ⚠  Could not download avatar: {e}")
+
+    # Draw text
+    text_x = avatar_x + avatar_size + 60
+    name = profile.get("display_name", "")
+    tagline = build_gravatar_tagline(profile)
+
+    name_y = HEIGHT // 2 - 40
+    draw.text((text_x, name_y), name, fill=TEXT_PRIMARY, font=font_name)
+
+    if tagline:
+        tagline_y = name_y + 70
+        draw.text((text_x, tagline_y), tagline, fill=TEXT_SECONDARY, font=font_tagline)
+
+    img.save(output_path, "PNG", optimize=True)
+    return True
 
 
 _ARROW_SVG = '<svg class="link-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>'
@@ -475,6 +564,11 @@ def cmd_build():
     jsonld = build_jsonld(profile, SITE_URL)
     src = inject(src, JSONLD_PATTERN, f"    <script type=\"application/ld+json\">\n{jsonld}\n    </script>", "jsonld")
     print(f"  Name: {name}, tagline: {tagline}, links: {len(profile.get('links', []))}")
+
+    # ── OG image ──
+    print("Generating OG image…")
+    if generate_og_image(profile, OG_IMAGE_PATH):
+        print(f"  Saved {OG_IMAGE_PATH}")
 
     # ── Goodreads ──
     if "YOUR_USER_ID" in GOODREADS_RSS:
