@@ -1,9 +1,9 @@
 name: Build & Deploy
 
 on:
-  # Run daily at 6am UTC
+  # Run daily at 9am AEDT / 8am AEST (10pm UTC)
   schedule:
-    - cron: "0 6 * * *"
+    - cron: "0 22 * * *"
   # Run on push to main (e.g. when you edit index.html or style.css directly)
   push:
     branches: [main]
