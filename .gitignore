@@ -9,5 +9,8 @@ __pycache__/
 CLAUDE.md
 .claude/
 
+# Worktrees
+.worktrees/
+
 # macOS
 .DS_Store
