@@ -600,6 +600,11 @@ def cmd_build():
     with open(INDEX_PATH, "r", encoding="utf-8") as f:
         src = f.read()
 
+    # ── <html lang> (from site.toml) ──
+    lang = CONFIG["site"].get("lang", "en")
+    src = re.sub(r'<html\b[^>]*>', f'<html lang="{html.escape(lang)}">', src, count=1)
+    print(f"  Injecting lang={lang}\u2026")
+
     # ── Meta tags (from site.toml) ──
     print("Injecting meta tags from site.toml…")
     src = inject(src, META_PATTERN, build_meta_html(CONFIG), "meta")
