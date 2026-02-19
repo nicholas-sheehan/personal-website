@@ -68,7 +68,26 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/* --- Skip to content --- */
 
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0 0 4px 4px;
+  text-decoration: none;
+  z-index: 100;
+  transition: top 0.1s ease;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
 
 /* --- Layout --- */
 
@@ -95,7 +114,7 @@ main {
 .avatar {
   border-radius: 50%;
   margin-bottom: 1rem;
-  border: 2px solid var(--accent);
+  border: 2px solid var(--border);
   box-shadow: none;
 }
 
@@ -302,7 +321,7 @@ h2 {
 }
 
 .colophon .credits {
-  color: #525252;
+  color: var(--text-tertiary);
 }
 
 
@@ -387,16 +406,13 @@ h2 {
     --bg: #fafafa;
     --text-primary: #1c1917;
     --text-secondary: #57534e;
-    --text-tertiary: #a8a29e;
+    --text-tertiary: #5f6b7a;
     --accent: #3b82f6;
     --accent-hover: #2563eb;
     --border: #e5e5e5;
     --surface: #f5f5f4;
   }
 
-  .colophon .credits {
-    color: #c4b5a4;
-  }
 }
 
 
@@ -432,10 +448,6 @@ h2 {
 
   .link-icon {
     display: none;
-  }
-
-  .avatar {
-    border-color: #ccc;
   }
 }
   </style>
@@ -573,7 +585,7 @@ h2 {
 
       <footer class="colophon">
 <!-- updated:start -->
-        <p class="updated">Last built 19 Feb 2026 at 11:12 UTC</p>
+        <p class="updated">Last built 19 Feb 2026 at 11:29 UTC</p>
 <!-- updated:end -->
         <p class="credits">Powered by Gravatar, Goodreads, Letterboxd &amp; Instapaper.</p>
       </footer>
