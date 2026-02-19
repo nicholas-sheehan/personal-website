@@ -91,7 +91,7 @@ main {
 .avatar {
   border-radius: 50%;
   margin-bottom: 1rem;
-  border: 2px solid var(--accent);
+  border: 2px solid var(--border);
   box-shadow: none;
 }
 
@@ -428,9 +428,5 @@ h2 {
 
   .link-icon {
     display: none;
-  }
-
-  .avatar {
-    border-color: #ccc;
   }
 }
