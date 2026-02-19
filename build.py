@@ -2,26 +2,32 @@
 """
 Build script for nicsheehan.com
 
-Fetches data from four sources and writes them into index.html:
-  1. Gravatar profile (via REST API — no auth needed)
-  2. Goodreads "currently reading" shelf (via RSS — no auth needed)
-  3. Letterboxd recently watched films (via RSS — no auth needed)
-  4. Instapaper starred/liked articles (via API — OAuth 1.0a)
+Fetches data from five sources and writes them into index.html:
+  1. site.toml — site metadata, analytics, and data source config
+  2. Gravatar profile (via REST API — GRAVATAR_API_KEY env var for full data)
+  3. Goodreads "currently reading" and "read" shelves (via RSS — no auth needed)
+  4. Letterboxd recently watched films (via RSS — no auth needed)
+  5. Instapaper starred/liked articles (via API — OAuth 1.0a)
 
 Usage:
     python build.py              # full build
     python build.py auth         # one-time: exchange Instapaper credentials for OAuth tokens
 
+Setup — site.toml:
+    Edit site.toml to set title, description, URL, analytics ID, and feed URLs.
+    This file is the single source of truth for all configuration.
+
 Setup — Gravatar:
-    Set GRAVATAR_USERNAME below to your Gravatar profile slug.
+    Set sources.gravatar.username in site.toml to your Gravatar profile slug.
     Pulls display_name, job_title, company, location, and description.
+    Set GRAVATAR_API_KEY env var for links and contact info (unauthenticated gives basic profile only).
 
 Setup — Goodreads:
-    Replace GOODREADS_RSS below with your RSS URL.
-    Find it at: goodreads.com → My Books → Currently Reading → RSS link
+    Set sources.goodreads.currently_reading_rss and read_rss in site.toml.
+    Find your RSS URLs at: goodreads.com → My Books → shelf → RSS link
 
 Setup — Letterboxd:
-    Replace LETTERBOXD_RSS below with your RSS URL.
+    Set sources.letterboxd.rss in site.toml.
     Find it at: letterboxd.com → your profile → RSS link
 
 Setup — Instapaper:
