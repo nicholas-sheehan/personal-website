@@ -1,7 +1,7 @@
-# Site metadata — injected into <title>, <meta>, and OG/Twitter tags by build.py
+# Site metadata — injected into <title>, <meta>, and OG tags by build.py
 [site]
-title = "Nicholas Sheehan | Web professional | Melbourne"  # also used for og:title and twitter:title
-description = "Personal site of Nicholas Sheehan — web manager in Melbourne. Books, films, and recommended reads."  # also og:description and twitter:description
+title = "Nicholas Sheehan | Web professional | Melbourne"  # also used for og:title
+description = "Personal site of Nicholas Sheehan — web manager in Melbourne. Books, films, and recommended reads."  # also og:description
 url = "https://www.nicsheehan.com"  # canonical URL, og:url, og:image base
 lang = "en-AU"
 
