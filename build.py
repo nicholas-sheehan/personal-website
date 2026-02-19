@@ -219,6 +219,11 @@ def build_gravatar_tagline(profile: dict) -> str:
     return " · ".join(parts) if parts else ""
 
 
+def _norm_url(url: str) -> str:
+    """Normalise a URL for deduplication by stripping trailing slashes."""
+    return url.rstrip("/")
+
+
 def build_jsonld(profile: dict, site_url: str) -> str:
     """Build a JSON-LD Person schema from Gravatar profile data."""
     data = {
@@ -237,12 +242,22 @@ def build_jsonld(profile: dict, site_url: str) -> str:
         data["description"] = profile["description"]
     if profile.get("avatar_url"):
         data["image"] = profile["avatar_url"]
-    same_as = [profile["profile_url"]]
+    seen: set[str] = set()
+    same_as: list[str] = []
+
+    def _add(url: str) -> None:
+        key = _norm_url(url)
+        if key not in seen:
+            seen.add(key)
+            same_as.append(url)
+
+    _add(profile["profile_url"])
     for link in profile.get("links", []):
-        same_as.append(link["url"])
+        if link.get("url"):
+            _add(link["url"])
     for acct in profile.get("verified_accounts", []):
-        if acct.get("url") and acct["url"] not in same_as:
-            same_as.append(acct["url"])
+        if acct.get("url"):
+            _add(acct["url"])
     data["sameAs"] = same_as
     return json.dumps(data, indent=2)
 
