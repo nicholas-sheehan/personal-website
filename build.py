@@ -86,6 +86,7 @@ INSTAPAPER_LIMIT = CONFIG["sources"]["instapaper"]["limit"]
 INDEX_PATH = "index.html"
 STYLE_PATH = "style.css"
 OG_IMAGE_PATH = "og-image.png"
+SITEMAP_PATH = "sitemap.xml"
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -572,6 +573,24 @@ def inject(html_src: str, pattern: re.Pattern, new_content: str, label: str) -> 
     return result
 
 
+def update_sitemap(path: str, last_mod: datetime) -> None:
+    """Write lastmod date into sitemap.xml."""
+    lastmod_str = last_mod.strftime("%Y-%m-%d")
+    content = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        '  <url>\n'
+        f'    <loc>{SITE_URL}/</loc>\n'
+        f'    <lastmod>{lastmod_str}</lastmod>\n'
+        '    <changefreq>daily</changefreq>\n'
+        '  </url>\n'
+        '</urlset>\n'
+    )
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"  Updated {path} with lastmod {lastmod_str}")
+
+
 # ══════════════════════════════════════════════════════════════════
 #  CLI
 # ══════════════════════════════════════════════════════════════════
@@ -692,6 +711,9 @@ def cmd_build():
     updated_html = f'        <p class="updated">Last updated {updated_str}</p>'
     src = inject(src, UPDATED_PATTERN, updated_html, "updated")
     print(f"  Timestamp: {updated_str}")
+
+    # ── Sitemap ──
+    update_sitemap(SITEMAP_PATH, now)
 
     # ── Write ──
     with open(INDEX_PATH, "w", encoding="utf-8") as f:
