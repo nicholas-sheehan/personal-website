@@ -45,7 +45,26 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/* --- Skip to content --- */
 
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0 0 4px 4px;
+  text-decoration: none;
+  z-index: 100;
+  transition: top 0.1s ease;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
 
 /* --- Layout --- */
 
