@@ -7,7 +7,6 @@ lang = "en-AU"
 
 [social]
 og_type = "website"
-twitter_card = "summary"
 
 [analytics]
 goatcounter = "nicsheehan"  # {value}.goatcounter.com

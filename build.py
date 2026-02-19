@@ -506,9 +506,6 @@ def build_meta_html(config: dict) -> str:
         f'  <meta property="og:image" content="{html.escape(og_image)}">',
         f'  <meta property="og:type" content="{html.escape(social["og_type"])}">',
         f'  <meta property="og:url" content="{html.escape(url)}/">',
-        f'  <meta name="twitter:card" content="{html.escape(social["twitter_card"])}">',
-        f'  <meta name="twitter:title" content="{html.escape(site["title"])}">',
-        f'  <meta name="twitter:description" content="{html.escape(site["description"])}">',
     ]
     return "\n".join(lines)
 
