@@ -60,11 +60,16 @@ jobs:
       - name: Pull latest (includes build commit)
         run: git pull origin main
 
+      - name: Assemble site files
+        run: |
+          mkdir _site
+          cp index.html og-image.png sitemap.xml CNAME favicon.png favicon-192.png _site/
+
       - uses: actions/configure-pages@v4
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: "."
+          path: "_site"
 
       - id: deployment
         uses: actions/deploy-pages@v4
