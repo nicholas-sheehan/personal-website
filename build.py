@@ -464,6 +464,21 @@ def load_tokens() -> dict:
     with open(INSTAPAPER_TOKEN_FILE, "r") as f:
         return json.load(f)
 
+_TRACKING_PARAMS = frozenset({
+    "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "utm_id",
+    "fbclid", "gclid", "mc_cid", "mc_eid",
+})
+
+
+def _strip_tracking_params(url: str) -> str:
+    """Remove common URL tracking parameters from a URL."""
+    parsed = urllib.parse.urlparse(url)
+    qs = urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
+    clean_qs = {k: v for k, v in qs.items() if k.lower() not in _TRACKING_PARAMS}
+    clean_query = urllib.parse.urlencode(clean_qs, doseq=True)
+    return urllib.parse.urlunparse(parsed._replace(query=clean_query))
+
+
 
 def fetch_instapaper_starred(tokens: dict) -> list[dict]:
     """Fetch starred bookmarks from Instapaper."""
@@ -489,7 +504,7 @@ def fetch_instapaper_starred(tokens: dict) -> list[dict]:
             continue
         articles.append({
             "title": item.get("title", "Untitled"),
-            "url": item.get("url", "#"),
+            "url": _strip_tracking_params(item.get("url", "#")),
         })
     return articles
 
