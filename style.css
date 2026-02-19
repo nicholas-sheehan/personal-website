@@ -298,7 +298,7 @@ h2 {
 }
 
 .colophon .credits {
-  color: #525252;
+  color: var(--text-tertiary);
 }
 
 
@@ -390,9 +390,6 @@ h2 {
     --surface: #f5f5f4;
   }
 
-  .colophon .credits {
-    color: var(--text-tertiary);
-  }
 }
 
 
