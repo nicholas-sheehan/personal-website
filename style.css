@@ -364,7 +364,7 @@ h2 {
     --bg: #fafafa;
     --text-primary: #1c1917;
     --text-secondary: #57534e;
-    --text-tertiary: #a8a29e;
+    --text-tertiary: #5f6b7a;
     --accent: #3b82f6;
     --accent-hover: #2563eb;
     --border: #e5e5e5;
@@ -372,7 +372,7 @@ h2 {
   }
 
   .colophon .credits {
-    color: #c4b5a4;
+    color: var(--text-tertiary);
   }
 }
 
