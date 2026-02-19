@@ -634,56 +634,65 @@ def cmd_build():
 
     # ── Gravatar ──
     print("Fetching Gravatar profile…")
-    profile = fetch_gravatar(GRAVATAR_USERNAME, GRAVATAR_API_KEY)
-    name = html.escape(profile.get("display_name", ""))
-    tagline = html.escape(build_gravatar_tagline(profile))
-    bio = profile.get("description", "")
-    avatar_url = profile.get("avatar_url", "")
-    if avatar_url:
-        avatar_html = f'        <img class="avatar" src="{html.escape(avatar_url)}?s=192" alt="{name}" width="96" height="96">'
-        src = inject(src, GRAVATAR_AVATAR_PATTERN, avatar_html, "gravatar-avatar")
-    if name:
-        src = inject(src, GRAVATAR_NAME_PATTERN, f"        {name}", "gravatar-name")
-    if tagline:
-        src = inject(src, GRAVATAR_TAGLINE_PATTERN, f"        {tagline}", "gravatar-tagline")
-    if bio:
-        bio_html = f"        <p>{html.escape(bio)}</p>"
-        src = inject(src, GRAVATAR_BIO_PATTERN, bio_html, "gravatar-bio")
-    contact_email = profile.get("contact_info", {}).get("email", "")
-    links_html = build_gravatar_links_html(profile, email=contact_email)
-    if links_html:
-        src = inject(src, GRAVATAR_LINKS_PATTERN, links_html, "gravatar-links")
-    jsonld = build_jsonld(profile, SITE_URL)
-    src = inject(src, JSONLD_PATTERN, f"    <script type=\"application/ld+json\">\n{jsonld}\n    </script>", "jsonld")
-    print(f"  Name: {name}, tagline: {tagline}, links: {len(profile.get('links', []))}")
+    try:
+        profile = fetch_gravatar(GRAVATAR_USERNAME, GRAVATAR_API_KEY)
+        name = html.escape(profile.get("display_name", ""))
+        tagline = html.escape(build_gravatar_tagline(profile))
+        bio = profile.get("description", "")
+        avatar_url = profile.get("avatar_url", "")
+        if avatar_url:
+            avatar_html = f'        <img class="avatar" src="{html.escape(avatar_url)}?s=192" alt="{name}" width="96" height="96">'
+            src = inject(src, GRAVATAR_AVATAR_PATTERN, avatar_html, "gravatar-avatar")
+        if name:
+            src = inject(src, GRAVATAR_NAME_PATTERN, f"        {name}", "gravatar-name")
+        if tagline:
+            src = inject(src, GRAVATAR_TAGLINE_PATTERN, f"        {tagline}", "gravatar-tagline")
+        if bio:
+            bio_html = f"        <p>{html.escape(bio)}</p>"
+            src = inject(src, GRAVATAR_BIO_PATTERN, bio_html, "gravatar-bio")
+        contact_email = profile.get("contact_info", {}).get("email", "")
+        links_html = build_gravatar_links_html(profile, email=contact_email)
+        if links_html:
+            src = inject(src, GRAVATAR_LINKS_PATTERN, links_html, "gravatar-links")
+        jsonld = build_jsonld(profile, SITE_URL)
+        src = inject(src, JSONLD_PATTERN, f"    <script type=\"application/ld+json\">\n{jsonld}\n    </script>", "jsonld")
+        print(f"  Name: {name}, tagline: {tagline}, links: {len(profile.get('links', []))}")
 
-    # ── OG image ──
-    print("Generating OG image…")
-    if generate_og_image(profile, OG_IMAGE_PATH):
-        print(f"  Saved {OG_IMAGE_PATH}")
+        # ── OG image ──
+        print("Generating OG image…")
+        if generate_og_image(profile, OG_IMAGE_PATH):
+            print(f"  Saved {OG_IMAGE_PATH}")
+    except Exception as e:
+        print(f"  ⚠  Gravatar fetch failed: {e} — keeping existing content")
 
     # ── Goodreads ──
     if "YOUR_USER_ID" in GOODREADS_RSS:
         print("⚠  Skipping Goodreads — update sources.goodreads in site.toml first.")
     else:
         print("Fetching Goodreads RSS…")
-        books = fetch_goodreads(GOODREADS_RSS)
-        print(f"  Found {len(books)} book(s) on currently-reading shelf.")
-        src = inject(src, GOODREADS_PATTERN, build_book_html(books), "goodreads")
+        try:
+            books = fetch_goodreads(GOODREADS_RSS)
+            print(f"  Found {len(books)} book(s) on currently-reading shelf.")
+            src = inject(src, GOODREADS_PATTERN, build_book_html(books), "goodreads")
 
-        print("Fetching Goodreads read shelf…")
-        read_books = fetch_goodreads(GOODREADS_READ_RSS, limit=GOODREADS_READ_LIMIT)
-        print(f"  Found {len(read_books)} book(s) on read shelf.")
-        src = inject(src, GOODREADS_READ_PATTERN, build_book_html(read_books), "goodreads-read")
+            print("Fetching Goodreads read shelf…")
+            read_books = fetch_goodreads(GOODREADS_READ_RSS, limit=GOODREADS_READ_LIMIT)
+            print(f"  Found {len(read_books)} book(s) on read shelf.")
+            src = inject(src, GOODREADS_READ_PATTERN, build_book_html(read_books), "goodreads-read")
+        except Exception as e:
+            print(f"  ⚠  Goodreads fetch failed: {e} — keeping existing content")
 
     # ── Letterboxd ──
     if "YOUR_USERNAME" in LETTERBOXD_RSS:
         print("⚠  Skipping Letterboxd — update sources.letterboxd in site.toml first.")
     else:
         print("Fetching Letterboxd RSS…")
-        films = fetch_letterboxd(LETTERBOXD_RSS, LETTERBOXD_LIMIT)
-        print(f"  Found {len(films)} recent film(s).")
-        src = inject(src, LETTERBOXD_PATTERN, build_film_html(films), "letterboxd")
+        try:
+            films = fetch_letterboxd(LETTERBOXD_RSS, LETTERBOXD_LIMIT)
+            print(f"  Found {len(films)} recent film(s).")
+            src = inject(src, LETTERBOXD_PATTERN, build_film_html(films), "letterboxd")
+        except Exception as e:
+            print(f"  ⚠  Letterboxd fetch failed: {e} — keeping existing content")
 
     # ── Instapaper ──
     tokens = load_tokens()
@@ -693,9 +702,12 @@ def cmd_build():
         print("⚠  Skipping Instapaper — run 'python build.py auth' first.")
     else:
         print("Fetching Instapaper starred articles…")
-        articles = fetch_instapaper_starred(tokens)
-        print(f"  Found {len(articles)} starred article(s).")
-        src = inject(src, INSTAPAPER_PATTERN, build_article_html(articles), "instapaper")
+        try:
+            articles = fetch_instapaper_starred(tokens)
+            print(f"  Found {len(articles)} starred article(s).")
+            src = inject(src, INSTAPAPER_PATTERN, build_article_html(articles), "instapaper")
+        except Exception as e:
+            print(f"  ⚠  Instapaper fetch failed: {e} — keeping existing content")
 
     # ── Inline CSS ──
     if os.path.exists(STYLE_PATH):
