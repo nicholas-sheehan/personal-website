@@ -473,6 +473,8 @@ _TRACKING_PARAMS = frozenset({
 def _strip_tracking_params(url: str) -> str:
     """Remove common URL tracking parameters from a URL."""
     parsed = urllib.parse.urlparse(url)
+    if not parsed.scheme:
+        return url
     qs = urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
     clean_qs = {k: v for k, v in qs.items() if k.lower() not in _TRACKING_PARAMS}
     clean_query = urllib.parse.urlencode(clean_qs, doseq=True)
