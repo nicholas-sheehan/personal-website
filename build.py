@@ -705,10 +705,10 @@ def cmd_build():
         style_html = f"  <style>\n{css}  </style>"
         src = inject(src, STYLE_PATTERN, style_html, "style")
 
-    # ── Last updated timestamp ──
+    # ── Last built timestamp ──
     now = datetime.now(timezone.utc)
-    updated_str = now.strftime("%-d %b %Y")
-    updated_html = f'        <p class="updated">Last updated {updated_str}</p>'
+    updated_str = now.strftime("%-d %b %Y at %H:%M UTC")
+    updated_html = f'        <p class="updated">Last built {updated_str}</p>'
     src = inject(src, UPDATED_PATTERN, updated_html, "updated")
     print(f"  Timestamp: {updated_str}")
 
