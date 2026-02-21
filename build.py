@@ -529,6 +529,38 @@ def build_article_html(articles: list[dict]) -> str:
     return "\n".join(lines)
 
 
+
+# ══════════════════════════════════════════════════════════════════
+#  Last.fm (REST API)
+# ══════════════════════════════════════════════════════════════════
+
+LASTFM_API = "https://ws.audioscrobbler.com/2.0/"
+
+
+def fetch_lastfm_top_tracks(username: str, api_key: str, limit: int) -> list[dict]:
+    """Return a list of {title, artist, plays} dicts from Last.fm top tracks."""
+    params = urllib.parse.urlencode({
+        "method": "user.getTopTracks",
+        "user": username,
+        "period": "1month",
+        "limit": str(limit),
+        "api_key": api_key,
+        "format": "json",
+    })
+    url = f"{LASTFM_API}?{params}"
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        data = json.loads(resp.read().decode())
+
+    tracks = []
+    for track in data.get("toptracks", {}).get("track", []):
+        tracks.append({
+            "title": track.get("name", ""),
+            "artist": track.get("artist", {}).get("name", ""),
+            "plays": int(track.get("playcount", 0)),
+        })
+    return tracks
+
 # ══════════════════════════════════════════════════════════════════
 #  Meta & analytics (from TOML config)
 # ══════════════════════════════════════════════════════════════════
