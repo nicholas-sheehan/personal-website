@@ -4,7 +4,7 @@ Personal website for Nicholas Sheehan. A static site that pulls all its content 
 
 ## How it works
 
-`build.py` fetches data from four sources, injects it into `index.html`, and GitHub Pages serves the result. A GitHub Actions workflow runs this daily at 9am AEDT / 8am AEST, commits any changes, and deploys.
+`build.py` fetches data from five sources, injects it into `index.html`, and GitHub Pages serves the result. A GitHub Actions workflow runs this daily at 9am AEDT / 8am AEST, commits any changes, and deploys.
 
 ## Content sources
 
@@ -16,6 +16,7 @@ Personal website for Nicholas Sheehan. A static site that pulls all its content 
 | **Currently reading** | [Goodreads](https://www.goodreads.com) | Update your "Currently Reading" shelf on Goodreads. The site reads your public RSS feed. |
 | **Recently watched** | [Letterboxd](https://letterboxd.com) | Log and rate films on Letterboxd. The 8 most recent entries are shown via RSS. |
 | **Reads I recommend** | [Instapaper](https://www.instapaper.com) | Star articles in Instapaper. The 5 most recent starred articles are shown. |
+| **Listening to lately** | [Last.fm](https://www.last.fm) | Your top 8 tracks of the current month are pulled automatically via the Last.fm API. |
 
 ## When does the site update?
 
@@ -34,16 +35,18 @@ These are configured in the repo under Settings → Secrets and variables → Ac
 | `INSTAPAPER_CONSUMER_SECRET` | Instapaper OAuth consumer secret |
 | `INSTAPAPER_OAUTH_TOKEN` | Instapaper user token (generated via `build.py auth`) |
 | `INSTAPAPER_OAUTH_TOKEN_SECRET` | Instapaper user token secret |
+| `LASTFM_API_KEY` | Last.fm API key (get one at last.fm/api/account/create) |
 
 ## Running locally
 
 ```bash
-# Full build (requires env vars for Instapaper and Gravatar API key)
+# Full build (requires env vars for Gravatar, Instapaper, and Last.fm)
 GRAVATAR_API_KEY="your-key" \
 INSTAPAPER_CONSUMER_KEY="your-key" \
 INSTAPAPER_CONSUMER_SECRET="your-secret" \
 INSTAPAPER_OAUTH_TOKEN="your-token" \
 INSTAPAPER_OAUTH_TOKEN_SECRET="your-secret" \
+LASTFM_API_KEY="your-key" \
 python3 build.py
 ```
 
