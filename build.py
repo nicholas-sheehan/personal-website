@@ -561,6 +561,25 @@ def fetch_lastfm_top_tracks(username: str, api_key: str, limit: int) -> list[dic
         })
     return tracks
 
+def build_music_html(tracks: list[dict]) -> str:
+    """Turn a list of tracks into <li> elements."""
+    if not tracks:
+        return "          <li>Nothing at the moment — check back soon.</li>"
+    lines = []
+    for track in tracks:
+        t = html.escape(track["title"])
+        a = html.escape(track["artist"])
+        p = track["plays"]
+        play_word = "play" if p == 1 else "plays"
+        lines.append(
+            f'          <li class="track">'
+            f'<span class="track-title">{t}</span>'
+            f'<span class="track-meta">{a} · {p} {play_word}</span>'
+            f'</li>'
+        )
+    return "\n".join(lines)
+
+
 # ══════════════════════════════════════════════════════════════════
 #  Meta & analytics (from TOML config)
 # ══════════════════════════════════════════════════════════════════
@@ -612,6 +631,7 @@ GOODREADS_PATTERN = _make_pattern("goodreads")
 GOODREADS_READ_PATTERN = _make_pattern("goodreads-read")
 LETTERBOXD_PATTERN = _make_pattern("letterboxd")
 INSTAPAPER_PATTERN = _make_pattern("instapaper")
+MUSIC_PATTERN = _make_pattern("music")
 UPDATED_PATTERN = _make_pattern("updated")
 STYLE_PATTERN = _make_pattern("style")
 
