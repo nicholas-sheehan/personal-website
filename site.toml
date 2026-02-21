@@ -21,11 +21,11 @@ read_limit = 5
 
 [sources.letterboxd]
 rss = "https://letterboxd.com/tonic2/rss/"
-limit = 8
+limit = 5
 
 [sources.instapaper]
 limit = 5
 
 [sources.lastfm]
 username = "tonic-lastfm"
-limit = 8
+limit = 5
