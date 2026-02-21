@@ -25,3 +25,7 @@ limit = 8
 
 [sources.instapaper]
 limit = 5
+
+[sources.lastfm]
+username = "tonic-lastfm"
+limit = 8
