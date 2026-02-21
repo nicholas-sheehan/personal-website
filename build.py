@@ -82,6 +82,9 @@ INSTAPAPER_CONSUMER_KEY = os.environ.get("INSTAPAPER_CONSUMER_KEY", "YOUR_CONSUM
 INSTAPAPER_CONSUMER_SECRET = os.environ.get("INSTAPAPER_CONSUMER_SECRET", "YOUR_CONSUMER_SECRET")
 INSTAPAPER_TOKEN_FILE = ".instapaper_tokens"
 INSTAPAPER_LIMIT = CONFIG["sources"]["instapaper"]["limit"]
+LASTFM_USERNAME = CONFIG["sources"]["lastfm"]["username"]
+LASTFM_API_KEY = os.environ.get("LASTFM_API_KEY", "")
+LASTFM_LIMIT = CONFIG["sources"]["lastfm"]["limit"]
 
 INDEX_PATH = "index.html"
 STYLE_PATH = "style.css"
