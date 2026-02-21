@@ -1,6 +1,6 @@
 # nicsheehan.com
 
-Personal website for Nicholas Sheehan. A static site that pulls all its content from external services, rebuilt daily by GitHub Actions.
+Personal website for Nicholas Sheehan. A static site that pulls all its content from external services and presents it as a Y2K-inspired personal dashboard, rebuilt daily by GitHub Actions.
 
 ## How it works
 
@@ -14,9 +14,9 @@ Personal website for Nicholas Sheehan. A static site that pulls all its content 
 | **Name, bio, tagline, avatar** | [Gravatar](https://gravatar.com/profile) | Edit your Gravatar profile. Name, job title, company, location, and description are all pulled automatically. |
 | **Nav links** | [Gravatar](https://gravatar.com/profile) | Add/remove/reorder links on your Gravatar profile. Email is pulled from Gravatar contact info. |
 | **Currently reading** | [Goodreads](https://www.goodreads.com) | Update your "Currently Reading" shelf on Goodreads. The site reads your public RSS feed. |
-| **Recently watched** | [Letterboxd](https://letterboxd.com) | Log and rate films on Letterboxd. The 8 most recent entries are shown via RSS. |
+| **Recently watched** | [Letterboxd](https://letterboxd.com) | Log and rate films on Letterboxd. The 5 most recent entries are shown via RSS. |
 | **Reads I recommend** | [Instapaper](https://www.instapaper.com) | Star articles in Instapaper. The 5 most recent starred articles are shown. |
-| **Listening to lately** | [Last.fm](https://www.last.fm) | Your top 8 tracks of the current month are pulled automatically via the Last.fm API. |
+| **Listening to lately** | [Last.fm](https://www.last.fm) | Your top 5 tracks of the current month are pulled automatically via the Last.fm API. |
 
 ## When does the site update?
 
