@@ -358,7 +358,6 @@ def generate_og_image(profile: dict, output_path: str):
     return True
 
 
-
 def build_gravatar_links_html(profile: dict, email: str = "") -> str:
     """Build nav link buttons from Gravatar links + optional email."""
     links = profile.get("links", [])
