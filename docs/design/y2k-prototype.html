@@ -10,8 +10,9 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
   <style>
 /* ──────────────────────────────────────────────
-   nicsheehan.com — Y2K / PS2 Memory Card prototype
-   JetBrains Mono exclusively. Dark only. Terminal HUD.
+   nicsheehan.com — Y2K / PS2 Memory Card prototype v2
+   JetBrains Mono exclusively. Dark only.
+   Character-select HUD meets memory card interface.
    ────────────────────────────────────────────── */
 
 /* --- Design tokens --- */
@@ -19,29 +20,35 @@
 :root {
   /* Backgrounds */
   --bg:          #050a14;
-  --panel:       #0d1520;
-  --panel-hover: #111c2e;
-  --surface:     #0a1422;
+  --panel:       #0b1523;
+  --panel-hover: #0f1d2e;
+  --surface:     #091220;
 
   /* Text */
-  --text-primary:    #e2e8f0;
-  --text-secondary:  #7a8fa6;
+  --text-primary:    #dde8f5;
+  --text-secondary:  #6b85a0;
   --text-tertiary:   #3d5166;
-  --text-dim:        #2a3a4d;
+  --text-dim:        #2e4258;
 
   /* Borders */
-  --border:          #1a2840;
-  --border-bright:   #243652;
+  --border:          #182840;
+  --border-bright:   #243f5e;
 
-  /* Section accent colours */
-  --accent-books:    #22c55e;
-  --accent-films:    #f59e0b;
-  --accent-music:    #a855f7;
+  /* Section accent colours — pushed vivid */
+  --accent-books:    #00e87a;
+  --accent-films:    #ffb300;
+  --accent-music:    #c084fc;
   --accent-articles: #3b82f6;
+
+  /* Header fill variants — darker base for solid header bars */
+  --accent-books-bg:    #001f10;
+  --accent-films-bg:    #1f1400;
+  --accent-music-bg:    #1a0a2e;
+  --accent-articles-bg: #050f2a;
 
   /* System accent */
   --accent:          #3b82f6;
-  --accent-hover:    #60a5fa;
+  --accent-hover:    #93c5fd;
 
   /* Font */
   --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", ui-monospace, monospace;
@@ -75,6 +82,11 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* --- Noise texture --- */
+/* SVG feTurbulence noise — baked inline as data URI, zero requests.
+   Layered over scanlines for CRT/aged-screen feel.
+   The noise filter references a hidden SVG in the document. */
+
 body {
   font-family: var(--font-mono);
   font-weight: 400;
@@ -82,13 +94,15 @@ body {
   color: var(--text-primary);
   background-color: var(--bg);
   background-image:
-    /* Subtle scan-line texture — atmosphere, not kitsch */
+    /* Noise grain layer — subtle static on the tube */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.038'/%3E%3C/svg%3E"),
+    /* Scanlines — tighter and slightly deeper than v1 */
     repeating-linear-gradient(
       0deg,
       transparent,
       transparent 2px,
-      rgba(0, 0, 0, 0.08) 2px,
-      rgba(0, 0, 0, 0.08) 4px
+      rgba(0, 0, 0, 0.13) 2px,
+      rgba(0, 0, 0, 0.13) 4px
     );
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -134,19 +148,56 @@ main {
 
 
 /* ──────────────────────────────────────────────
+   BLINKING CURSOR — pure CSS, no JS
+   Used atmospherically in bio and status strip.
+   ────────────────────────────────────────────── */
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.cursor {
+  display: inline-block;
+  color: var(--accent);
+  animation: blink 1.1s step-end infinite;
+  font-weight: 400;
+  user-select: none;
+  margin-left: 0.1em;
+}
+
+
+/* ──────────────────────────────────────────────
    SYSTEM HEADER
-   Horizontal user status bar
+   Character-select / game HUD treatment.
+   Angled bottom-right corner via clip-path.
+   Multi-layer glow in accent blue.
    ────────────────────────────────────────────── */
 
 .system-header {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  padding: var(--space-5) var(--space-6);
+  padding: var(--space-6) var(--space-6) var(--space-5);
   background: var(--panel);
-  border: 1px solid var(--border);
-  border-top: 2px solid var(--accent);
+  border: 1px solid var(--border-bright);
+  border-top: 3px solid var(--accent);
   margin-bottom: var(--space-3);
+  /* Angled cut on bottom-right — HUD bevel */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 18px),
+    calc(100% - 18px) 100%,
+    0 100%
+  );
+  /* Multi-layer shadow: lift + accent outer glow */
+  box-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.6),
+    0 4px 16px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(59, 130, 246, 0.08),
+    0 0 32px rgba(59, 130, 246, 0.08);
+  position: relative;
 }
 
 /* Top row: avatar + identity + nav controls */
@@ -157,9 +208,10 @@ main {
   flex-wrap: wrap;
 }
 
-/* Avatar — CSS circle with initials as fallback */
+/* Avatar — hexagonal clip + accent ring */
 .avatar-wrap {
   flex-shrink: 0;
+  position: relative;
 }
 
 .avatar {
@@ -169,25 +221,44 @@ main {
   border-radius: 50%;
   border: 2px solid var(--accent);
   object-fit: cover;
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
 }
 
-/* CSS initials fallback (shown when img fails or as placeholder) */
+/* CSS initials fallback */
 .avatar-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 72px;
   height: 72px;
-  border-radius: 50%;
-  border: 2px solid var(--accent);
   background: var(--surface);
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   flex-shrink: 0;
   user-select: none;
+  /* Hexagonal clip — character portrait framing */
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  /* Inner glow ring via box-shadow (clip-path clips border so use this instead) */
+  box-shadow: inset 0 0 0 2px var(--accent);
+  position: relative;
+}
+
+/* Accent ring that sits outside the clip (pseudo-element workaround) */
+.avatar-wrap::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 78px;
+  height: 78px;
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  background: transparent;
+  box-shadow: inset 0 0 0 3px rgba(59, 130, 246, 0.35);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .identity {
@@ -200,17 +271,30 @@ main {
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   line-height: 1.2;
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+/* Player/character label above the name — game HUD convention */
+.identity-system-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+  opacity: 0.8;
 }
 
 .identity-tagline {
   margin-top: var(--space-1);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 400;
   color: var(--text-secondary);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
@@ -218,27 +302,38 @@ main {
 .system-nav {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
 .system-nav-link {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 500;
+  font-size: 0.65rem;
+  font-weight: 600;
   color: var(--text-secondary);
   text-decoration: none;
-  letter-spacing: 0.04em;
-  padding: var(--space-1) var(--space-2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: var(--space-1) var(--space-3);
   border: 1px solid var(--border-bright);
-  transition: color 0.1s ease, border-color 0.1s ease, background 0.1s ease;
+  background: var(--surface);
+  /* Slight bevel via box-shadow — pressed-in quality */
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    inset 0 -1px 0 rgba(0,0,0,0.3),
+    0 1px 3px rgba(0,0,0,0.4);
+  transition: color 0.1s ease, border-color 0.1s ease, background 0.1s ease, box-shadow 0.1s ease;
 }
 
 .system-nav-link:hover {
   color: var(--accent-hover);
   border-color: var(--accent);
-  background: rgba(59, 130, 246, 0.06);
+  background: rgba(59, 130, 246, 0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 -1px 0 rgba(0,0,0,0.2),
+    0 0 8px rgba(59, 130, 246, 0.2);
 }
 
 .system-nav-link:focus-visible {
@@ -249,10 +344,10 @@ main {
 /* Bio */
 .system-bio {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 400;
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.75;
   padding-top: var(--space-3);
   border-top: 1px solid var(--border);
 }
@@ -260,35 +355,56 @@ main {
 
 /* ──────────────────────────────────────────────
    NOW READING — Status strip
-   Full-width, not a panel. Green accent treatment.
+   Skewed left-edge notification bar.
+   Solid accent-green left face, pushed vivid.
    ────────────────────────────────────────────── */
 
 .status-strip {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-6);
-  background: rgba(34, 197, 94, 0.04);
-  border: 1px solid rgba(34, 197, 94, 0.18);
-  border-left: 3px solid var(--accent-books);
+  gap: 0;
   margin-bottom: var(--space-3);
+  position: relative;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(0, 232, 122, 0.07);
+  overflow: hidden;
+  /* Angled right edge — notification bar geometry */
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
+}
+
+.status-strip-accent {
+  /* Solid vivid-green left face — the "badge" */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-5);
+  background: var(--accent-books);
+  flex-shrink: 0;
+  /* Angled right edge matching the strip angle */
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
+  padding-right: calc(var(--space-5) + 8px);
 }
 
 .status-strip-label {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
-  color: var(--accent-books);
-  letter-spacing: 0.12em;
+  color: #001a0d;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.status-strip-sep {
-  font-size: 0.65rem;
-  color: var(--text-tertiary);
-  flex-shrink: 0;
+.status-strip-body {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5) var(--space-3) var(--space-4);
+  background: rgba(0, 232, 122, 0.05);
+  border: 1px solid rgba(0, 232, 122, 0.14);
+  border-left: none;
+  flex: 1;
 }
 
 .status-strip-text {
@@ -318,6 +434,7 @@ main {
 
 /* ──────────────────────────────────────────────
    PANEL — Shared structure for all 4 sections
+   Physical weight via layered shadows + outer glow.
    ────────────────────────────────────────────── */
 
 .panel {
@@ -326,45 +443,112 @@ main {
   overflow: hidden;
 }
 
-/* 2px coloured top border — the section identifier */
-.panel--books    { border-top: 2px solid var(--accent-books);    }
-.panel--films    { border-top: 2px solid var(--accent-films);    }
-.panel--music    { border-top: 2px solid var(--accent-music);    }
-.panel--articles { border-top: 2px solid var(--accent-articles); }
+/* Shared shadow recipe — overridden per panel with accent glow */
+.panel {
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.8),
+    0 4px 12px rgba(0,0,0,0.5),
+    0 8px 24px rgba(0,0,0,0.3);
+}
 
-/* Panel header row */
+.panel--books {
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.8),
+    0 4px 12px rgba(0,0,0,0.5),
+    0 8px 24px rgba(0,0,0,0.3),
+    0 0 40px rgba(0, 232, 122, 0.07);
+}
+
+.panel--films {
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.8),
+    0 4px 12px rgba(0,0,0,0.5),
+    0 8px 24px rgba(0,0,0,0.3),
+    0 0 40px rgba(255, 179, 0, 0.07);
+}
+
+.panel--music {
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.8),
+    0 4px 12px rgba(0,0,0,0.5),
+    0 8px 24px rgba(0,0,0,0.3),
+    0 0 40px rgba(192, 132, 252, 0.07);
+}
+
+.panel--articles {
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.8),
+    0 4px 12px rgba(0,0,0,0.5),
+    0 8px 24px rgba(0,0,0,0.3),
+    0 0 40px rgba(59, 130, 246, 0.07);
+}
+
+
+/* ──────────────────────────────────────────────
+   PANEL HEADERS
+   Solid coloured bar — selected-menu-item treatment.
+   Diagonal clip on the right edge.
+   ────────────────────────────────────────────── */
+
 .panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-3) var(--space-5);
-  border-bottom: 1px solid var(--border);
+  padding: var(--space-2) var(--space-5);
+  /* The clip creates the skewed bevel on the right */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  position: relative;
 }
 
+/* Per-panel: solid fill header bar */
+.panel--books    .panel-header {
+  background: var(--accent-books);
+  border-bottom: none;
+}
+.panel--films    .panel-header {
+  background: var(--accent-films);
+  border-bottom: none;
+}
+.panel--music    .panel-header {
+  background: var(--accent-music);
+  border-bottom: none;
+}
+.panel--articles .panel-header {
+  background: var(--accent-articles);
+  border-bottom: none;
+}
+
+/* Label on solid colour — invert to dark */
 .panel-label {
   font-family: var(--font-mono);
   font-size: 0.65rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
-.panel--books    .panel-label { color: var(--accent-books);    }
-.panel--films    .panel-label { color: var(--accent-films);    }
-.panel--music    .panel-label { color: var(--accent-music);    }
-.panel--articles .panel-label { color: var(--accent-articles); }
+.panel--books    .panel-label { color: #001a0d; }
+.panel--films    .panel-label { color: #1a0f00; }
+.panel--music    .panel-label { color: #1a0030; }
+.panel--articles .panel-label { color: #00081a; }
 
 .panel-count {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  font-weight: 400;
-  color: var(--text-secondary);
+  font-size: 0.58rem;
+  font-weight: 500;
   letter-spacing: 0.06em;
+  opacity: 0.55;
 }
 
-/* Panel body */
+.panel--books    .panel-count { color: #001a0d; }
+.panel--films    .panel-count { color: #1a0f00; }
+.panel--music    .panel-count { color: #1a0030; }
+.panel--articles .panel-count { color: #00081a; }
+
+/* Divider between header and body — accent colour, dimmed */
 .panel-body {
   padding: 0;
+  border-top: 1px solid var(--border);
 }
 
 
@@ -379,6 +563,7 @@ main {
   padding: var(--space-3) var(--space-5);
   border-bottom: 1px solid var(--border);
   transition: background 0.1s ease;
+  position: relative;
 }
 
 .panel-row:last-child {
@@ -389,11 +574,11 @@ main {
   background: var(--panel-hover);
 }
 
-/* Row index number */
+/* Row index number — brighter than v1 so they read */
 .row-index {
   font-family: var(--font-mono);
   font-size: 0.6rem;
-  font-weight: 400;
+  font-weight: 600;
   color: var(--text-dim);
   letter-spacing: 0.04em;
   flex-shrink: 0;
@@ -408,7 +593,7 @@ main {
   min-width: 0;
 }
 
-/* Row metadata — right-aligned on desktop */
+/* Row metadata — right-aligned */
 .row-meta {
   font-family: var(--font-mono);
   font-size: 0.65rem;
@@ -458,13 +643,14 @@ main {
   margin-top: 0.1rem;
 }
 
-/* Stars in amber — matches the film panel accent */
+/* Stars in vivid amber */
 .film-stars {
   font-style: normal;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   color: var(--accent-films);
   letter-spacing: -0.02em;
   white-space: nowrap;
+  text-shadow: 0 0 8px rgba(255, 179, 0, 0.4);
 }
 
 
@@ -486,18 +672,21 @@ main {
   margin-top: 0.1rem;
 }
 
-/* Play count chip */
+/* Play count chip — inset bevel */
 .play-count {
   display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.6rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--accent-music);
-  background: rgba(168, 85, 247, 0.08);
-  border: 1px solid rgba(168, 85, 247, 0.2);
-  padding: 0.1rem 0.35rem;
+  background: rgba(192, 132, 252, 0.08);
+  border: 1px solid rgba(192, 132, 252, 0.22);
+  padding: 0.1rem 0.4rem;
   letter-spacing: 0.04em;
   white-space: nowrap;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    inset 0 -1px 0 rgba(0,0,0,0.25);
 }
 
 
@@ -543,16 +732,18 @@ main {
   font-weight: 400;
   color: var(--accent-articles);
   background: rgba(59, 130, 246, 0.07);
-  border: 1px solid rgba(59, 130, 246, 0.18);
+  border: 1px solid rgba(59, 130, 246, 0.2);
   padding: 0.1rem 0.35rem;
   margin-top: 0.25rem;
   letter-spacing: 0.03em;
   white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
 
 /* ──────────────────────────────────────────────
    FOOTER / COLOPHON
+   Angled top-left corner — mirror of header.
    ────────────────────────────────────────────── */
 
 .colophon {
@@ -563,6 +754,17 @@ main {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  /* Angled top-left — inverted bevel of the header */
+  clip-path: polygon(
+    18px 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    0 18px
+  );
+  box-shadow:
+    0 -1px 0 rgba(0,0,0,0.6),
+    0 2px 8px rgba(0,0,0,0.3);
 }
 
 .colophon-timestamp {
@@ -635,22 +837,46 @@ main {
 
   .system-header {
     padding: var(--space-4) var(--space-4);
+    /* Smaller bevel on mobile */
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - 12px),
+      calc(100% - 12px) 100%,
+      0 100%
+    );
   }
 
   .status-strip {
+    clip-path: none;
+  }
+
+  .status-strip-accent {
+    clip-path: none;
+    padding-right: var(--space-4);
+  }
+
+  .status-strip-body {
     padding: var(--space-3) var(--space-4);
     flex-wrap: wrap;
     gap: var(--space-2);
+  }
+
+  .colophon {
+    padding: var(--space-4);
+    clip-path: polygon(
+      12px 0,
+      100% 0,
+      100% 100%,
+      0 100%,
+      0 12px
+    );
   }
 
   .panel-header,
   .panel-row {
     padding-left: var(--space-4);
     padding-right: var(--space-4);
-  }
-
-  .colophon {
-    padding: var(--space-4);
   }
 
   .system-nav {
@@ -669,12 +895,13 @@ main {
       <header class="system-header">
         <div class="system-header-row">
 
-          <!-- Avatar: using Gravatar URL; CSS placeholder shown visually below if it fails -->
+          <!-- Avatar: hexagonal clip + glow ring -->
           <div class="avatar-wrap">
             <div class="avatar-placeholder" aria-hidden="true">NS</div>
           </div>
 
           <div class="identity">
+            <div class="identity-system-label">Player profile</div>
             <div class="identity-name">Nicholas Sheehan</div>
             <div class="identity-tagline">Web professional &middot; Melbourne</div>
           </div>
@@ -688,15 +915,18 @@ main {
         </div>
 
         <p class="system-bio">
-          I&#x27;m a web professional specialising in AEM authoring, digital production and content governance. Outside of work I like to read, watch films, listen to music and cook.
+          I&#x27;m a web professional specialising in AEM authoring, digital production and content governance. Outside of work I like to read, watch films, listen to music and cook.<span class="cursor" aria-hidden="true">&#x2587;</span>
         </p>
       </header>
 
       <!-- ── NOW READING — Status strip ───────────── -->
       <div class="status-strip" role="complementary" aria-label="Currently reading">
-        <span class="status-strip-label">Now reading</span>
-        <span class="status-strip-sep">/</span>
-        <span class="status-strip-text"><em>Zorba the Greek</em> by Nikos Kazantzakis</span>
+        <div class="status-strip-accent">
+          <span class="status-strip-label">Now reading</span>
+        </div>
+        <div class="status-strip-body">
+          <span class="status-strip-text"><em>Zorba the Greek</em> by Nikos Kazantzakis<span class="cursor" aria-hidden="true">&#x2587;</span></span>
+        </div>
       </div>
 
       <!-- ── CONTENT GRID ──────────────────────────── -->
