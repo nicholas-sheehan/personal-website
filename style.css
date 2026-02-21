@@ -228,6 +228,24 @@ h2 {
 }
 
 
+/* --- Music tracks --- */
+
+.reading li.track {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.track-title {
+  color: var(--text-primary);
+}
+
+.track-meta {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
 /* --- Nav links --- */
 
 .links {
