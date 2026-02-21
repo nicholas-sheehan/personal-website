@@ -547,87 +547,6 @@ main {
   border-color: rgba( 59, 130, 246, 0.35);
 }
 
-/* ──────────────────────────────────────────────
-   PANEL CONTENT — <ul>/<li> compatibility
-   build.py generates <li> items; these styles
-   make them render correctly inside .panel-body
-   ────────────────────────────────────────────── */
-
-.panel-list {
-  list-style: none;
-  padding: 0;
-}
-
-.panel-list li {
-  padding: var(--space-3) var(--space-5);
-  border-bottom: 1px solid var(--border);
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-
-.panel-list li:last-child {
-  border-bottom: none;
-}
-
-.panel-list em {
-  font-style: italic;
-  color: var(--text-primary);
-  text-shadow: 0 0 6px rgba(180, 210, 255, 0.12);
-}
-
-/* Film star ratings — amber */
-.panel-list .stars {
-  font-style: normal;
-  color: var(--accent-films);
-  font-size: 0.7rem;
-  margin-left: var(--space-2);
-}
-
-/* Article link */
-.panel-list a {
-  color: var(--text-primary);
-  text-decoration: underline;
-  text-decoration-color: var(--border-bright);
-  text-underline-offset: 0.15em;
-  transition: color 0.1s ease;
-}
-
-.panel-list a:hover {
-  color: var(--accent-hover);
-}
-
-.panel-list a:focus-visible {
-  outline: 1px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* Article source domain */
-.panel-list .source {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--accent-articles);
-}
-
-/* Music track — two-line layout */
-.panel-list li.track {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.panel-list .track-title {
-  color: var(--text-primary);
-  font-size: 0.78rem;
-  text-shadow: 0 0 6px rgba(180, 210, 255, 0.12);
-}
-
-.panel-list .track-meta {
-  font-size: 0.7rem;
-  color: var(--text-tertiary);
-}
-
 /* Panel header row */
 .panel-header {
   display: flex;
@@ -1020,11 +939,15 @@ main {
 <!-- goodreads-now:end -->
           <!-- Currently reading marker (hidden, reintroduced in Iteration 5) -->
           <div hidden aria-hidden="true">
-            <ul>
 <!-- goodreads:start -->
-          <li><em>Zorba the Greek</em> — Nikos Kazantzakis</li>
+                <div class="panel-row">
+                  <span class="row-index">01</span>
+                  <div class="row-content">
+                    <div class="book-title">Zorba the Greek</div>
+                    <div class="book-author">Nikos Kazantzakis</div>
+                  </div>
+                </div>
 <!-- goodreads:end -->
-            </ul>
           </div>
 
           <!-- ── CONTENT GRID ──────────────────────────── -->
@@ -1037,15 +960,43 @@ main {
                 <span class="panel-count">recently read</span>
               </div>
               <div class="panel-body">
-                <ul class="panel-list">
 <!-- goodreads-read:start -->
-          <li><em>The Fall</em> — Albert Camus</li>
-          <li><em>EXCLUSIVE!: Dispatches from The Paris End</em> — Cameron Hurst</li>
-          <li><em>Time Warrior: How to defeat procrastination, people-pleasing, self-doubt, over-commitment, broken promises and chaos</em> — Steve Chandler</li>
-          <li><em>When the Going Was Good: An Editor&#x27;s Adventures During the Last Golden Age of Magazines</em> — Graydon Carter</li>
-          <li><em>Post Office</em> — Charles Bukowski</li>
+                <div class="panel-row">
+                  <span class="row-index">01</span>
+                  <div class="row-content">
+                    <div class="book-title">The Fall</div>
+                    <div class="book-author">Albert Camus</div>
+                  </div>
+                </div>
+                <div class="panel-row">
+                  <span class="row-index">02</span>
+                  <div class="row-content">
+                    <div class="book-title">EXCLUSIVE!: Dispatches from The Paris End</div>
+                    <div class="book-author">Cameron Hurst</div>
+                  </div>
+                </div>
+                <div class="panel-row">
+                  <span class="row-index">03</span>
+                  <div class="row-content">
+                    <div class="book-title">Time Warrior: How to defeat procrastination, people-pleasing, self-doubt, over-commitment, broken promises and chaos</div>
+                    <div class="book-author">Steve Chandler</div>
+                  </div>
+                </div>
+                <div class="panel-row">
+                  <span class="row-index">04</span>
+                  <div class="row-content">
+                    <div class="book-title">When the Going Was Good: An Editor&#x27;s Adventures During the Last Golden Age of Magazines</div>
+                    <div class="book-author">Graydon Carter</div>
+                  </div>
+                </div>
+                <div class="panel-row">
+                  <span class="row-index">05</span>
+                  <div class="row-content">
+                    <div class="book-title">Post Office</div>
+                    <div class="book-author">Charles Bukowski</div>
+                  </div>
+                </div>
 <!-- goodreads-read:end -->
-                </ul>
               </div>
             </section>
 
@@ -1056,15 +1007,48 @@ main {
                 <span class="panel-count">recently watched</span>
               </div>
               <div class="panel-body">
-                <ul class="panel-list">
 <!-- letterboxd:start -->
-          <li><em>Wuthering Heights</em> (2026) <span class="stars" aria-label="Rated 2.0 out of 5">★★</span></li>
-          <li><em>Marty Supreme</em> (2025) <span class="stars" aria-label="Rated 4.0 out of 5">★★★★</span></li>
-          <li><em>Avatar: Fire and Ash</em> (2025) <span class="stars" aria-label="Rated 3.5 out of 5">★★★½</span></li>
-          <li><em>28 Years Later: The Bone Temple</em> (2026) <span class="stars" aria-label="Rated 4.0 out of 5">★★★★</span></li>
-          <li><em>Dead Calm</em> (1989) <span class="stars" aria-label="Rated 3.5 out of 5">★★★½</span></li>
+                <div class="panel-row">
+                  <span class="row-index">01</span>
+                  <div class="row-content">
+                    <div class="film-title">Wuthering Heights</div>
+                    <div class="film-year">2026</div>
+                  </div>
+                  <span class="row-meta film-stars" aria-label="Rated 2.0 out of 5">★★</span>
+                </div>
+                <div class="panel-row">
+                  <span class="row-index">02</span>
+                  <div class="row-content">
+                    <div class="film-title">Marty Supreme</div>
+                    <div class="film-year">2025</div>
+                  </div>
+                  <span class="row-meta film-stars" aria-label="Rated 4.0 out of 5">★★★★</span>
+                </div>
+                <div class="panel-row">
+                  <span class="row-index">03</span>
+                  <div class="row-content">
+                    <div class="film-title">Avatar: Fire and Ash</div>
+                    <div class="film-year">2025</div>
+                  </div>
+                  <span class="row-meta film-stars" aria-label="Rated 3.5 out of 5">★★★½</span>
+                </div>
+                <div class="panel-row">
+                  <span class="row-index">04</span>
+                  <div class="row-content">
+                    <div class="film-title">28 Years Later: The Bone Temple</div>
+                    <div class="film-year">2026</div>
+                  </div>
+                  <span class="row-meta film-stars" aria-label="Rated 4.0 out of 5">★★★★</span>
+                </div>
+                <div class="panel-row">
+                  <span class="row-index">05</span>
+                  <div class="row-content">
+                    <div class="film-title">Dead Calm</div>
+                    <div class="film-year">1989</div>
+                  </div>
+                  <span class="row-meta film-stars" aria-label="Rated 3.5 out of 5">★★★½</span>
+                </div>
 <!-- letterboxd:end -->
-                </ul>
               </div>
             </section>
 
@@ -1075,15 +1059,9 @@ main {
                 <span class="panel-count">top tracks this month</span>
               </div>
               <div class="panel-body">
-                <ul class="panel-list">
 <!-- music:start -->
-          <li class="track"><span class="track-title">Rockin&#x27; The Suburbs</span><span class="track-meta">Ben Folds · 4 plays</span></li>
-          <li class="track"><span class="track-title">Clap Your Hands</span><span class="track-meta">Daphni · 3 plays</span></li>
-          <li class="track"><span class="track-title">All I Am</span><span class="track-meta">Ninajirachi · 3 plays</span></li>
-          <li class="track"><span class="track-title">Catalonia Dreams</span><span class="track-meta">The Terrys · 3 plays</span></li>
-          <li class="track"><span class="track-title">Fame Is a Gun</span><span class="track-meta">Addison Rae · 2 plays</span></li>
+                <div class="panel-row"><div class="row-content">Top tracks will appear here.</div></div>
 <!-- music:end -->
-                </ul>
               </div>
             </section>
 
@@ -1094,15 +1072,9 @@ main {
                 <span class="panel-count">reads I recommend</span>
               </div>
               <div class="panel-body">
-                <ul class="panel-list">
 <!-- instapaper:start -->
-          <li><a href="https://thepointmag.com/examined-life/quitting/" target="_blank" rel="noopener noreferrer">Quitting | The Point Magazine</a> <span class="source">— thepointmag.com</span></li>
-          <li><a href="https://www.scientificamerican.com/article/whats-the-biggest-explosion-in-the-universe/" target="_blank" rel="noopener noreferrer">The biggest explosions in the universe, ranked</a> <span class="source">— scientificamerican.com</span></li>
-          <li><a href="https://www.nytimes.com/2025/12/18/arts/music/pentridge-prison-radio-station-albums.html?unlocked_article_code=1.908.YPPF.lCmTI-POhF4y&amp;smid=url-share" target="_blank" rel="noopener noreferrer">An Infamous Australian Prison Held the Unexpected: A Record Collection</a> <span class="source">— nytimes.com</span></li>
-          <li><a href="https://www.newyorker.com/magazine/2025/11/10/the-runaway-monkeys-upending-the-animal-rights-movement" target="_blank" rel="noopener noreferrer">The Runaway Monkeys Upending the Animal-Rights Movement</a> <span class="source">— newyorker.com</span></li>
-          <li><a href="https://doubleblindmag.com/detroit-psychedelic-healing-shack/" target="_blank" rel="noopener noreferrer">Inside Detroit’s Notorious “Psychedelic Healing Shack”</a> <span class="source">— doubleblindmag.com</span></li>
+                <div class=”panel-row”><div class=”row-content”>Recommended articles will appear here.</div></div>
 <!-- instapaper:end -->
-                </ul>
               </div>
             </section>
 
@@ -1111,7 +1083,7 @@ main {
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp">Last built 21 Feb 2026 at 12:31 UTC</p>
+            <p class="colophon-timestamp">Last built 21 Feb 2026 at 12:44 UTC</p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>

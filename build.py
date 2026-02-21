@@ -126,14 +126,23 @@ def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
 
 
 def build_book_html(books: list[dict]) -> str:
-    """Turn a list of books into <li> elements."""
+    """Turn a list of books into panel-row divs."""
     if not books:
-        return "          <li>Nothing at the moment — check back soon.</li>"
+        return '                <div class="panel-row"><div class="row-content">Nothing at the moment — check back soon.</div></div>'
     lines = []
-    for book in books:
+    for i, book in enumerate(books):
         t = html.escape(book["title"])
         a = html.escape(book["author"])
-        lines.append(f'          <li><em>{t}</em> — {a}</li>')
+        idx = f"{i + 1:02d}"
+        lines.append(
+            f'                <div class="panel-row">\n'
+            f'                  <span class="row-index">{idx}</span>\n'
+            f'                  <div class="row-content">\n'
+            f'                    <div class="book-title">{t}</div>\n'
+            f'                    <div class="book-author">{a}</div>\n'
+            f'                  </div>\n'
+            f'                </div>'
+        )
     return "\n".join(lines)
 
 
@@ -186,17 +195,29 @@ def _star_rating(rating: float) -> str:
 
 
 def build_film_html(films: list[dict]) -> str:
-    """Turn a list of films into <li> elements."""
+    """Turn a list of films into panel-row divs."""
     if not films:
-        return "          <li>Nothing at the moment — check back soon.</li>"
+        return '                <div class="panel-row"><div class="row-content">Nothing at the moment — check back soon.</div></div>'
     lines = []
-    for film in films:
+    for i, film in enumerate(films):
         t = html.escape(film["title"])
-        y = f' ({html.escape(film["year"])})' if film["year"] else ""
+        y = html.escape(film["year"]) if film["year"] else ""
         stars = _star_rating(film["rating"])
-        aria = f' aria-label="Rated {film["rating"]} out of 5"' if film["rating"] and stars else ""
-        rating_span = f' <span class="stars"{aria}>{stars}</span>' if stars else ""
-        lines.append(f'          <li><em>{t}</em>{y}{rating_span}</li>')
+        idx = f"{i + 1:02d}"
+        if stars:
+            aria = f' aria-label="Rated {film["rating"]} out of 5"'
+            stars_html = f'\n                  <span class="row-meta film-stars"{aria}>{stars}</span>'
+        else:
+            stars_html = ""
+        lines.append(
+            f'                <div class="panel-row">\n'
+            f'                  <span class="row-index">{idx}</span>\n'
+            f'                  <div class="row-content">\n'
+            f'                    <div class="film-title">{t}</div>\n'
+            f'                    <div class="film-year">{y}</div>\n'
+            f'                  </div>{stars_html}\n'
+            f'                </div>'
+        )
     return "\n".join(lines)
 
 
@@ -512,17 +533,31 @@ def fetch_instapaper_starred(tokens: dict) -> list[dict]:
 
 
 def build_article_html(articles: list[dict]) -> str:
-    """Turn a list of articles into <li> elements with links."""
+    """Turn a list of articles into panel-row divs with links."""
     if not articles:
-        return "          <li>Nothing yet — check back soon.</li>"
+        return '                <div class="panel-row"><div class="row-content">Nothing yet — check back soon.</div></div>'
     lines = []
-    for article in articles:
+    for i, article in enumerate(articles):
         t = html.escape(article["title"])
         u = html.escape(article["url"])
         domain = urllib.parse.urlparse(article["url"]).hostname or ""
         domain = domain.removeprefix("www.")
-        source = f' <span class="source">— {html.escape(domain)}</span>' if domain else ""
-        lines.append(f'          <li><a href="{u}" target="_blank" rel="noopener noreferrer">{t}</a>{source}</li>')
+        source_html = f'\n                          <span class="article-source">{html.escape(domain)}</span>' if domain else ""
+        idx = f"{i + 1:02d}"
+        lines.append(
+            f'                <div class="panel-row">\n'
+            f'                  <span class="row-index">{idx}</span>\n'
+            f'                  <div class="row-content">\n'
+            f'                    <a href="{u}" target="_blank" rel="noopener noreferrer">\n'
+            f'                      <div class="article-row-inner">\n'
+            f'                        <div>\n'
+            f'                          <div class="article-title">{t}</div>{source_html}\n'
+            f'                        </div>\n'
+            f'                      </div>\n'
+            f'                    </a>\n'
+            f'                  </div>\n'
+            f'                </div>'
+        )
     return "\n".join(lines)
 
 
@@ -560,20 +595,25 @@ def fetch_lastfm_top_tracks(username: str, api_key: str, limit: int) -> list[dic
 
 
 def build_music_html(tracks: list[dict]) -> str:
-    """Turn a list of tracks into <li> elements."""
+    """Turn a list of tracks into panel-row divs."""
     if not tracks:
-        return "          <li>Nothing at the moment — check back soon.</li>"
+        return '                <div class="panel-row"><div class="row-content">Nothing at the moment — check back soon.</div></div>'
     lines = []
-    for track in tracks:
+    for i, track in enumerate(tracks):
         t = html.escape(track["title"])
         a = html.escape(track["artist"])
         p = track["plays"]
         play_word = "play" if p == 1 else "plays"
+        idx = f"{i + 1:02d}"
         lines.append(
-            f'          <li class="track">'
-            f'<span class="track-title">{t}</span>'
-            f'<span class="track-meta">{a} · {p} {play_word}</span>'
-            f'</li>'
+            f'                <div class="panel-row">\n'
+            f'                  <span class="row-index">{idx}</span>\n'
+            f'                  <div class="row-content">\n'
+            f'                    <div class="track-title">{t}</div>\n'
+            f'                    <div class="track-artist">{a}</div>\n'
+            f'                  </div>\n'
+            f'                  <span class="row-meta"><span class="play-count">{p} {play_word}</span></span>\n'
+            f'                </div>'
         )
     return "\n".join(lines)
 
