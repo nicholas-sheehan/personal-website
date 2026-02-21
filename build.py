@@ -369,16 +369,11 @@ def build_gravatar_links_html(profile: dict, email: str = "") -> str:
         label = html.escape(link["label"])
         url = html.escape(link["url"])
         lines.append(
-            f'        <a href="{url}" class="link" target="_blank" rel="noopener noreferrer">\n'
-            f'          <span class="link-label">{label}</span>\n'
-            f'          {_ARROW_SVG}\n'
-            f'        </a>'
+            f'                <a href="{url}" class="system-nav-link" target="_blank" rel="noopener noreferrer">{label}</a>'
         )
     if email:
         lines.append(
-            f'        <a href="mailto:{html.escape(email)}" class="link">\n'
-            f'          <span class="link-label">Email</span>\n'
-            f'        </a>'
+            f'                <a href="mailto:{html.escape(email)}" class="system-nav-link">Email</a>'
         )
     return "\n".join(lines)
 
@@ -810,7 +805,7 @@ def cmd_build():
     # ── Last built timestamp ──
     now = datetime.now(timezone.utc)
     updated_str = now.strftime("%-d %b %Y at %H:%M UTC")
-    updated_html = f'        <p class="updated">Last built {updated_str}</p>'
+    updated_html = f'            <p class="colophon-timestamp">Last built {updated_str}</p>'
     src = inject(src, UPDATED_PATTERN, updated_html, "updated")
     print(f"  Timestamp: {updated_str}")
 

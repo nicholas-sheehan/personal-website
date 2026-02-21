@@ -17,8 +17,7 @@
   <link rel="apple-touch-icon" href="/favicon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Space+Grotesk:wght@600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Space+Grotesk:wght@600;700&display=swap"></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
 <!-- style:start -->
   <style>
 /* ──────────────────────────────────────────────
@@ -474,162 +473,178 @@ h2 {
 }
   </style>
 <!-- style:end -->
+</head>
+<body>
+
+  <!-- Boot overlay — aria-hidden so screen readers skip it -->
+  <div class=”boot-overlay” aria-hidden=”true” role=”presentation”>
+    <p class=”boot-overlay-line”>System: Nic Sheehan</p>
+    <p class=”boot-overlay-line boot-overlay-line--dim”>Establishing connection...<span class=”boot-cursor”></span></p>
+  </div>
+
+  <a class=”skip-to-content” href=”#main-content”>Skip to main content</a>
+
+  <div class=”bezel” role=”presentation”>
+    <div class=”screen”>
+      <main id=”main-content”>
+        <div class=”container”>
+
+          <!-- ── SYSTEM HEADER ─────────────────────────── -->
+          <header class=”system-header”>
+            <div class=”system-header-row”>
+
+              <div class=”avatar-wrap”>
+<!-- gravatar-avatar:start -->
+                <img class=”avatar” src=”https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e?s=192” alt=”Nicholas Sheehan” width=”96” height=”96”>
+<!-- gravatar-avatar:end -->
+              </div>
+
+              <div class=”identity”>
+                <div class=”identity-name”>
+<!-- gravatar-name:start -->
+                  Nicholas Sheehan
+<!-- gravatar-name:end -->
+                </div>
+                <div class=”identity-tagline”>
+<!-- gravatar-tagline:start -->
+                  Content Production Lead at ANZ · Melbourne
+<!-- gravatar-tagline:end -->
+                </div>
+              </div>
+
+              <nav class=”system-nav” aria-label=”Contact and social links”>
+<!-- gravatar-links:start -->
+                <a href=”https://www.linkedin.com/in/nicsheehan/” class=”system-nav-link” target=”_blank” rel=”noopener noreferrer”>LinkedIn</a>
+                <a href=”mailto:nicholas.sheehan.website@fastmail.com” class=”system-nav-link”>Email</a>
+<!-- gravatar-links:end -->
+              </nav>
+
+            </div>
+
+            <div class=”system-bio”>
+<!-- gravatar-bio:start -->
+              <p>I&#x27;m a web professional specialising in AEM authoring, digital production and content governance. Outside of work I like to read, watch films, listen to music and cook.</p>
+<!-- gravatar-bio:end -->
+            </div>
+          </header>
+
+          <!-- ── NOW READING STATUS STRIP (reserved for Iteration 5) ── -->
+<!-- goodreads-now:start -->
+<!-- goodreads-now:end -->
+          <!-- Currently reading marker (hidden, reintroduced in Iteration 5) -->
+          <div hidden aria-hidden=”true”>
+<!-- goodreads:start -->
+          <li><em>Zorba the Greek</em> — Nikos Kazantzakis</li>
+<!-- goodreads:end -->
+          </div>
+
+          <!-- ── CONTENT GRID ──────────────────────────── -->
+          <div class=”content-grid”>
+
+            <!-- BOOKS -->
+            <section class=”panel panel--books” aria-labelledby=”panel-books-label”>
+              <div class=”panel-header”>
+                <h2 class=”panel-label” id=”panel-books-label” data-icon=”[▓]”>Books</h2>
+                <span class=”panel-count”>recently read</span>
+              </div>
+              <div class=”panel-body”>
+                <ul class=”panel-list”>
+<!-- goodreads-read:start -->
+                  <li><em>The Fall</em> — Albert Camus</li>
+<!-- goodreads-read:end -->
+                </ul>
+              </div>
+            </section>
+
+            <!-- FILMS -->
+            <section class=”panel panel--films” aria-labelledby=”panel-films-label”>
+              <div class=”panel-header”>
+                <h2 class=”panel-label” id=”panel-films-label” data-icon=”[▶]”>Films</h2>
+                <span class=”panel-count”>recently watched</span>
+              </div>
+              <div class=”panel-body”>
+                <ul class=”panel-list”>
+<!-- letterboxd:start -->
+                  <li><em>Marty Supreme</em> (2025) <span class=”stars” aria-label=”Rated 4.0 out of 5”>★★★★</span></li>
+<!-- letterboxd:end -->
+                </ul>
+              </div>
+            </section>
+
+            <!-- MUSIC -->
+            <section class=”panel panel--music” aria-labelledby=”panel-music-label”>
+              <div class=”panel-header”>
+                <h2 class=”panel-label” id=”panel-music-label” data-icon=”[♫]”>Music</h2>
+                <span class=”panel-count”>top tracks this month</span>
+              </div>
+              <div class=”panel-body”>
+                <ul class=”panel-list”>
+<!-- music:start -->
+                  <li class=”track”><span class=”track-title”>Rockin&#x27; The Suburbs</span><span class=”track-meta”>Ben Folds · 4 plays</span></li>
+<!-- music:end -->
+                </ul>
+              </div>
+            </section>
+
+            <!-- ARTICLES -->
+            <section class=”panel panel--articles” aria-labelledby=”panel-articles-label”>
+              <div class=”panel-header”>
+                <h2 class=”panel-label” id=”panel-articles-label” data-icon=”[//]”>Articles</h2>
+                <span class=”panel-count”>reads I recommend</span>
+              </div>
+              <div class=”panel-body”>
+                <ul class=”panel-list”>
+<!-- instapaper:start -->
+                  <li><a href=”https://thepointmag.com/examined-life/quitting/” target=”_blank” rel=”noopener noreferrer”>Quitting | The Point Magazine</a> <span class=”source”>— thepointmag.com</span></li>
+<!-- instapaper:end -->
+                </ul>
+              </div>
+            </section>
+
+          </div><!-- /content-grid -->
+
+          <!-- ── FOOTER ─────────────────────────────────── -->
+          <footer class=”colophon”>
+<!-- updated:start -->
+            <p class=”colophon-timestamp”>Last built 21 Feb 2026 at 10:36 UTC</p>
+<!-- updated:end -->
+            <p class=”colophon-credits”>Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
+          </footer>
+
+        </div><!-- /container -->
+      </main>
+    </div><!-- /screen -->
+  </div><!-- /bezel -->
+
 <!-- jsonld:start -->
-    <script type="application/ld+json">
+    <script type=”application/ld+json”>
 {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Nicholas Sheehan",
-  "url": "https://www.nicsheehan.com",
-  "jobTitle": "Content Production Lead",
-  "worksFor": {
-    "@type": "Organization",
-    "name": "ANZ"
+  “@context”: “https://schema.org”,
+  “@type”: “Person”,
+  “name”: “Nicholas Sheehan”,
+  “url”: “https://www.nicsheehan.com”,
+  “jobTitle”: “Content Production Lead”,
+  “worksFor”: {
+    “@type”: “Organization”,
+    “name”: “ANZ”
   },
-  "homeLocation": {
-    "@type": "Place",
-    "name": "Melbourne"
+  “homeLocation”: {
+    “@type”: “Place”,
+    “name”: “Melbourne”
   },
-  "description": "I'm a web professional specialising in AEM authoring, digital production and content governance. Outside of work I like to read, watch films, listen to music and cook.",
-  "image": "https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e",
-  "sameAs": [
-    "https://gravatar.com/nicsheehanau",
-    "https://www.linkedin.com/in/nicsheehan/",
-    "https://www.goodreads.com/user/show/175639385",
-    "https://letterboxd.com/tonic2"
+  “description”: “I’m a web professional specialising in AEM authoring, digital production and content governance. Outside of work I like to read, watch films, listen to music and cook.”,
+  “image”: “https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e”,
+  “sameAs”: [
+    “https://gravatar.com/nicsheehanau”,
+    “https://www.linkedin.com/in/nicsheehan/”,
+    “https://www.goodreads.com/user/show/175639385”,
+    “https://letterboxd.com/tonic2”
   ]
 }
     </script>
 <!-- jsonld:end -->
-</head>
-<body>
-  <a class="skip-to-content" href="#main-content">Skip to main content</a>
-  <main id="main-content">
-    <div class="container">
-      <header class="hero">
-<!-- gravatar-avatar:start -->
-        <img class="avatar" src="https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e?s=192" alt="Nicholas Sheehan" width="96" height="96">
-<!-- gravatar-avatar:end -->
-        <div class="hero-text">
-          <h1>
-<!-- gravatar-name:start -->
-        Nicholas Sheehan
-<!-- gravatar-name:end -->
-          </h1>
-          <p class="tagline mono">
-<!-- gravatar-tagline:start -->
-        Content Production Lead at ANZ · Melbourne
-<!-- gravatar-tagline:end -->
-          </p>
-        </div>
-      </header>
-
-      <section class="bio">
-<!-- gravatar-bio:start -->
-        <p>I&#x27;m a web professional specialising in AEM authoring, digital production and content governance. Outside of work I like to read, watch films, listen to music and cook.</p>
-<!-- gravatar-bio:end -->
-      </section>
-
-      <div class="content-grid">
-        <div class="reading-column">
-          <section class="reading">
-            <h2>Currently reading</h2>
-            <ul>
-<!-- goodreads:start -->
-          <li><em>Zorba the Greek</em> — Nikos Kazantzakis</li>
-<!-- goodreads:end -->
-            </ul>
-          </section>
-
-          <section class="reading">
-            <h2>Recently read</h2>
-            <ul>
-<!-- goodreads-read:start -->
-          <li><em>The Fall</em> — Albert Camus</li>
-          <li><em>EXCLUSIVE!: Dispatches from The Paris End</em> — Cameron Hurst</li>
-          <li><em>Time Warrior: How to defeat procrastination, people-pleasing, self-doubt, over-commitment, broken promises and chaos</em> — Steve Chandler</li>
-          <li><em>When the Going Was Good: An Editor&#x27;s Adventures During the Last Golden Age of Magazines</em> — Graydon Carter</li>
-          <li><em>Post Office</em> — Charles Bukowski</li>
-<!-- goodreads-read:end -->
-            </ul>
-          </section>
-        </div>
-
-        <section class="reading">
-          <h2>Recently watched</h2>
-          <ul>
-<!-- letterboxd:start -->
-          <li><em>Wuthering Heights</em> (2026) <span class="stars" aria-label="Rated 2.0 out of 5">★★</span></li>
-          <li><em>Marty Supreme</em> (2025) <span class="stars" aria-label="Rated 4.0 out of 5">★★★★</span></li>
-          <li><em>Avatar: Fire and Ash</em> (2025) <span class="stars" aria-label="Rated 3.5 out of 5">★★★½</span></li>
-          <li><em>28 Years Later: The Bone Temple</em> (2026) <span class="stars" aria-label="Rated 4.0 out of 5">★★★★</span></li>
-          <li><em>Dead Calm</em> (1989) <span class="stars" aria-label="Rated 3.5 out of 5">★★★½</span></li>
-          <li><em>The Story of the Kelly Gang</em> (1906)</li>
-          <li><em>Before Midnight</em> (2013) <span class="stars" aria-label="Rated 4.5 out of 5">★★★★½</span></li>
-          <li><em>Frankenstein</em> (2025) <span class="stars" aria-label="Rated 2.5 out of 5">★★½</span></li>
-<!-- letterboxd:end -->
-          </ul>
-        </section>
-
-        <section class="reading">
-          <h2>Reads I recommend</h2>
-          <ul>
-<!-- instapaper:start -->
-          <li><a href="https://thepointmag.com/examined-life/quitting/" target="_blank" rel="noopener noreferrer">Quitting | The Point Magazine</a> <span class="source">— thepointmag.com</span></li>
-          <li><a href="https://www.scientificamerican.com/article/whats-the-biggest-explosion-in-the-universe/" target="_blank" rel="noopener noreferrer">The biggest explosions in the universe, ranked</a> <span class="source">— scientificamerican.com</span></li>
-          <li><a href="https://www.nytimes.com/2025/12/18/arts/music/pentridge-prison-radio-station-albums.html?unlocked_article_code=1.908.YPPF.lCmTI-POhF4y&amp;smid=url-share" target="_blank" rel="noopener noreferrer">An Infamous Australian Prison Held the Unexpected: A Record Collection</a> <span class="source">— nytimes.com</span></li>
-          <li><a href="https://www.newyorker.com/magazine/2025/11/10/the-runaway-monkeys-upending-the-animal-rights-movement" target="_blank" rel="noopener noreferrer">The Runaway Monkeys Upending the Animal-Rights Movement</a> <span class="source">— newyorker.com</span></li>
-          <li><a href="https://doubleblindmag.com/detroit-psychedelic-healing-shack/" target="_blank" rel="noopener noreferrer">Inside Detroit’s Notorious “Psychedelic Healing Shack”</a> <span class="source">— doubleblindmag.com</span></li>
-<!-- instapaper:end -->
-          </ul>
-        </section>
-        <section class="reading">
-          <h2>Listening to lately</h2>
-          <ul>
-<!-- music:start -->
-          <li class="track"><span class="track-title">Rockin&#x27; The Suburbs</span><span class="track-meta">Ben Folds · 4 plays</span></li>
-          <li class="track"><span class="track-title">Clap Your Hands</span><span class="track-meta">Daphni · 3 plays</span></li>
-          <li class="track"><span class="track-title">All I Am</span><span class="track-meta">Ninajirachi · 3 plays</span></li>
-          <li class="track"><span class="track-title">Catalonia Dreams</span><span class="track-meta">The Terrys · 3 plays</span></li>
-          <li class="track"><span class="track-title">Fame Is a Gun</span><span class="track-meta">Addison Rae · 2 plays</span></li>
-          <li class="track"><span class="track-title">Tha</span><span class="track-meta">Aphex Twin · 2 plays</span></li>
-          <li class="track"><span class="track-title">Xtal</span><span class="track-meta">Aphex Twin · 2 plays</span></li>
-          <li class="track"><span class="track-title">Hang</span><span class="track-meta">Daphni · 2 plays</span></li>
-<!-- music:end -->
-          </ul>
-        </section>
-      </div>
-
-      <nav class="links" aria-label="Contact and social links">
-<!-- gravatar-links:start -->
-        <a href="https://www.linkedin.com/in/nicsheehan/" class="link" target="_blank" rel="noopener noreferrer">
-          <span class="link-label">LinkedIn</span>
-          <svg class="link-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
-        </a>
-        <a href="https://www.goodreads.com/user/show/175639385" class="link" target="_blank" rel="noopener noreferrer">
-          <span class="link-label">Goodreads</span>
-          <svg class="link-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
-        </a>
-        <a href="https://letterboxd.com/tonic2" class="link" target="_blank" rel="noopener noreferrer">
-          <span class="link-label">Letterboxd</span>
-          <svg class="link-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
-        </a>
-        <a href="mailto:nicholas.sheehan.website@fastmail.com" class="link">
-          <span class="link-label">Email</span>
-        </a>
-<!-- gravatar-links:end -->
-      </nav>
-
-      <footer class="colophon">
-<!-- updated:start -->
-        <p class="updated">Last built 21 Feb 2026 at 10:36 UTC</p>
-<!-- updated:end -->
-        <p class="credits">Powered by Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
-      </footer>
-    </div>
-  </main>
 <!-- analytics:start -->
-  <script data-goatcounter="https://nicsheehan.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  <script data-goatcounter=”https://nicsheehan.goatcounter.com/count” async src=”//gc.zgo.at/count.js”></script>
   <!-- analytics:end -->
 </body>
 </html>
