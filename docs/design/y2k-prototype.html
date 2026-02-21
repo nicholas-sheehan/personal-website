@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nicholas Sheehan | Web professional | Melbourne</title>
+  <meta name="description" content="Personal site of Nicholas Sheehan — web manager in Melbourne. Books, films, music and recommended reads.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <style>
+/* ──────────────────────────────────────────────
+   nicsheehan.com — Y2K / PS2 Memory Card prototype
+   JetBrains Mono exclusively. Dark only. Terminal HUD.
+   ────────────────────────────────────────────── */
+
+/* --- Design tokens --- */
+
+:root {
+  /* Backgrounds */
+  --bg:          #050a14;
+  --panel:       #0d1520;
+  --panel-hover: #111c2e;
+  --surface:     #0a1422;
+
+  /* Text */
+  --text-primary:    #e2e8f0;
+  --text-secondary:  #7a8fa6;
+  --text-tertiary:   #3d5166;
+  --text-dim:        #2a3a4d;
+
+  /* Borders */
+  --border:          #1a2840;
+  --border-bright:   #243652;
+
+  /* Section accent colours */
+  --accent-books:    #22c55e;
+  --accent-films:    #f59e0b;
+  --accent-music:    #a855f7;
+  --accent-articles: #3b82f6;
+
+  /* System accent */
+  --accent:          #3b82f6;
+  --accent-hover:    #60a5fa;
+
+  /* Font */
+  --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", ui-monospace, monospace;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+}
+
+
+/* --- Reset --- */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg);
+  background-image:
+    /* Subtle scan-line texture — atmosphere, not kitsch */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.08) 2px,
+      rgba(0, 0, 0, 0.08) 4px
+    );
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* --- Skip to content --- */
+
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  z-index: 100;
+  transition: top 0.1s ease;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+
+/* --- Outer layout --- */
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100dvh;
+  padding: var(--space-8) var(--space-4);
+}
+
+.container {
+  width: 100%;
+  max-width: 64rem;
+}
+
+
+/* ──────────────────────────────────────────────
+   SYSTEM HEADER
+   Horizontal user status bar
+   ────────────────────────────────────────────── */
+
+.system-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--accent);
+  margin-bottom: var(--space-3);
+}
+
+/* Top row: avatar + identity + nav controls */
+.system-header-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+/* Avatar — CSS circle with initials as fallback */
+.avatar-wrap {
+  flex-shrink: 0;
+}
+
+.avatar {
+  display: block;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  object-fit: cover;
+}
+
+/* CSS initials fallback (shown when img fails or as placeholder) */
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--surface);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.identity-name {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.identity-tagline {
+  margin-top: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Nav controls — bracketed mono links in header */
+.system-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.system-nav-link {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-bright);
+  transition: color 0.1s ease, border-color 0.1s ease, background 0.1s ease;
+}
+
+.system-nav-link:hover {
+  color: var(--accent-hover);
+  border-color: var(--accent);
+  background: rgba(59, 130, 246, 0.06);
+}
+
+.system-nav-link:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Bio */
+.system-bio {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+
+/* ──────────────────────────────────────────────
+   NOW READING — Status strip
+   Full-width, not a panel. Green accent treatment.
+   ────────────────────────────────────────────── */
+
+.status-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  background: rgba(34, 197, 94, 0.04);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  border-left: 3px solid var(--accent-books);
+  margin-bottom: var(--space-3);
+}
+
+.status-strip-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent-books);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.status-strip-sep {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.status-strip-text {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+
+.status-strip-text em {
+  font-style: italic;
+  color: var(--text-primary);
+}
+
+
+/* ──────────────────────────────────────────────
+   CONTENT GRID — 2x2 on desktop, 1-col mobile
+   ────────────────────────────────────────────── */
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+
+/* ──────────────────────────────────────────────
+   PANEL — Shared structure for all 4 sections
+   ────────────────────────────────────────────── */
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* 2px coloured top border — the section identifier */
+.panel--books    { border-top: 2px solid var(--accent-books);    }
+.panel--films    { border-top: 2px solid var(--accent-films);    }
+.panel--music    { border-top: 2px solid var(--accent-music);    }
+.panel--articles { border-top: 2px solid var(--accent-articles); }
+
+/* Panel header row */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.panel--books    .panel-label { color: var(--accent-books);    }
+.panel--films    .panel-label { color: var(--accent-films);    }
+.panel--music    .panel-label { color: var(--accent-music);    }
+.panel--articles .panel-label { color: var(--accent-articles); }
+
+.panel-count {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+}
+
+/* Panel body */
+.panel-body {
+  padding: 0;
+}
+
+
+/* ──────────────────────────────────────────────
+   CONTENT ROWS — Shared row structure
+   ────────────────────────────────────────────── */
+
+.panel-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s ease;
+}
+
+.panel-row:last-child {
+  border-bottom: none;
+}
+
+.panel-row:hover {
+  background: var(--panel-hover);
+}
+
+/* Row index number */
+.row-index {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  width: 1.5rem;
+  text-align: right;
+  user-select: none;
+}
+
+/* Row main content */
+.row-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Row metadata — right-aligned on desktop */
+.row-meta {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+
+/* --- BOOKS rows --- */
+
+.book-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.book-author {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-top: 0.1rem;
+}
+
+
+/* --- FILMS rows --- */
+
+.film-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.film-year {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-top: 0.1rem;
+}
+
+/* Stars in amber — matches the film panel accent */
+.film-stars {
+  font-style: normal;
+  font-size: 0.7rem;
+  color: var(--accent-films);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+
+/* --- MUSIC rows --- */
+
+.track-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.track-artist {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-top: 0.1rem;
+}
+
+/* Play count chip */
+.play-count {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--accent-music);
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  padding: 0.1rem 0.35rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+
+/* --- ARTICLES rows --- */
+
+.article-title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.45;
+  text-decoration: underline;
+  text-decoration-color: var(--border-bright);
+  text-underline-offset: 0.15em;
+  transition: color 0.1s ease, text-decoration-color 0.1s ease;
+}
+
+.panel-row a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.panel-row a:hover .article-title {
+  color: var(--accent-hover);
+  text-decoration-color: var(--accent-hover);
+}
+
+.panel-row a:focus-visible {
+  outline: none;
+}
+
+.panel-row a:focus-visible .article-title {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Article source domain tag */
+.article-source {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--accent-articles);
+  background: rgba(59, 130, 246, 0.07);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  padding: 0.1rem 0.35rem;
+  margin-top: 0.25rem;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+
+/* ──────────────────────────────────────────────
+   FOOTER / COLOPHON
+   ────────────────────────────────────────────── */
+
+.colophon {
+  margin-top: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.colophon-timestamp {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
+}
+
+.colophon-credits {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+}
+
+
+/* ──────────────────────────────────────────────
+   RESPONSIVE
+   ────────────────────────────────────────────── */
+
+/* Desktop: 2-col grid */
+@media (min-width: 768px) {
+  main {
+    padding: var(--space-12) var(--space-8);
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Header row stays horizontal at all breakpoints */
+  .system-header-row {
+    flex-wrap: nowrap;
+  }
+
+  /* Article source shifts right on desktop */
+  .article-row-inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .article-source {
+    margin-top: 0;
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1024px) {
+  main {
+    padding: var(--space-16) var(--space-8);
+  }
+
+  .identity-name {
+    font-size: 1.25rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  main {
+    padding: var(--space-5) var(--space-3);
+  }
+
+  .system-header {
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .status-strip {
+    padding: var(--space-3) var(--space-4);
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .panel-header,
+  .panel-row {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .colophon {
+    padding: var(--space-4);
+  }
+
+  .system-nav {
+    gap: var(--space-1);
+  }
+}
+
+  </style>
+</head>
+<body>
+  <a class="skip-to-content" href="#main-content">Skip to content</a>
+  <main id="main-content">
+    <div class="container">
+
+      <!-- ── SYSTEM HEADER ─────────────────────────── -->
+      <header class="system-header">
+        <div class="system-header-row">
+
+          <!-- Avatar: using Gravatar URL; CSS placeholder shown visually below if it fails -->
+          <div class="avatar-wrap">
+            <div class="avatar-placeholder" aria-hidden="true">NS</div>
+          </div>
+
+          <div class="identity">
+            <div class="identity-name">Nicholas Sheehan</div>
+            <div class="identity-tagline">Web professional &middot; Melbourne</div>
+          </div>
+
+          <nav class="system-nav" aria-label="Contact and social links">
+            <a href="https://www.linkedin.com/in/nicsheehan/" class="system-nav-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://github.com/" class="system-nav-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="mailto:nicholas.sheehan.website@fastmail.com" class="system-nav-link">Email</a>
+          </nav>
+
+        </div>
+
+        <p class="system-bio">
+          I&#x27;m a web professional specialising in AEM authoring, digital production and content governance. Outside of work I like to read, watch films, listen to music and cook.
+        </p>
+      </header>
+
+      <!-- ── NOW READING — Status strip ───────────── -->
+      <div class="status-strip" role="complementary" aria-label="Currently reading">
+        <span class="status-strip-label">Now reading</span>
+        <span class="status-strip-sep">/</span>
+        <span class="status-strip-text"><em>Zorba the Greek</em> by Nikos Kazantzakis</span>
+      </div>
+
+      <!-- ── CONTENT GRID ──────────────────────────── -->
+      <div class="content-grid">
+
+        <!-- BOOKS -->
+        <section class="panel panel--books" aria-labelledby="panel-books-label">
+          <div class="panel-header">
+            <h2 class="panel-label" id="panel-books-label">Books</h2>
+            <span class="panel-count">recently read</span>
+          </div>
+          <div class="panel-body">
+
+            <div class="panel-row">
+              <span class="row-index">01</span>
+              <div class="row-content">
+                <div class="book-title">The Fall</div>
+                <div class="book-author">Albert Camus</div>
+              </div>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">02</span>
+              <div class="row-content">
+                <div class="book-title">Post Office</div>
+                <div class="book-author">Charles Bukowski</div>
+              </div>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">03</span>
+              <div class="row-content">
+                <div class="book-title">When the Going Was Good</div>
+                <div class="book-author">Graydon Carter</div>
+              </div>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">04</span>
+              <div class="row-content">
+                <div class="book-title">Time Warrior</div>
+                <div class="book-author">Steve Chandler</div>
+              </div>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">05</span>
+              <div class="row-content">
+                <div class="book-title">EXCLUSIVE!</div>
+                <div class="book-author">Cameron Hurst</div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- FILMS -->
+        <section class="panel panel--films" aria-labelledby="panel-films-label">
+          <div class="panel-header">
+            <h2 class="panel-label" id="panel-films-label">Films</h2>
+            <span class="panel-count">recently watched</span>
+          </div>
+          <div class="panel-body">
+
+            <div class="panel-row">
+              <span class="row-index">01</span>
+              <div class="row-content">
+                <div class="film-title">Marty Supreme</div>
+                <div class="film-year">2025</div>
+              </div>
+              <span class="row-meta film-stars" aria-label="Rated 4 out of 5">&#9733;&#9733;&#9733;&#9733;</span>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">02</span>
+              <div class="row-content">
+                <div class="film-title">28 Years Later: The Bone Temple</div>
+                <div class="film-year">2026</div>
+              </div>
+              <span class="row-meta film-stars" aria-label="Rated 4 out of 5">&#9733;&#9733;&#9733;&#9733;</span>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">03</span>
+              <div class="row-content">
+                <div class="film-title">Before Midnight</div>
+                <div class="film-year">2013</div>
+              </div>
+              <span class="row-meta film-stars" aria-label="Rated 4.5 out of 5">&#9733;&#9733;&#9733;&#9733;&#189;</span>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">04</span>
+              <div class="row-content">
+                <div class="film-title">Dead Calm</div>
+                <div class="film-year">1989</div>
+              </div>
+              <span class="row-meta film-stars" aria-label="Rated 3.5 out of 5">&#9733;&#9733;&#9733;&#189;</span>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">05</span>
+              <div class="row-content">
+                <div class="film-title">Wuthering Heights</div>
+                <div class="film-year">2026</div>
+              </div>
+              <span class="row-meta film-stars" aria-label="Rated 2 out of 5">&#9733;&#9733;</span>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- MUSIC -->
+        <section class="panel panel--music" aria-labelledby="panel-music-label">
+          <div class="panel-header">
+            <h2 class="panel-label" id="panel-music-label">Music</h2>
+            <span class="panel-count">top tracks this month</span>
+          </div>
+          <div class="panel-body">
+
+            <div class="panel-row">
+              <span class="row-index">01</span>
+              <div class="row-content">
+                <div class="track-title">Rockin&#x27; The Suburbs</div>
+                <div class="track-artist">Ben Folds</div>
+              </div>
+              <span class="row-meta"><span class="play-count">4 plays</span></span>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">02</span>
+              <div class="row-content">
+                <div class="track-title">Clap Your Hands</div>
+                <div class="track-artist">Daphni</div>
+              </div>
+              <span class="row-meta"><span class="play-count">3 plays</span></span>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">03</span>
+              <div class="row-content">
+                <div class="track-title">All I Am</div>
+                <div class="track-artist">Ninajirachi</div>
+              </div>
+              <span class="row-meta"><span class="play-count">3 plays</span></span>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">04</span>
+              <div class="row-content">
+                <div class="track-title">Catalonia Dreams</div>
+                <div class="track-artist">The Terrys</div>
+              </div>
+              <span class="row-meta"><span class="play-count">3 plays</span></span>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">05</span>
+              <div class="row-content">
+                <div class="track-title">Fame Is a Gun</div>
+                <div class="track-artist">Addison Rae</div>
+              </div>
+              <span class="row-meta"><span class="play-count">2 plays</span></span>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ARTICLES -->
+        <section class="panel panel--articles" aria-labelledby="panel-articles-label">
+          <div class="panel-header">
+            <h2 class="panel-label" id="panel-articles-label">Articles</h2>
+            <span class="panel-count">reads I recommend</span>
+          </div>
+          <div class="panel-body">
+
+            <div class="panel-row">
+              <span class="row-index">01</span>
+              <div class="row-content">
+                <a href="https://www.nytimes.com/2025/12/18/arts/music/pentridge-prison-radio-station-albums.html" target="_blank" rel="noopener noreferrer">
+                  <div class="article-row-inner">
+                    <div>
+                      <div class="article-title">An Infamous Australian Prison Held the Unexpected: A Record Collection</div>
+                      <span class="article-source">nytimes.com</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">02</span>
+              <div class="row-content">
+                <a href="https://www.newyorker.com/magazine/2025/11/10/the-runaway-monkeys-upending-the-animal-rights-movement" target="_blank" rel="noopener noreferrer">
+                  <div class="article-row-inner">
+                    <div>
+                      <div class="article-title">The Runaway Monkeys Upending the Animal-Rights Movement</div>
+                      <span class="article-source">newyorker.com</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">03</span>
+              <div class="row-content">
+                <a href="https://doubleblindmag.com/detroit-psychedelic-healing-shack/" target="_blank" rel="noopener noreferrer">
+                  <div class="article-row-inner">
+                    <div>
+                      <div class="article-title">Inside Detroit&#x27;s Notorious &#x201C;Psychedelic Healing Shack&#x201D;</div>
+                      <span class="article-source">doubleblindmag.com</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">04</span>
+              <div class="row-content">
+                <a href="https://www.nytimes.com/" target="_blank" rel="noopener noreferrer">
+                  <div class="article-row-inner">
+                    <div>
+                      <div class="article-title">How Did the C.I.A. Lose a Nuclear Device?</div>
+                      <span class="article-source">nytimes.com</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div class="panel-row">
+              <span class="row-index">05</span>
+              <div class="row-content">
+                <a href="https://www.vanityfair.com/" target="_blank" rel="noopener noreferrer">
+                  <div class="article-row-inner">
+                    <div>
+                      <div class="article-title">The Incredible True Story of History&#x27;s Longest Kayak Journey</div>
+                      <span class="article-source">vanityfair.com</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div><!-- /content-grid -->
+
+      <!-- ── FOOTER ─────────────────────────────────── -->
+      <footer class="colophon">
+        <p class="colophon-timestamp">Last built 21 Feb 2026 at 22:00 UTC</p>
+        <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
+      </footer>
+
+    </div><!-- /container -->
+  </main>
+</body>
+</html>
