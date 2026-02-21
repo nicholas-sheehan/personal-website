@@ -2,12 +2,13 @@
 """
 Build script for nicsheehan.com
 
-Fetches data from five sources and writes them into index.html:
+Fetches data from six sources and writes them into index.html:
   1. site.toml — site metadata, analytics, and data source config
   2. Gravatar profile (via REST API — GRAVATAR_API_KEY env var for full data)
   3. Goodreads "currently reading" and "read" shelves (via RSS — no auth needed)
   4. Letterboxd recently watched films (via RSS — no auth needed)
   5. Instapaper starred/liked articles (via API — OAuth 1.0a)
+  6. Last.fm top tracks this month (via REST API — LASTFM_API_KEY env var)
 
 Usage:
     python build.py              # full build
@@ -37,6 +38,10 @@ Setup — Instapaper:
        This exchanges your username/password for OAuth tokens (stored in .instapaper_tokens)
        You only need to do this once.
     For CI, set all four INSTAPAPER_* values as environment variables/secrets.
+
+Setup — Last.fm:
+    Set sources.lastfm.username in site.toml to your Last.fm username.
+    Set LASTFM_API_KEY env var (get one at last.fm/api/account/create).
 """
 
 import base64
@@ -780,6 +785,18 @@ def cmd_build():
             src = inject(src, INSTAPAPER_PATTERN, build_article_html(articles), "instapaper")
         except Exception as e:
             print(f"  ⚠  Instapaper fetch failed: {e} — keeping existing content")
+
+    # ── Last.fm ──
+    if not LASTFM_API_KEY:
+        print("⚠  Skipping Last.fm — set LASTFM_API_KEY env var first.")
+    else:
+        print("Fetching Last.fm top tracks…")
+        try:
+            tracks = fetch_lastfm_top_tracks(LASTFM_USERNAME, LASTFM_API_KEY, LASTFM_LIMIT)
+            print(f"  Found {len(tracks)} top track(s).")
+            src = inject(src, MUSIC_PATTERN, build_music_html(tracks), "music")
+        except Exception as e:
+            print(f"  ⚠  Last.fm fetch failed: {e} — keeping existing content")
 
     # ── Inline CSS ──
     if os.path.exists(STYLE_PATH):
