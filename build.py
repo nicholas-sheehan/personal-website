@@ -562,9 +562,10 @@ def fetch_lastfm_top_tracks(username: str, api_key: str, limit: int) -> list[dic
         tracks.append({
             "title": track.get("name", ""),
             "artist": track.get("artist", {}).get("name", ""),
-            "plays": int(track.get("playcount", 0)),
+            "plays": int(track.get("playcount", 0) or 0),
         })
     return tracks
+
 
 def build_music_html(tracks: list[dict]) -> str:
     """Turn a list of tracks into <li> elements."""

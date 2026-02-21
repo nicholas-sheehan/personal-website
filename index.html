@@ -251,6 +251,24 @@ h2 {
 }
 
 
+/* --- Music tracks --- */
+
+.reading li.track {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.track-title {
+  color: var(--text-primary);
+}
+
+.track-meta {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
 /* --- Nav links --- */
 
 .links {
@@ -567,7 +585,14 @@ h2 {
           <h2>Listening to lately</h2>
           <ul>
 <!-- music:start -->
-          <li>Nothing at the moment — check back soon.</li>
+          <li class="track"><span class="track-title">Rockin&#x27; The Suburbs</span><span class="track-meta">Ben Folds · 4 plays</span></li>
+          <li class="track"><span class="track-title">Clap Your Hands</span><span class="track-meta">Daphni · 3 plays</span></li>
+          <li class="track"><span class="track-title">All I Am</span><span class="track-meta">Ninajirachi · 3 plays</span></li>
+          <li class="track"><span class="track-title">Catalonia Dreams</span><span class="track-meta">The Terrys · 3 plays</span></li>
+          <li class="track"><span class="track-title">Fame Is a Gun</span><span class="track-meta">Addison Rae · 2 plays</span></li>
+          <li class="track"><span class="track-title">Tha</span><span class="track-meta">Aphex Twin · 2 plays</span></li>
+          <li class="track"><span class="track-title">Xtal</span><span class="track-meta">Aphex Twin · 2 plays</span></li>
+          <li class="track"><span class="track-title">Hang</span><span class="track-meta">Daphni · 2 plays</span></li>
 <!-- music:end -->
           </ul>
         </section>
@@ -595,9 +620,9 @@ h2 {
 
       <footer class="colophon">
 <!-- updated:start -->
-        <p class="updated">Last built 21 Feb 2026 at 10:14 UTC</p>
+        <p class="updated">Last built 21 Feb 2026 at 10:16 UTC</p>
 <!-- updated:end -->
-        <p class="credits">Powered by Gravatar, Goodreads, Letterboxd &amp; Instapaper.</p>
+        <p class="credits">Powered by Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
       </footer>
     </div>
   </main>
