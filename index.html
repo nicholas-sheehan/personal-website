@@ -22,28 +22,61 @@
   <style>
 /* ──────────────────────────────────────────────
    nicsheehan.com
-   Editorial dark. Typographic hierarchy.
+   Y2K / PS2 Memory Card. Full mono. Dark only.
    ────────────────────────────────────────────── */
 
-/* --- Design tokens (custom properties) --- */
+/* --- Design tokens --- */
 
 :root {
-  --bg: #0a0a0a;
-  --text-primary: #e5e5e5;
-  --text-secondary: #a3a3a3;
-  --text-tertiary: #737373;
-  --accent: #3b82f6;
-  --accent-hover: #60a5fa;
-  --border: #262626;
-  --surface: #141414;
+  /* Backgrounds */
+  --bg:          #050a14;
+  --panel:       #0d1520;
+  --panel-hover: #111c2e;
+  --surface:     #0a1422;
 
-  --font-heading: "Space Grotesk", "Inter", system-ui, sans-serif;
-  --font-body: "Inter", "Helvetica Neue", Arial, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  /* Text */
+  --text-primary:    #e2e8f0;
+  --text-secondary:  #7a8fa6;
+  --text-tertiary:   #3d5166;
+  --text-dim:        #2a3a4d;
+
+  /* Borders */
+  --border:          #1a2840;
+  --border-bright:   #243652;
+
+  /* Section accent colours */
+  --accent-books:    #22c55e;
+  --accent-films:    #f59e0b;
+  --accent-music:    #a855f7;
+  --accent-articles: #3b82f6;
+
+  /* System accent */
+  --accent:          #3b82f6;
+  --accent-hover:    #60a5fa;
+
+  /* Bezel */
+  --bezel-bg:        #141414;
+  --bezel-inner:     #0e0e0e;
+  --bezel-size:      22px;
+
+  /* Font */
   --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", ui-monospace, monospace;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
 }
 
 
-/* --- Reset & base --- */
+/* --- Reset --- */
 
 *,
 *::before,
@@ -58,27 +91,145 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
-body {
-  font-family: var(--font-body);
-  font-weight: 400;
-  line-height: 1.7;
-  color: var(--text-primary);
+
+/* ──────────────────────────────────────────────
+   BOOT ANIMATION — CSS only, no JS.
+   Overlay fades in, holds, then fades out.
+   Main content becomes visible once overlay clears.
+   ────────────────────────────────────────────── */
+
+@keyframes boot-overlay-lifecycle {
+  0%   { opacity: 0; }
+  12%  { opacity: 1; }
+  75%  { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+
+@keyframes boot-cursor-blink {
+  0%, 49%  { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes main-reveal {
+  from { visibility: hidden; }
+  to   { visibility: visible; }
+}
+
+/* The full-screen boot overlay */
+.boot-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
   background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 3rem 4rem;
+  animation: boot-overlay-lifecycle 900ms ease-in-out forwards;
+  pointer-events: none;
+}
+
+.boot-overlay-line {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.8;
+}
+
+.boot-overlay-line--dim {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.boot-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  background: var(--accent);
+  margin-left: 0.15em;
+  vertical-align: text-bottom;
+  animation: boot-cursor-blink 500ms step-end infinite;
+}
+
+/* Main content: hidden until overlay has cleared */
+main {
+  visibility: hidden;
+  animation: main-reveal 0s 800ms forwards;
+}
+
+
+/* --- Body & scanlines --- */
+
+body {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bezel-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Fixed CRT scanline overlay — covers full viewport, scrolls with nothing */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.05) 3px,
+    rgba(0, 0, 0, 0.05) 4px
+  );
+}
+
+
+/* ──────────────────────────────────────────────
+   MONITOR BEZEL
+   Cosmetic outer frame — content scrolls normally inside.
+   ────────────────────────────────────────────── */
+
+.bezel {
+  background: var(--bezel-bg);
+  padding: var(--bezel-size);
+  /* Inset shadow: physical depth on the inner lip */
+  box-shadow:
+    inset  0  2px  6px rgba(0,   0,   0,   0.7),
+    inset  0 -2px  6px rgba(0,   0,   0,   0.5),
+    inset  2px  0  6px rgba(0,   0,   0,   0.6),
+    inset -2px  0  6px rgba(0,   0,   0,   0.6),
+    /* Outer bezel highlight — top-left lit edge */
+    inset  0  1px  0   rgba(255, 255, 255, 0.04),
+    inset  1px 0   0   rgba(255, 255, 255, 0.03);
+  min-height: 100dvh;
+}
+
+/* The screen area inside the bezel */
+.screen {
+  background-color: var(--bg);
+  min-height: calc(100dvh - (var(--bezel-size) * 2));
+}
+
+
 /* --- Skip to content --- */
 
 .skip-to-content {
   position: absolute;
   top: -100%;
-  left: 1rem;
-  padding: 0.5rem 1rem;
+  left: var(--space-4);
+  padding: var(--space-2) var(--space-4);
   background: var(--accent);
   color: #fff;
-  font-size: 0.875rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
   font-weight: 500;
-  border-radius: 0 0 4px 4px;
   text-decoration: none;
   z-index: 100;
   transition: top 0.1s ease;
@@ -88,389 +239,723 @@ body {
   top: 0;
 }
 
-/* --- Layout --- */
+
+/* --- Outer layout --- */
 
 main {
   display: flex;
   justify-content: center;
-  align-items: start;
-  min-height: 100dvh;
-  padding: 4rem 1.5rem;
+  align-items: flex-start;
+  min-height: calc(100dvh - (var(--bezel-size) * 2));
+  padding: var(--space-8) var(--space-4);
 }
 
 .container {
   width: 100%;
-  max-width: 56rem;
+  max-width: 64rem;
 }
 
 
-/* --- Hero / header --- */
+/* ──────────────────────────────────────────────
+   CHROMATIC ABERRATION
+   Red channel left, cyan channel right.
+   Applied to identity name and panel labels.
+   ────────────────────────────────────────────── */
 
-.hero {
-  margin-bottom: 1.5rem;
+.identity-name {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  /* Red fringe left, cyan fringe right — CRT tube misalignment */
+  text-shadow:
+    -1.5px 0     0 rgba(255, 30,  30,  0.55),
+     1.5px 0     0 rgba(0,   200, 255, 0.45),
+     0     0    6px rgba(180, 210, 255, 0.10);
+}
+
+/* Chromatic aberration on panel labels — subtler, tight offsets */
+.panel-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  /* Inline icon via ::before using data-icon */
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.panel-label::before {
+  content: attr(data-icon);
+  font-size: 0.65rem;
+  font-style: normal;
+  opacity: 0.85;
+  letter-spacing: 0;
+  flex-shrink: 0;
+}
+
+.panel--books    .panel-label {
+  color: var(--accent-books);
+  text-shadow:
+    -1px 0 0 rgba(255, 30,  30,  0.4),
+     1px 0 0 rgba(0,   200, 255, 0.3);
+}
+
+.panel--films    .panel-label {
+  color: var(--accent-films);
+  text-shadow:
+    -1px 0 0 rgba(255, 30,  30,  0.35),
+     1px 0 0 rgba(0,   200, 255, 0.25);
+}
+
+.panel--music    .panel-label {
+  color: var(--accent-music);
+  text-shadow:
+    -1px 0 0 rgba(255, 30,  30,  0.35),
+     1px 0 0 rgba(0,   200, 255, 0.25);
+}
+
+.panel--articles .panel-label {
+  color: var(--accent-articles);
+  text-shadow:
+    -1px 0 0 rgba(255, 30,  30,  0.4),
+     1px 0 0 rgba(0,   200, 255, 0.3);
+}
+
+
+/* ──────────────────────────────────────────────
+   SYSTEM HEADER
+   Horizontal user status bar
+   ────────────────────────────────────────────── */
+
+.system-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--accent);
+  margin-bottom: var(--space-3);
+  box-shadow:
+    0 0 18px rgba(59, 130, 246, 0.07),
+    0 0  6px rgba(59, 130, 246, 0.04);
+}
+
+/* Top row: avatar + identity + nav controls */
+.system-header-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+/* Avatar — CSS circle with initials as fallback */
+.avatar-wrap {
+  flex-shrink: 0;
 }
 
 .avatar {
+  display: block;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  margin-bottom: 1rem;
   border: 2px solid var(--accent);
-  box-shadow: none;
+  object-fit: cover;
 }
 
-h1 {
-  font-family: var(--font-heading);
-  font-size: 2.5rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  color: var(--text-primary);
-}
-
-.tagline {
-  margin-top: 0.5rem;
-  font-size: 1.05rem;
-  color: var(--text-secondary);
-}
-
-.tagline.mono {
+/* CSS initials fallback */
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--surface);
+  color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  user-select: none;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+.identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.identity-tagline {
+  margin-top: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Nav controls — bracketed mono links in header */
+.system-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.system-nav-link {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-bright);
+  transition: color 0.1s ease, border-color 0.1s ease, background 0.1s ease, box-shadow 0.1s ease;
+}
+
+.system-nav-link:hover {
+  color: var(--accent-hover);
+  border-color: var(--accent);
+  background: rgba(59, 130, 246, 0.06);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.12);
+}
+
+.system-nav-link:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Bio */
+.system-bio {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+
+/* ──────────────────────────────────────────────
+   NOW READING — Status strip
+   ────────────────────────────────────────────── */
+
+.status-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  background: rgba(34, 197, 94, 0.04);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  border-left: 3px solid var(--accent-books);
+  margin-bottom: var(--space-3);
+}
+
+.status-strip-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent-books);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.status-strip-sep {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.status-strip-text {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--text-primary);
   letter-spacing: 0.01em;
 }
 
-
-/* --- Headings --- */
-
-h2 {
-  font-family: var(--font-heading);
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  line-height: 1.25;
-  color: var(--text-tertiary);
-  margin-bottom: 0.75rem;
-}
-
-
-/* --- Bio --- */
-
-.bio {
-  margin-bottom: 3rem;
-}
-
-.bio p {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  line-height: 1.7;
-}
-
-.bio p + p {
-  margin-top: 1rem;
-}
-
-
-/* --- Content grid --- */
-
-.content-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2.5rem;
-}
-
-
-/* --- Reading sections --- */
-
-.reading-column .reading + .reading {
-  margin-top: 2rem;
-}
-
-.reading {
-  margin-bottom: 0;
-}
-
-.reading ul {
-  list-style: none;
-  padding: 0;
-}
-
-.reading li {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  padding: 0.55rem 0;
-  padding-left: 0.5rem;
-  border-bottom: 1px solid var(--border);
-  border-left: 2px solid transparent;
-  transition: border-color 0.1s ease, background 0.1s ease;
-}
-
-.reading li:last-child {
-  border-bottom: none;
-}
-
-.reading li:hover {
-  border-left-color: var(--accent);
-  background: var(--surface);
-}
-
-.reading em {
+.status-strip-text em {
   font-style: italic;
   color: var(--text-primary);
 }
 
-.reading .stars {
-  font-style: normal;
-  color: var(--accent);
-  font-size: 0.85rem;
-  margin-left: 0.25rem;
+
+/* ──────────────────────────────────────────────
+   CONTENT GRID — 2x2 on desktop, 1-col mobile
+   ────────────────────────────────────────────── */
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
 }
 
-.reading .source {
+
+/* ──────────────────────────────────────────────
+   PANEL — Shared structure for all 4 sections
+   ────────────────────────────────────────────── */
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+/* 2px coloured top border — section identifier */
+.panel--books    { border-top: 2px solid var(--accent-books);    }
+.panel--films    { border-top: 2px solid var(--accent-films);    }
+.panel--music    { border-top: 2px solid var(--accent-music);    }
+.panel--articles { border-top: 2px solid var(--accent-articles); }
+
+/* Resting neon glow — ambient, 8% opacity */
+.panel--books    { box-shadow: 0 0  1px  1px rgba( 34, 197,  94, 0.08), 0 0  0 0 rgba( 34, 197,  94, 0); }
+.panel--films    { box-shadow: 0 0  1px  1px rgba(245, 158,  11, 0.08), 0 0  0 0 rgba(245, 158,  11, 0); }
+.panel--music    { box-shadow: 0 0  1px  1px rgba(168,  85, 247, 0.08), 0 0  0 0 rgba(168,  85, 247, 0); }
+.panel--articles { box-shadow: 0 0  1px  1px rgba( 59, 130, 246, 0.08), 0 0  0 0 rgba( 59, 130, 246, 0); }
+
+/* Hover: glow intensifies and border brightens */
+.panel--books:hover    {
+  box-shadow: 0 0 16px 3px rgba( 34, 197,  94, 0.18);
+  border-color: rgba( 34, 197,  94, 0.35);
+}
+.panel--films:hover    {
+  box-shadow: 0 0 16px 3px rgba(245, 158,  11, 0.18);
+  border-color: rgba(245, 158,  11, 0.35);
+}
+.panel--music:hover    {
+  box-shadow: 0 0 16px 3px rgba(168,  85, 247, 0.18);
+  border-color: rgba(168,  85, 247, 0.35);
+}
+.panel--articles:hover {
+  box-shadow: 0 0 16px 3px rgba( 59, 130, 246, 0.18);
+  border-color: rgba( 59, 130, 246, 0.35);
+}
+
+/* ──────────────────────────────────────────────
+   PANEL CONTENT — <ul>/<li> compatibility
+   build.py generates <li> items; these styles
+   make them render correctly inside .panel-body
+   ────────────────────────────────────────────── */
+
+.panel-list {
+  list-style: none;
+  padding: 0;
+}
+
+.panel-list li {
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--border);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
-.reading a {
+.panel-list li:last-child {
+  border-bottom: none;
+}
+
+.panel-list em {
+  font-style: italic;
+  color: var(--text-primary);
+  text-shadow: 0 0 6px rgba(180, 210, 255, 0.12);
+}
+
+/* Film star ratings — amber */
+.panel-list .stars {
+  font-style: normal;
+  color: var(--accent-films);
+  font-size: 0.7rem;
+  margin-left: var(--space-2);
+}
+
+/* Article link */
+.panel-list a {
   color: var(--text-primary);
   text-decoration: underline;
-  text-decoration-color: var(--border);
+  text-decoration-color: var(--border-bright);
   text-underline-offset: 0.15em;
-  transition: color 0.1s ease, text-decoration-color 0.1s ease;
+  transition: color 0.1s ease;
 }
 
-.reading a:hover {
+.panel-list a:hover {
   color: var(--accent-hover);
-  text-decoration-color: var(--accent-hover);
 }
 
-.reading a:focus-visible {
-  outline: 2px solid var(--accent);
+.panel-list a:focus-visible {
+  outline: 1px solid var(--accent);
   outline-offset: 2px;
 }
 
+/* Article source domain */
+.panel-list .source {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--accent-articles);
+}
 
-/* --- Music tracks --- */
-
-.reading li.track {
+/* Music track — two-line layout */
+.panel-list li.track {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
 }
 
-.track-title {
+.panel-list .track-title {
   color: var(--text-primary);
+  font-size: 0.78rem;
+  text-shadow: 0 0 6px rgba(180, 210, 255, 0.12);
 }
 
-.track-meta {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
+.panel-list .track-meta {
+  font-size: 0.7rem;
   color: var(--text-tertiary);
 }
 
-/* --- Nav links --- */
-
-.links {
+/* Panel header row */
+.panel-header {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  margin-top: 3rem;
-  margin-bottom: 3rem;
-}
-
-.link {
-  display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  font-size: 0.85rem;
-  font-weight: 500;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-count {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 400;
   color: var(--text-secondary);
-  text-decoration: none;
-  border: none;
-  background: none;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Panel body */
+.panel-body {
   padding: 0;
-  transition: color 0.1s ease;
 }
 
-.link:hover {
+
+/* ──────────────────────────────────────────────
+   CONTENT ROWS — Shared row structure
+   ────────────────────────────────────────────── */
+
+.panel-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s ease;
+}
+
+.panel-row:last-child {
+  border-bottom: none;
+}
+
+.panel--articles .panel-row:hover {
+  background: var(--panel-hover);
+}
+
+/* Row index number */
+.row-index {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  width: 1.5rem;
+  text-align: right;
+  user-select: none;
+}
+
+/* Row main content */
+.row-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Row metadata — right-aligned on desktop */
+.row-meta {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+
+/* --- BOOKS rows --- */
+
+/* Phosphor glow on primary content text */
+.book-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.4;
+  text-shadow: 0 0 6px rgba(180, 210, 255, 0.12);
+}
+
+.book-author {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-top: 0.1rem;
+}
+
+
+/* --- FILMS rows --- */
+
+.film-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.4;
+  text-shadow: 0 0 6px rgba(180, 210, 255, 0.12);
+}
+
+.film-year {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-top: 0.1rem;
+}
+
+/* Stars in amber */
+.film-stars {
+  font-style: normal;
+  font-size: 0.7rem;
+  color: var(--accent-films);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+
+/* --- MUSIC rows --- */
+
+.track-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+  text-shadow: 0 0 6px rgba(180, 210, 255, 0.12);
+}
+
+.track-artist {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-top: 0.1rem;
+}
+
+/* Play count chip */
+.play-count {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--accent-music);
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  padding: 0.1rem 0.35rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+
+/* --- ARTICLES rows --- */
+
+.article-title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.45;
+  text-decoration: underline;
+  text-decoration-color: var(--border-bright);
+  text-underline-offset: 0.15em;
+  text-shadow: 0 0 6px rgba(180, 210, 255, 0.12);
+  transition: color 0.1s ease, text-decoration-color 0.1s ease;
+}
+
+.panel-row a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.panel-row a:hover .article-title {
   color: var(--accent-hover);
+  text-decoration-color: var(--accent-hover);
 }
 
-.link:focus-visible {
-  outline: 2px solid var(--accent);
+.panel-row a:focus-visible {
+  outline: none;
+}
+
+.panel-row a:focus-visible .article-title {
+  outline: 1px solid var(--accent);
   outline-offset: 2px;
 }
 
-.link-icon {
-  flex-shrink: 0;
-  opacity: 0.4;
-  transition: opacity 0.1s ease, transform 0.1s ease;
+/* Article source domain tag */
+.article-source {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--accent-articles);
+  background: rgba(59, 130, 246, 0.07);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  padding: 0.1rem 0.35rem;
+  margin-top: 0.25rem;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
-.link:hover .link-icon {
-  opacity: 0.8;
-  transform: translateX(2px);
-}
 
-
-/* --- Footer / colophon --- */
+/* ──────────────────────────────────────────────
+   FOOTER / COLOPHON
+   ────────────────────────────────────────────── */
 
 .colophon {
-  padding-top: 2rem;
-  padding-bottom: 1rem;
-  border-top: 1px solid var(--border);
+  margin-top: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
-.colophon p {
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
-}
-
-.colophon .updated {
+.colophon-timestamp {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.65rem;
+  font-weight: 400;
   color: var(--text-tertiary);
-  margin-bottom: 0.25rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-.colophon p + p {
-  margin-top: 0.25rem;
-}
-
-.colophon .credits {
-  color: var(--text-tertiary);
+.colophon-credits {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
 }
 
 
 /* ──────────────────────────────────────────────
-   Responsive
+   RESPONSIVE
    ────────────────────────────────────────────── */
 
-/* Small phones */
-@media (max-width: 480px) {
-  main {
-    padding: 2.5rem 1.25rem;
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
-
-  .tagline.mono {
-    font-size: 0.75rem;
-  }
-
-  .links {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .content-grid {
-    gap: 2rem;
-  }
-}
-
-/* Tablets and up — enable 3-column grid */
+/* Desktop: 2-col grid */
 @media (min-width: 768px) {
   main {
-    padding: 4rem 2rem;
-  }
-
-  h1 {
-    font-size: 3.5rem;
-  }
-
-  .hero {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .avatar {
-    margin-bottom: 0;
-    flex-shrink: 0;
-  }
-
-  .hero-text {
-    flex: 1;
-  }
-
-  .bio {
-    margin-bottom: 3.5rem;
+    padding: var(--space-12) var(--space-8);
   }
 
   .content-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Header row stays horizontal at all breakpoints */
+  .system-header-row {
+    flex-wrap: nowrap;
+  }
+
+  /* Article source shifts right on desktop */
+  .article-row-inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .article-source {
+    margin-top: 0;
+    flex-shrink: 0;
+    align-self: flex-start;
   }
 }
 
-/* Large screens — more breathing room */
+/* Large screens */
 @media (min-width: 1024px) {
   main {
-    padding: 6rem 2rem;
+    padding: var(--space-16) var(--space-8);
+  }
+
+  .identity-name {
+    font-size: 1.25rem;
   }
 }
 
-
-/* ──────────────────────────────────────────────
-   Light mode
-   ────────────────────────────────────────────── */
-
-@media (prefers-color-scheme: light) {
+/* Small phones — thin the bezel, reduce padding */
+@media (max-width: 480px) {
   :root {
-    --bg: #fafafa;
-    --text-primary: #1c1917;
-    --text-secondary: #57534e;
-    --text-tertiary: #5f6b7a;
-    --accent: #3b82f6;
-    --accent-hover: #2563eb;
-    --border: #e5e5e5;
-    --surface: #f5f5f4;
+    --bezel-size: 10px;
   }
 
-}
-
-
-/* ──────────────────────────────────────────────
-   Print
-   ────────────────────────────────────────────── */
-
-@media print {
-  :root {
-    --bg: #fff;
-    --text-primary: #000;
-    --text-secondary: #333;
-    --text-tertiary: #666;
-    --accent: #000;
-    --border: #ccc;
-    --surface: #fff;
+  main {
+    padding: var(--space-5) var(--space-3);
   }
 
-  body {
-    background: #fff;
-    color: #000;
+  .system-header {
+    padding: var(--space-4) var(--space-4);
   }
 
-  .content-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .status-strip {
+    padding: var(--space-3) var(--space-4);
+    flex-wrap: wrap;
+    gap: var(--space-2);
   }
 
-  .link::after {
-    content: " (" attr(href) ")";
-    font-size: 0.7rem;
-    color: #555;
+  .panel-header,
+  .panel-row {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
   }
 
-  .link-icon {
-    display: none;
+  .colophon {
+    padding: var(--space-4);
   }
 
-  .avatar {
-    border-color: #ccc;
+  .system-nav {
+    gap: var(--space-1);
+  }
+
+  .boot-overlay {
+    padding: 2rem;
   }
 }
+
   </style>
 <!-- style:end -->
 </head>
@@ -495,19 +980,19 @@ h2 {
 
               <div class="avatar-wrap">
 <!-- gravatar-avatar:start -->
-                <img class="avatar" src="https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e?s=192" alt="Nicholas Sheehan" width="96" height="96">
+        <img class="avatar" src="https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e?s=192" alt="Nicholas Sheehan" width="96" height="96">
 <!-- gravatar-avatar:end -->
               </div>
 
               <div class="identity">
                 <div class="identity-name">
 <!-- gravatar-name:start -->
-                  Nicholas Sheehan
+        Nicholas Sheehan
 <!-- gravatar-name:end -->
                 </div>
                 <div class="identity-tagline">
 <!-- gravatar-tagline:start -->
-                  Content Production Lead at ANZ · Melbourne
+        Content Production Lead at ANZ · Melbourne
 <!-- gravatar-tagline:end -->
                 </div>
               </div>
@@ -523,7 +1008,7 @@ h2 {
 
             <div class="system-bio">
 <!-- gravatar-bio:start -->
-              <p>I&#x27;m a web professional specialising in AEM authoring, digital production and content governance. Outside of work I like to read, watch films, listen to music and cook.</p>
+        <p>I&#x27;m a web professional specialising in AEM authoring, digital production and content governance. Outside of work I like to read, watch films, listen to music and cook.</p>
 <!-- gravatar-bio:end -->
             </div>
           </header>
@@ -535,7 +1020,7 @@ h2 {
           <div hidden aria-hidden="true">
             <ul>
 <!-- goodreads:start -->
-              <li><em>Zorba the Greek</em> — Nikos Kazantzakis</li>
+          <li><em>Zorba the Greek</em> — Nikos Kazantzakis</li>
 <!-- goodreads:end -->
             </ul>
           </div>
@@ -552,7 +1037,11 @@ h2 {
               <div class="panel-body">
                 <ul class="panel-list">
 <!-- goodreads-read:start -->
-                  <li><em>The Fall</em> — Albert Camus</li>
+          <li><em>The Fall</em> — Albert Camus</li>
+          <li><em>EXCLUSIVE!: Dispatches from The Paris End</em> — Cameron Hurst</li>
+          <li><em>Time Warrior: How to defeat procrastination, people-pleasing, self-doubt, over-commitment, broken promises and chaos</em> — Steve Chandler</li>
+          <li><em>When the Going Was Good: An Editor&#x27;s Adventures During the Last Golden Age of Magazines</em> — Graydon Carter</li>
+          <li><em>Post Office</em> — Charles Bukowski</li>
 <!-- goodreads-read:end -->
                 </ul>
               </div>
@@ -567,7 +1056,11 @@ h2 {
               <div class="panel-body">
                 <ul class="panel-list">
 <!-- letterboxd:start -->
-                  <li><em>Marty Supreme</em> (2025) <span class="stars" aria-label="Rated 4.0 out of 5">★★★★</span></li>
+          <li><em>Wuthering Heights</em> (2026) <span class="stars" aria-label="Rated 2.0 out of 5">★★</span></li>
+          <li><em>Marty Supreme</em> (2025) <span class="stars" aria-label="Rated 4.0 out of 5">★★★★</span></li>
+          <li><em>Avatar: Fire and Ash</em> (2025) <span class="stars" aria-label="Rated 3.5 out of 5">★★★½</span></li>
+          <li><em>28 Years Later: The Bone Temple</em> (2026) <span class="stars" aria-label="Rated 4.0 out of 5">★★★★</span></li>
+          <li><em>Dead Calm</em> (1989) <span class="stars" aria-label="Rated 3.5 out of 5">★★★½</span></li>
 <!-- letterboxd:end -->
                 </ul>
               </div>
@@ -582,7 +1075,11 @@ h2 {
               <div class="panel-body">
                 <ul class="panel-list">
 <!-- music:start -->
-                  <li class="track"><span class="track-title">Rockin&#x27; The Suburbs</span><span class="track-meta">Ben Folds · 4 plays</span></li>
+          <li class="track"><span class="track-title">Rockin&#x27; The Suburbs</span><span class="track-meta">Ben Folds · 4 plays</span></li>
+          <li class="track"><span class="track-title">Clap Your Hands</span><span class="track-meta">Daphni · 3 plays</span></li>
+          <li class="track"><span class="track-title">All I Am</span><span class="track-meta">Ninajirachi · 3 plays</span></li>
+          <li class="track"><span class="track-title">Catalonia Dreams</span><span class="track-meta">The Terrys · 3 plays</span></li>
+          <li class="track"><span class="track-title">Fame Is a Gun</span><span class="track-meta">Addison Rae · 2 plays</span></li>
 <!-- music:end -->
                 </ul>
               </div>
@@ -608,7 +1105,7 @@ h2 {
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp">Last built 21 Feb 2026 at 10:36 UTC</p>
+            <p class="colophon-timestamp">Last built 21 Feb 2026 at 12:25 UTC</p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
@@ -634,13 +1131,11 @@ h2 {
     "@type": "Place",
     "name": "Melbourne"
   },
-  "description": "I’m a web professional specialising in AEM authoring, digital production and content governance. Outside of work I like to read, watch films, listen to music and cook.",
+  "description": "I'm a web professional specialising in AEM authoring, digital production and content governance. Outside of work I like to read, watch films, listen to music and cook.",
   "image": "https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e",
   "sameAs": [
     "https://gravatar.com/nicsheehanau",
-    "https://www.linkedin.com/in/nicsheehan/",
-    "https://www.goodreads.com/user/show/175639385",
-    "https://letterboxd.com/tonic2"
+    "https://www.linkedin.com/in/nicsheehan"
   ]
 }
     </script>
