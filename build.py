@@ -985,8 +985,16 @@ def cmd_favicons():
     img_48.save(FAVICON_PNG_PATH, "PNG", optimize=True)
     print(f"  Saved {FAVICON_PNG_PATH}")
 
-    # Multi-res ICO: Pillow scales from the 48px source to 16, 32, 48
-    img_48.save(FAVICON_ICO_PATH, format="ICO", sizes=[(16, 16), (32, 32), (48, 48)])
+    # Multi-res ICO: pre-render each size for reliable multi-frame output
+    ico_48 = _draw_favicon(48)
+    ico_32 = _draw_favicon(32)
+    ico_16 = _draw_favicon(16)
+    ico_48.save(
+        FAVICON_ICO_PATH,
+        format="ICO",
+        append_images=[ico_32, ico_16],
+        sizes=[(48, 48), (32, 32), (16, 16)],
+    )
     print(f"  Saved {FAVICON_ICO_PATH}")
 
     print("Favicons generated ✓")
