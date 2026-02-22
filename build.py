@@ -119,7 +119,7 @@ def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
         title = title_el.text.strip()
         author = author_el.text.strip() if author_el is not None and author_el.text else "Unknown"
         rating_text = rating_el.text.strip() if rating_el is not None and rating_el.text else "0"
-        rating = int(rating_text) if rating_text.isdigit() else 0
+        rating = min(int(rating_text), 5) if rating_text.isdigit() else 0
         books.append({"title": title, "author": author, "rating": rating})
 
         if limit and len(books) >= limit:
