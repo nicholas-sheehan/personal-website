@@ -880,6 +880,16 @@ main {
     flex-shrink: 0;
     align-self: flex-start;
   }
+
+  /* Panel title truncation — keep grid rows aligned on desktop */
+  .book-title,
+  .film-title,
+  .article-title,
+  .track-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 /* Large screens */
