@@ -146,6 +146,31 @@ def build_book_html(books: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def build_now_reading_html(books: list[dict]) -> str:
+    """Generate status strip HTML for currently-reading shelf.
+
+    0 books  → placeholder comment (section invisible)
+    1 book   → "Currently reading <em>Title</em> by Author"
+    2+ books → "Currently reading <em>Title 1</em>, <em>Title 2</em>"
+    """
+    if not books:
+        return "            <!-- no books currently reading -->"
+    if len(books) == 1:
+        t = html.escape(books[0]["title"])
+        a = html.escape(books[0]["author"])
+        text = f"Currently reading <em>{t}</em> by {a}"
+    else:
+        titles = ", ".join(f"<em>{html.escape(b['title'])}</em>" for b in books)
+        text = f"Currently reading {titles}"
+    return (
+        '            <div class="status-strip">\n'
+        '              <span class="status-strip-label">Now reading</span>\n'
+        '              <span class="status-strip-sep">›</span>\n'
+        f'              <span class="status-strip-text">{text}</span>\n'
+        '            </div>'
+    )
+
+
 # ══════════════════════════════════════════════════════════════════
 #  Letterboxd (RSS)
 # ══════════════════════════════════════════════════════════════════
@@ -666,6 +691,7 @@ GRAVATAR_NAME_PATTERN = _make_pattern("gravatar-name")
 GRAVATAR_TAGLINE_PATTERN = _make_pattern("gravatar-tagline")
 GRAVATAR_BIO_PATTERN = _make_pattern("gravatar-bio")
 GOODREADS_PATTERN = _make_pattern("goodreads")
+GOODREADS_NOW_PATTERN = _make_pattern("goodreads-now")
 GOODREADS_READ_PATTERN = _make_pattern("goodreads-read")
 LETTERBOXD_PATTERN = _make_pattern("letterboxd")
 INSTAPAPER_PATTERN = _make_pattern("instapaper")
@@ -784,6 +810,7 @@ def cmd_build():
             books = fetch_goodreads(GOODREADS_RSS)
             print(f"  Found {len(books)} book(s) on currently-reading shelf.")
             src = inject(src, GOODREADS_PATTERN, build_book_html(books), "goodreads")
+            src = inject(src, GOODREADS_NOW_PATTERN, build_now_reading_html(books), "goodreads-now")
 
             print("Fetching Goodreads read shelf…")
             read_books = fetch_goodreads(GOODREADS_READ_RSS, limit=GOODREADS_READ_LIMIT)
