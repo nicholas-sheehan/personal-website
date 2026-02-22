@@ -95,6 +95,10 @@ INDEX_PATH = "index.html"
 STYLE_PATH = "style.css"
 OG_IMAGE_PATH = "og-image.png"
 SITEMAP_PATH = "sitemap.xml"
+FAVICON_ICO_PATH = "favicon.ico"
+FAVICON_PNG_PATH = "favicon.png"
+FAVICON_192_PATH = "favicon-192.png"
+ASSETS_DIR = "assets"
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -931,9 +935,68 @@ def cmd_build():
     print(f"Updated {INDEX_PATH} ✓")
 
 
+def _draw_favicon(size: int) -> "Image.Image":
+    """Render a single favicon image at the given square pixel size."""
+    from PIL import Image, ImageDraw, ImageFont
+    BG = (5, 10, 20)        # #050a14
+    ACCENT = (59, 130, 246)  # #3b82f6
+
+    img = Image.new("RGB", (size, size), BG)
+    draw = ImageDraw.Draw(img)
+
+    font_path = os.path.join(ASSETS_DIR, "JetBrainsMono-Bold.ttf")
+    font_size = int(size * 0.65)
+    try:
+        font = ImageFont.truetype(font_path, font_size)
+    except (OSError, IOError):
+        font = ImageFont.load_default()
+
+    # Centre "N" precisely
+    bbox = draw.textbbox((0, 0), "N", font=font)
+    w = bbox[2] - bbox[0]
+    h = bbox[3] - bbox[1]
+    x = (size - w) // 2 - bbox[0]
+    y = (size - h) // 2 - bbox[1]
+    draw.text((x, y), "N", fill=ACCENT, font=font)
+
+    return img
+
+
+def cmd_favicons():
+    """Generate favicon.png (48px), favicon-192.png, and favicon.ico (multi-res)."""
+    try:
+        from PIL import Image
+    except ImportError:
+        print("⚠  Pillow not installed — run: pip install Pillow")
+        return
+
+    font_path = os.path.join(ASSETS_DIR, "JetBrainsMono-Bold.ttf")
+    if not os.path.exists(font_path):
+        print(f"⚠  Font not found at {font_path} — run Task 1 first.")
+        return
+
+    print("Generating favicons…")
+
+    img_192 = _draw_favicon(192)
+    img_192.save(FAVICON_192_PATH, "PNG", optimize=True)
+    print(f"  Saved {FAVICON_192_PATH}")
+
+    img_48 = _draw_favicon(48)
+    img_48.save(FAVICON_PNG_PATH, "PNG", optimize=True)
+    print(f"  Saved {FAVICON_PNG_PATH}")
+
+    # Multi-res ICO: Pillow scales from the 48px source to 16, 32, 48
+    img_48.save(FAVICON_ICO_PATH, format="ICO", sizes=[(16, 16), (32, 32), (48, 48)])
+    print(f"  Saved {FAVICON_ICO_PATH}")
+
+    print("Favicons generated ✓")
+
+
 def main():
     if len(sys.argv) > 1 and sys.argv[1] == "auth":
         cmd_auth()
+    elif len(sys.argv) > 1 and sys.argv[1] == "favicons":
+        cmd_favicons()
     else:
         cmd_build()
 
