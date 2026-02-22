@@ -355,7 +355,7 @@ def generate_og_image(profile: dict, output_path: str):
     # Load fonts — assets/ first, fall back to system mono
     def load_font(size, bold=False):
         weight = "Bold" if bold else "Regular"
-        asset = os.path.join("assets", f"JetBrainsMono-{weight}.ttf")
+        asset = os.path.join(ASSETS_DIR, f"JetBrainsMono-{weight}.ttf")
         fallbacks = [
             "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf" if bold
             else "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
