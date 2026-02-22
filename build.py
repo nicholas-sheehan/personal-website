@@ -336,25 +336,33 @@ def generate_og_image(profile: dict, output_path: str):
         return False
 
     WIDTH, HEIGHT = 1200, 630
-    BG_COLOR = (10, 10, 10)  # #0a0a0a
-    TEXT_PRIMARY = (229, 229, 229)  # #e5e5e5
-    TEXT_SECONDARY = (163, 163, 163)  # #a3a3a3
-    ACCENT = (59, 130, 246)  # #3b82f6
+    BG_COLOR = (5, 10, 20)            # #050a14
+    TEXT_PRIMARY = (226, 232, 240)    # #e2e8f0
+    TEXT_SECONDARY = (100, 116, 139)  # #64748b
+    ACCENT = (59, 130, 246)           # #3b82f6
 
     img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
     draw = ImageDraw.Draw(img)
 
-    # Load fonts — try common paths, fall back to default
+    # Borders — 2px top, 4px left (panel accent)
+    draw.rectangle([(0, 0), (WIDTH, 1)], fill=ACCENT)
+    draw.rectangle([(0, 0), (3, HEIGHT)], fill=ACCENT)
+
+    # Load fonts — assets/ first, fall back to system mono
     def load_font(size, bold=False):
-        paths = [
-            # macOS
-            "/System/Library/Fonts/Helvetica.ttc",
-            "/System/Library/Fonts/SFNSText.ttf",
-            # Ubuntu/GitHub Actions
-            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold
-            else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        weight = "Bold" if bold else "Regular"
+        asset = os.path.join("assets", f"JetBrainsMono-{weight}.ttf")
+        fallbacks = [
+            "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf" if bold
+            else "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
+            "/System/Library/Fonts/Courier.ttc",
         ]
-        for p in paths:
+        if os.path.exists(asset):
+            try:
+                return ImageFont.truetype(asset, size)
+            except (OSError, IOError):
+                pass
+        for p in fallbacks:
             try:
                 return ImageFont.truetype(p, size)
             except (OSError, IOError):
@@ -363,6 +371,7 @@ def generate_og_image(profile: dict, output_path: str):
 
     font_name = load_font(54, bold=True)
     font_tagline = load_font(24)
+    font_url = load_font(20)
 
     # Download and composite avatar
     avatar_url = profile.get("avatar_url", "")
@@ -372,42 +381,45 @@ def generate_og_image(profile: dict, output_path: str):
     if avatar_url:
         try:
             req = urllib.request.Request(f"{avatar_url}?s=400",
-                                        headers={"User-Agent": "Mozilla/5.0"})
+                                         headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(req, timeout=15) as resp:
                 avatar_data = resp.read()
             avatar = Image.open(io.BytesIO(avatar_data)).resize(
                 (avatar_size, avatar_size), Image.LANCZOS
             )
-
             # Circular mask
             mask = Image.new("L", (avatar_size, avatar_size), 0)
             mask_draw = ImageDraw.Draw(mask)
             mask_draw.ellipse((0, 0, avatar_size, avatar_size), fill=255)
-
             # Blue ring
             ring_pad = 4
             ring_r = avatar_size // 2 + ring_pad
-            cx, cy = avatar_x + avatar_size // 2, avatar_y + avatar_size // 2
+            cx = avatar_x + avatar_size // 2
+            cy = avatar_y + avatar_size // 2
             draw.ellipse(
                 (cx - ring_r, cy - ring_r, cx + ring_r, cy + ring_r),
                 outline=ACCENT, width=3,
             )
-
             img.paste(avatar, (avatar_x, avatar_y), mask)
         except Exception as e:
             print(f"  ⚠  Could not download avatar: {e}")
 
-    # Draw text
+    # Name and tagline
     text_x = avatar_x + avatar_size + 60
     name = profile.get("display_name", "")
     tagline = build_gravatar_tagline(profile)
 
-    name_y = HEIGHT // 2 - 40
+    name_y = HEIGHT // 2 - 45
     draw.text((text_x, name_y), name, fill=TEXT_PRIMARY, font=font_name)
 
     if tagline:
-        tagline_y = name_y + 70
-        draw.text((text_x, tagline_y), tagline, fill=TEXT_SECONDARY, font=font_tagline)
+        draw.text((text_x, name_y + 72), tagline, fill=TEXT_SECONDARY, font=font_tagline)
+
+    # URL label — bottom right
+    url_text = "nicsheehan.com"
+    bbox = draw.textbbox((0, 0), url_text, font=font_url)
+    url_w = bbox[2] - bbox[0]
+    draw.text((WIDTH - url_w - 60, HEIGHT - 56), url_text, fill=ACCENT, font=font_url)
 
     img.save(output_path, "PNG", optimize=True)
     return True
