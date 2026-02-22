@@ -927,6 +927,11 @@ main {
     gap: var(--space-3);
   }
 
+  /* Allow article title to truncate inside the flex container */
+  .article-row-inner > div {
+    min-width: 0;
+  }
+
   .article-source {
     margin-top: 0;
     flex-shrink: 0;
@@ -941,6 +946,13 @@ main {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+/* Mobile: nav breaks to its own row below identity */
+@media (max-width: 767px) {
+  .system-nav {
+    width: 100%;
   }
 }
 
@@ -1056,7 +1068,7 @@ main {
             <div class="status-strip">
               <span class="status-strip-label">Now reading</span>
               <span class="status-strip-sep">›</span>
-              <span class="status-strip-text">Currently reading <em>Zorba the Greek</em> by Nikos Kazantzakis</span>
+              <span class="status-strip-text"><em>Zorba the Greek</em> by Nikos Kazantzakis</span>
             </div>
 <!-- goodreads-now:end -->
           <!-- Currently reading data (hidden — used by status strip above) -->
@@ -1138,7 +1150,7 @@ main {
               <div class="panel-header">
                 <div class="panel-heading">
                   <h2 class="panel-label" id="panel-films-label" data-icon="[▶]"><a href="https://letterboxd.com/tonic2" class="panel-label-link" target="_blank" rel="noopener noreferrer">Films<svg class="section-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 8L8 2M8 2H3M8 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></h2>
-                  <p class="section-source">on Letterboxd as tonic2</p>
+                  <p class="section-source">on Letterboxd</p>
                 </div>
                 <span class="panel-count">recently watched</span>
               </div>
@@ -1361,9 +1373,7 @@ main {
   "image": "https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e",
   "sameAs": [
     "https://gravatar.com/nicsheehanau",
-    "https://www.linkedin.com/in/nicsheehan/",
-    "https://www.goodreads.com/user/show/175639385",
-    "https://letterboxd.com/tonic2"
+    "https://www.linkedin.com/in/nicsheehan"
   ]
 }
     </script>

@@ -159,18 +159,18 @@ def build_now_reading_html(books: list[dict]) -> str:
     """Generate status strip HTML for currently-reading shelf.
 
     0 books  → placeholder comment (section invisible)
-    1 book   → "Currently reading <em>Title</em> by Author"
-    2+ books → "Currently reading <em>Title 1</em>, <em>Title 2</em>"
+    1 book   → "<em>Title</em> by Author"
+    2+ books → "<em>Title 1</em>, <em>Title 2</em>"
     """
     if not books:
         return "            <!-- no books currently reading -->"
     if len(books) == 1:
         t = html.escape(books[0]["title"])
         a = html.escape(books[0]["author"])
-        text = f"Currently reading <em>{t}</em> by {a}"
+        text = f"<em>{t}</em> by {a}"
     else:
         titles = ", ".join(f"<em>{html.escape(b['title'])}</em>" for b in books)
-        text = f"Currently reading {titles}"
+        text = titles
     return (
         '            <div class="status-strip">\n'
         '              <span class="status-strip-label">Now reading</span>\n'

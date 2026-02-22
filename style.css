@@ -905,6 +905,11 @@ main {
     gap: var(--space-3);
   }
 
+  /* Allow article title to truncate inside the flex container */
+  .article-row-inner > div {
+    min-width: 0;
+  }
+
   .article-source {
     margin-top: 0;
     flex-shrink: 0;
@@ -919,6 +924,13 @@ main {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+/* Mobile: nav breaks to its own row below identity */
+@media (max-width: 767px) {
+  .system-nav {
+    width: 100%;
   }
 }
 
