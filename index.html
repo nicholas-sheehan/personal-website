@@ -622,6 +622,49 @@ main {
 }
 
 
+/* Panel heading wrapper — stacks label above source subtitle */
+.panel-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+/* Linked panel label — strips link decoration, inherits panel-label styles */
+.panel-label-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.panel-label-link:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* External link arrow — invisible until hover/focus */
+.section-arrow {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+
+.panel-label-link:hover .section-arrow,
+.panel-label-link:focus-visible .section-arrow {
+  opacity: 0.65;
+}
+
+/* Source subtitle — mono tertiary byline below panel heading */
+.section-source {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  letter-spacing: 0.06em;
+}
+
+
 /* --- BOOKS rows --- */
 
 /* Phosphor glow on primary content text */
@@ -957,7 +1000,10 @@ main {
             <!-- BOOKS -->
             <section class="panel panel--books" aria-labelledby="panel-books-label">
               <div class="panel-header">
-                <h2 class="panel-label" id="panel-books-label" data-icon="[▓]">Books</h2>
+                <div class="panel-heading">
+                  <h2 class="panel-label" id="panel-books-label" data-icon="[▓]"><a href="https://www.goodreads.com/user/show/175639385" class="panel-label-link" target="_blank" rel="noopener noreferrer">Books<svg class="section-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 8L8 2M8 2H3M8 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></h2>
+                  <p class="section-source">via Goodreads</p>
+                </div>
                 <span class="panel-count">recently read</span>
               </div>
               <div class="panel-body">
@@ -1004,7 +1050,10 @@ main {
             <!-- FILMS -->
             <section class="panel panel--films" aria-labelledby="panel-films-label">
               <div class="panel-header">
-                <h2 class="panel-label" id="panel-films-label" data-icon="[▶]">Films</h2>
+                <div class="panel-heading">
+                  <h2 class="panel-label" id="panel-films-label" data-icon="[▶]"><a href="https://letterboxd.com/tonic2" class="panel-label-link" target="_blank" rel="noopener noreferrer">Films<svg class="section-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 8L8 2M8 2H3M8 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></h2>
+                  <p class="section-source">on Letterboxd as tonic2</p>
+                </div>
                 <span class="panel-count">recently watched</span>
               </div>
               <div class="panel-body">
@@ -1056,7 +1105,10 @@ main {
             <!-- MUSIC -->
             <section class="panel panel--music" aria-labelledby="panel-music-label">
               <div class="panel-header">
-                <h2 class="panel-label" id="panel-music-label" data-icon="[♫]">Music</h2>
+                <div class="panel-heading">
+                  <h2 class="panel-label" id="panel-music-label" data-icon="[♫]">Music</h2>
+                  <p class="section-source">via Last.fm</p>
+                </div>
                 <span class="panel-count">top tracks this month</span>
               </div>
               <div class="panel-body">
@@ -1108,7 +1160,10 @@ main {
             <!-- ARTICLES -->
             <section class="panel panel--articles" aria-labelledby="panel-articles-label">
               <div class="panel-header">
-                <h2 class="panel-label" id="panel-articles-label" data-icon="[//]">Articles</h2>
+                <div class="panel-heading">
+                  <h2 class="panel-label" id="panel-articles-label" data-icon="[//]">Articles</h2>
+                  <p class="section-source">saved in Instapaper</p>
+                </div>
                 <span class="panel-count">reads I recommend</span>
               </div>
               <div class="panel-body">
