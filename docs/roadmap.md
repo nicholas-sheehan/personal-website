@@ -69,11 +69,13 @@ Concrete feedback pass — sharpens the baseline before building new features.
 - [x] Footer timestamp locale — convert UTC to user's local timezone via inline JS (`toLocaleString()` with `data-built` attribute)
 - [x] Footer language — "built" → "Last build:"
 
-## Iteration 7 — Favicon & OG image redesign ⬜ planned 2026-02-22
+## Iteration 7 — Favicon & OG image redesign ✅ shipped 2026-02-22
 Visual identity refresh — bring favicon and OG image in line with the Y2K aesthetic.
 
-- [ ] Favicon redesign — new 48×48 + 192×192 PNG: dark `#050a14` background, accent-blue "N" in terminal/monospace style; regenerate `favicon.ico`
-- [ ] OG image redesign — update `generate_og_image()` in `build.py` (Pillow): dark background, panel border aesthetic, monospace text, colour accents matching the site palette
+- [x] Bundle JetBrains Mono TTF under `assets/` for Pillow use
+- [x] New `python3 build.py favicons` command for one-time favicon generation
+- [x] Favicon redesign — dark `#050a14` background, accent-blue "N" in JetBrains Mono Bold; `favicon.png` (48px), `favicon-192.png` (192px), `favicon.ico` (multi-res 16/32/48)
+- [x] OG image redesign — Y2K palette (`#050a14`), top+left accent border, JetBrains Mono font, `nicsheehan.com` label bottom-right; avatar layout unchanged
 
 ## Iteration 8 — Boot sequence + Easter egg ⬜ planned 2026-02-22
 Theatrical delight. Extends the existing boot overlay with personality.
