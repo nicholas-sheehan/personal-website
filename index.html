@@ -804,6 +804,34 @@ main {
 
 
 /* ──────────────────────────────────────────────
+   PULSE DOT + COUNTDOWN
+   ────────────────────────────────────────────── */
+
+@keyframes pulse-breathe {
+  0%, 100% { opacity: 0.3; transform: scale(0.85); }
+  50%       { opacity: 1;   transform: scale(1.15); }
+}
+
+.pulse-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: var(--space-1);
+  vertical-align: middle;
+  animation: pulse-breathe 3s ease-in-out infinite;
+}
+
+.next-update {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+}
+
+
+/* ──────────────────────────────────────────────
    FOOTER / COLOPHON
    ────────────────────────────────────────────── */
 
@@ -1243,7 +1271,7 @@ main {
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp">Last built 21 Feb 2026 at 22:26 UTC</p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last built 21 Feb 2026 at 22:26 UTC<span class="next-update" data-next="2026-02-22T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
@@ -1280,6 +1308,7 @@ main {
 }
     </script>
 <!-- jsonld:end -->
+<script>(function(){var e=document.querySelector('.next-update');if(!e)return;function t(){var n=new Date(e.dataset.next),d=n-new Date();if(d<=0){e.textContent=' · updating soon';return;}var h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000);e.textContent=' · next in '+h+'h '+m+'m';}t();setInterval(t,60000);})();</script>
 <!-- analytics:start -->
   <script data-goatcounter="https://nicsheehan.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <!-- analytics:end -->

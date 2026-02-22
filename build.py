@@ -45,7 +45,7 @@ Setup — Last.fm:
 """
 
 import base64
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import hashlib
 import hmac
 import html
@@ -731,6 +731,14 @@ def update_sitemap(path: str, last_mod: datetime) -> None:
 #  CLI
 # ══════════════════════════════════════════════════════════════════
 
+def _next_build_utc(now: datetime) -> datetime:
+    """Return the next scheduled 22:00 UTC build time strictly after now."""
+    today_build = now.replace(hour=22, minute=0, second=0, microsecond=0)
+    if now < today_build:
+        return today_build
+    return today_build + timedelta(days=1)
+
+
 def cmd_auth():
     """Interactive: exchange Instapaper credentials for tokens."""
     if INSTAPAPER_CONSUMER_KEY == "YOUR_CONSUMER_KEY":
@@ -866,12 +874,20 @@ def cmd_build():
         style_html = f"  <style>\n{css}  </style>"
         src = inject(src, STYLE_PATTERN, style_html, "style")
 
-    # ── Last built timestamp ──
+    # ── Last built timestamp + countdown ──
     now = datetime.now(timezone.utc)
+    next_build = _next_build_utc(now)
+    next_iso = next_build.strftime("%Y-%m-%dT%H:%M:%SZ")
     updated_str = now.strftime("%-d %b %Y at %H:%M UTC")
-    updated_html = f'            <p class="colophon-timestamp">Last built {updated_str}</p>'
+    updated_html = (
+        f'            <p class="colophon-timestamp">'
+        f'<span class="pulse-dot" aria-hidden="true"></span>'
+        f' Last built {updated_str}'
+        f'<span class="next-update" data-next="{next_iso}"></span>'
+        f'</p>'
+    )
     src = inject(src, UPDATED_PATTERN, updated_html, "updated")
-    print(f"  Timestamp: {updated_str}")
+    print(f"  Timestamp: {updated_str} · next build: {next_iso}")
 
     # ── Sitemap ──
     update_sitemap(SITEMAP_PATH, now)

@@ -782,6 +782,34 @@ main {
 
 
 /* ──────────────────────────────────────────────
+   PULSE DOT + COUNTDOWN
+   ────────────────────────────────────────────── */
+
+@keyframes pulse-breathe {
+  0%, 100% { opacity: 0.3; transform: scale(0.85); }
+  50%       { opacity: 1;   transform: scale(1.15); }
+}
+
+.pulse-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: var(--space-1);
+  vertical-align: middle;
+  animation: pulse-breathe 3s ease-in-out infinite;
+}
+
+.next-update {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+}
+
+
+/* ──────────────────────────────────────────────
    FOOTER / COLOPHON
    ────────────────────────────────────────────── */
 
