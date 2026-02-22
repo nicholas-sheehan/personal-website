@@ -893,15 +893,16 @@ def cmd_build():
         style_html = f"  <style>\n{css}  </style>"
         src = inject(src, STYLE_PATTERN, style_html, "style")
 
-    # ── Last built timestamp + countdown ──
+    # ── Last build timestamp + countdown ──
     now = datetime.now(timezone.utc)
     next_build = _next_build_utc(now)
     next_iso = next_build.strftime("%Y-%m-%dT%H:%M:%SZ")
+    built_iso = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     updated_str = now.strftime("%-d %b %Y at %H:%M UTC")
     updated_html = (
         f'            <p class="colophon-timestamp">'
         f'<span class="pulse-dot" aria-hidden="true"></span>'
-        f' Last built {updated_str}'
+        f' Last build: <span class="colophon-buildtime" data-built="{built_iso}">{updated_str}</span>'
         f'<span class="next-update" data-next="{next_iso}"></span>'
         f'</p>'
     )

@@ -593,7 +593,6 @@ main {
   color: var(--text-secondary);
 }
 
-
 /* ──────────────────────────────────────────────
    CONTENT ROWS — Shared row structure
    ────────────────────────────────────────────── */
@@ -739,6 +738,15 @@ main {
   white-space: nowrap;
 }
 
+/* Stars in green (books) */
+.book-stars {
+  font-style: normal;
+  font-size: 0.7rem;
+  color: var(--accent-books);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
 
 /* --- MUSIC rows --- */
 
@@ -878,7 +886,7 @@ main {
   font-family: var(--font-mono);
   font-size: 0.65rem;
   font-weight: 400;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -887,7 +895,7 @@ main {
   font-family: var(--font-mono);
   font-size: 0.65rem;
   font-weight: 400;
-  color: var(--text-dim);
+  color: var(--text-tertiary);
   letter-spacing: 0.04em;
 }
 
@@ -1086,6 +1094,7 @@ main {
                     <div class="book-title">The Fall</div>
                     <div class="book-author">Albert Camus</div>
                   </div>
+                  <span class="row-meta book-stars" aria-label="Rated 3 out of 5">★★★</span>
                 </div>
                 <div class="panel-row">
                   <span class="row-index">02</span>
@@ -1093,6 +1102,7 @@ main {
                     <div class="book-title">EXCLUSIVE!: Dispatches from The Paris End</div>
                     <div class="book-author">Cameron Hurst</div>
                   </div>
+                  <span class="row-meta book-stars" aria-label="Rated 5 out of 5">★★★★★</span>
                 </div>
                 <div class="panel-row">
                   <span class="row-index">03</span>
@@ -1100,6 +1110,7 @@ main {
                     <div class="book-title">When the Going Was Good: An Editor&#x27;s Adventures During the Last Golden Age of Magazines</div>
                     <div class="book-author">Graydon Carter</div>
                   </div>
+                  <span class="row-meta book-stars" aria-label="Rated 4 out of 5">★★★★</span>
                 </div>
                 <div class="panel-row">
                   <span class="row-index">04</span>
@@ -1107,6 +1118,7 @@ main {
                     <div class="book-title">Post Office</div>
                     <div class="book-author">Charles Bukowski</div>
                   </div>
+                  <span class="row-meta book-stars" aria-label="Rated 4 out of 5">★★★★</span>
                 </div>
                 <div class="panel-row">
                   <span class="row-index">05</span>
@@ -1114,6 +1126,7 @@ main {
                     <div class="book-title">The Knockout Artist</div>
                     <div class="book-author">Harry Crews</div>
                   </div>
+                  <span class="row-meta book-stars" aria-label="Rated 4 out of 5">★★★★</span>
                 </div>
 <!-- goodreads-read:end -->
               </div>
@@ -1320,7 +1333,7 @@ main {
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last built 22 Feb 2026 at 07:29 UTC<span class="next-update" data-next="2026-02-22T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-02-22T07:37:23Z">22 Feb 2026 at 07:37 UTC</span><span class="next-update" data-next="2026-02-22T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
@@ -1355,7 +1368,7 @@ main {
 }
     </script>
 <!-- jsonld:end -->
-<script>(function(){var e=document.querySelector('.next-update');if(!e)return;function t(){var n=new Date(e.dataset.next),d=n-new Date();if(d<=0){e.textContent=' · updating soon';return;}var h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000);e.textContent=' · next in '+h+'h '+m+'m';}t();setInterval(t,60000);})();</script>
+<script>(function(){var b=document.querySelector('.colophon-buildtime');if(b&&b.dataset.built){try{b.textContent=new Date(b.dataset.built).toLocaleString(undefined,{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(x){}}var e=document.querySelector('.next-update');if(!e)return;function t(){var n=new Date(e.dataset.next),d=n-new Date();if(d<=0){e.textContent=' \xb7 updating soon';return;}var h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000);e.textContent=' \xb7 next in '+h+'h '+m+'m';}t();setInterval(t,60000);})();</script>
 <!-- analytics:start -->
   <script data-goatcounter="https://nicsheehan.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <!-- analytics:end -->

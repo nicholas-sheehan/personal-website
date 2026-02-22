@@ -864,7 +864,7 @@ main {
   font-family: var(--font-mono);
   font-size: 0.65rem;
   font-weight: 400;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -873,7 +873,7 @@ main {
   font-family: var(--font-mono);
   font-size: 0.65rem;
   font-weight: 400;
-  color: var(--text-dim);
+  color: var(--text-tertiary);
   letter-spacing: 0.04em;
 }
 
