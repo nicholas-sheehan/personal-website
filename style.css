@@ -549,6 +549,28 @@ main {
   padding: 0;
 }
 
+/* Panel footer — contextual service link */
+.panel-footer {
+  padding: var(--space-2) var(--space-5);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.panel-footer-link {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  transition: color 0.1s ease;
+}
+
+.panel-footer-link:hover {
+  color: var(--text-secondary);
+}
+
 
 /* ──────────────────────────────────────────────
    CONTENT ROWS — Shared row structure

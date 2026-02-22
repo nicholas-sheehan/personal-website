@@ -571,6 +571,28 @@ main {
   padding: 0;
 }
 
+/* Panel footer — contextual service link */
+.panel-footer {
+  padding: var(--space-2) var(--space-5);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.panel-footer-link {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  transition: color 0.1s ease;
+}
+
+.panel-footer-link:hover {
+  color: var(--text-secondary);
+}
+
 
 /* ──────────────────────────────────────────────
    CONTENT ROWS — Shared row structure
@@ -902,6 +924,16 @@ main {
     flex-shrink: 0;
     align-self: flex-start;
   }
+
+  /* Panel title truncation — keep grid rows aligned on desktop */
+  .book-title,
+  .film-title,
+  .article-title,
+  .track-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 /* Large screens */
@@ -1085,6 +1117,9 @@ main {
                 </div>
 <!-- goodreads-read:end -->
               </div>
+              <footer class="panel-footer">
+                <a href="https://www.goodreads.com/user/show/175639385" class="panel-footer-link" target="_blank" rel="noopener noreferrer">→ Goodreads</a>
+              </footer>
             </section>
 
             <!-- FILMS -->
@@ -1140,6 +1175,9 @@ main {
                 </div>
 <!-- letterboxd:end -->
               </div>
+              <footer class="panel-footer">
+                <a href="https://letterboxd.com/tonic2" class="panel-footer-link" target="_blank" rel="noopener noreferrer">→ Letterboxd</a>
+              </footer>
             </section>
 
             <!-- MUSIC -->
@@ -1282,7 +1320,7 @@ main {
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last built 22 Feb 2026 at 06:21 UTC<span class="next-update" data-next="2026-02-22T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last built 22 Feb 2026 at 07:29 UTC<span class="next-update" data-next="2026-02-22T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
@@ -1312,9 +1350,7 @@ main {
   "image": "https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e",
   "sameAs": [
     "https://gravatar.com/nicsheehanau",
-    "https://www.linkedin.com/in/nicsheehan/",
-    "https://www.goodreads.com/user/show/175639385",
-    "https://letterboxd.com/tonic2"
+    "https://www.linkedin.com/in/nicsheehan"
   ]
 }
     </script>
