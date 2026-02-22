@@ -716,6 +716,15 @@ main {
   white-space: nowrap;
 }
 
+/* Stars in green (books) */
+.book-stars {
+  font-style: normal;
+  font-size: 0.7rem;
+  color: var(--accent-books);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
 
 /* --- MUSIC rows --- */
 

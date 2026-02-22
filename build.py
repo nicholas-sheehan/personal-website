@@ -102,7 +102,7 @@ SITEMAP_PATH = "sitemap.xml"
 # ══════════════════════════════════════════════════════════════════
 
 def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
-    """Return a list of {title, author} dicts from the RSS feed."""
+    """Return a list of {title, author, rating} dicts from the RSS feed."""
     req = urllib.request.Request(rss_url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=15) as resp:
         tree = ET.parse(resp)
@@ -111,13 +111,16 @@ def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
     for item in tree.findall(".//item"):
         title_el = item.find("title")
         author_el = item.find("author_name")
+        rating_el = item.find("user_rating")
 
         if title_el is None or title_el.text is None:
             continue
 
         title = title_el.text.strip()
         author = author_el.text.strip() if author_el is not None and author_el.text else "Unknown"
-        books.append({"title": title, "author": author})
+        rating_text = rating_el.text.strip() if rating_el is not None and rating_el.text else "0"
+        rating = int(rating_text) if rating_text.isdigit() else 0
+        books.append({"title": title, "author": author, "rating": rating})
 
         if limit and len(books) >= limit:
             break
@@ -133,14 +136,20 @@ def build_book_html(books: list[dict]) -> str:
     for i, book in enumerate(books):
         t = html.escape(book["title"])
         a = html.escape(book["author"])
+        rating = book.get("rating", 0)
         idx = f"{i + 1:02d}"
+        if rating:
+            aria = f' aria-label="Rated {rating} out of 5"'
+            stars_html = f'\n                  <span class="row-meta book-stars"{aria}>{"★" * rating}</span>'
+        else:
+            stars_html = ""
         lines.append(
             f'                <div class="panel-row">\n'
             f'                  <span class="row-index">{idx}</span>\n'
             f'                  <div class="row-content">\n'
             f'                    <div class="book-title">{t}</div>\n'
             f'                    <div class="book-author">{a}</div>\n'
-            f'                  </div>\n'
+            f'                  </div>{stars_html}\n'
             f'                </div>'
         )
     return "\n".join(lines)
@@ -404,15 +413,25 @@ def generate_og_image(profile: dict, output_path: str):
     return True
 
 
+_NAV_EXCLUDED_DOMAINS = frozenset({"goodreads.com", "letterboxd.com"})
+
+
 def build_gravatar_links_html(profile: dict, email: str = "") -> str:
-    """Build nav link buttons from Gravatar links + optional email."""
+    """Build nav link buttons from Gravatar links + optional email.
+    Excludes Goodreads and Letterboxd — they have contextual panel footer links instead.
+    """
     links = profile.get("links", [])
     lines = []
     for link in links:
+        url = link.get("url", "")
+        domain = urllib.parse.urlparse(url).hostname or ""
+        domain = domain.removeprefix("www.")
+        if domain in _NAV_EXCLUDED_DOMAINS:
+            continue
         label = html.escape(link["label"])
-        url = html.escape(link["url"])
+        url_esc = html.escape(url)
         lines.append(
-            f'                <a href="{url}" class="system-nav-link" target="_blank" rel="noopener noreferrer">{label}</a>'
+            f'                <a href="{url_esc}" class="system-nav-link" target="_blank" rel="noopener noreferrer">{label}</a>'
         )
     if email:
         lines.append(
