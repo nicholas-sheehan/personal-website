@@ -93,26 +93,19 @@ html {
 
 
 /* ──────────────────────────────────────────────
-   BOOT ANIMATION — CSS only, no JS.
-   Overlay fades in, holds, then fades out.
-   Main content becomes visible once overlay clears.
+   BOOT ANIMATION — JS-driven. CSS provides the
+   transition envelope; JS controls opacity timing.
+   Fallback: main becomes visible after 1s if JS
+   never runs.
    ────────────────────────────────────────────── */
-
-@keyframes boot-overlay-lifecycle {
-  0%   { opacity: 0; }
-  12%  { opacity: 1; }
-  75%  { opacity: 1; }
-  100% { opacity: 0; pointer-events: none; }
-}
 
 @keyframes boot-cursor-blink {
   0%, 49%  { opacity: 1; }
   50%, 100% { opacity: 0; }
 }
 
-@keyframes main-reveal {
-  from { visibility: hidden; }
-  to   { visibility: visible; }
+@keyframes main-reveal-fallback {
+  to { visibility: visible; }
 }
 
 /* The full-screen boot overlay */
@@ -126,7 +119,8 @@ html {
   align-items: flex-start;
   justify-content: center;
   padding: 3rem 4rem;
-  animation: boot-overlay-lifecycle 900ms ease-in-out forwards;
+  opacity: 0;
+  transition: opacity 300ms ease;
   pointer-events: none;
 }
 
@@ -140,11 +134,6 @@ html {
   line-height: 1.8;
 }
 
-.boot-overlay-line--dim {
-  color: var(--text-secondary);
-  font-weight: 400;
-}
-
 .boot-cursor {
   display: inline-block;
   width: 0.55em;
@@ -155,10 +144,11 @@ html {
   animation: boot-cursor-blink 500ms step-end infinite;
 }
 
-/* Main content: hidden until overlay has cleared */
+/* Main content: hidden until JS reveals it.
+   Fallback: becomes visible after 1s if JS never runs. */
 main {
   visibility: hidden;
-  animation: main-reveal 0s 800ms forwards;
+  animation: main-reveal-fallback 0s 1s forwards;
 }
 
 
@@ -1343,7 +1333,7 @@ main {
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-02-25T22:35:35Z">25 Feb 2026 at 22:35 UTC</span><span class="next-update" data-next="2026-02-26T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-02-26T11:16:53Z">26 Feb 2026 at 11:16 UTC</span><span class="next-update" data-next="2026-02-26T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
@@ -1373,9 +1363,7 @@ main {
   "image": "https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e",
   "sameAs": [
     "https://gravatar.com/nicsheehanau",
-    "https://www.linkedin.com/in/nicsheehan/",
-    "https://www.goodreads.com/user/show/175639385",
-    "https://letterboxd.com/tonic2"
+    "https://www.linkedin.com/in/nicsheehan"
   ]
 }
     </script>
