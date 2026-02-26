@@ -77,9 +77,6 @@ html {
    never runs.
    ────────────────────────────────────────────── */
 
-  50%, 100% { opacity: 0; }
-}
-
 @keyframes main-reveal-fallback {
   to { visibility: visible; }
 }
