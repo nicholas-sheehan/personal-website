@@ -80,7 +80,7 @@ Visual identity refresh — bring favicon and OG image in line with the Y2K aest
 ## Iteration 8 — Boot sequence + Easter egg ⬜ planned 2026-02-22
 Theatrical delight. Extends the existing boot overlay with personality.
 
-- [ ] Randomised boot sequence — pool of ~20 quirky messages, pick 4–6 per load, display sequentially with `[ OK ]` / `[DONE]` suffixes
+- [x] Randomised boot sequence — pool of ~20 quirky messages, pick 4–6 per load, display sequentially with `[ OK ]` / `[DONE]` suffixes
 - [ ] Snake easter egg — triggered by typing `TONIC` anywhere on page; fullscreen, existing palette; ESC or game-over dismisses
 
 ## Iteration 9 — Item detail modal + links out ⬜ planned 2026-02-22
