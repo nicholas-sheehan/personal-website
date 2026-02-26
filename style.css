@@ -833,6 +833,10 @@ main {
     animation: none;
     opacity: 0.6;
   }
+
+  .boot-overlay {
+    transition: none;
+  }
 }
 
 
