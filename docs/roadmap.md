@@ -83,13 +83,18 @@ Theatrical delight. Extends the existing boot overlay with personality.
 - [x] Randomised boot sequence — pool of ~20 quirky messages, pick 4–6 per load, display sequentially with `[ OK ]` / `[DONE]` suffixes
 - [x] Snake easter egg — triggered by typing `SNAKE` anywhere on page; fullscreen, existing palette; ESC or game-over dismisses
 
-## Iteration 9 — Item detail modal + links out ⬜ planned 2026-02-22
+## Iteration 9 — Item detail modal + links out ✅ shipped 2026-02-28
 Makes content interactive and connected to source services.
 
-- [ ] Click any panel item → in-page modal overlay (accent border, monospace, ESC to dismiss)
-- [ ] Modal shows richer data stored as `data-*` attributes at build time: book cover + description, Last.fm album + bio, article excerpt
-- [ ] "View on [Service] →" link inside each modal
-- [ ] TMDB integration for films — decision deferred to implementation (director, synopsis, poster vs. build-time Letterboxd data only)
+- [x] Click any panel item → in-page modal overlay (accent border, monospace, ESC to dismiss)
+- [x] Modal shows richer data stored as `data-*` attributes at build time: book cover + description, Last.fm album + bio, article excerpt
+- [x] "View on [Service] →" link inside each modal
+- [x] TMDB integration for films — poster, director, synopsis via TMDB API (TMDB_API_KEY secret)
+
+**Extras landed with this iteration:**
+- Frontend-designer review: `[ X ]` close button, OS window chrome header, 400px max-width, cover image left-aligned 80px wide, backdrop-filter blur, modal link styled as panel-footer-link
+- Fixed Last.fm bio suffix regex (`Read more on Last.fm` not `Read more about`)
+- Consistent `html.escape(quote=True)` on all data attribute values
 
 ## Iteration 10 — Currently playing (live API) ⬜ planned 2026-02-22
 First live data source — small serverless layer alongside the static site.
