@@ -682,7 +682,7 @@ def _strip_tracking_params(url: str) -> str:
 
 
 def fetch_instapaper_starred(tokens: dict) -> list[dict]:
-    """Fetch starred bookmarks from Instapaper."""
+    """Fetch starred bookmarks from Instapaper. Returns list of {title, url, description} dicts."""
     url = f"{INSTAPAPER_API}/api/1.1/bookmarks/list"
     body_params = {
         "folder_id": "starred",
@@ -706,33 +706,45 @@ def fetch_instapaper_starred(tokens: dict) -> list[dict]:
         articles.append({
             "title": item.get("title", "Untitled"),
             "url": _strip_tracking_params(item.get("url", "#")),
+            "description": item.get("description", ""),
         })
     return articles
 
 
 def build_article_html(articles: list[dict]) -> str:
-    """Turn a list of articles into panel-row divs with links."""
+    """Turn a list of articles into panel-row divs (modal-triggered, no direct links)."""
     if not articles:
         return '                <div class="panel-row"><div class="row-content">Nothing yet — check back soon.</div></div>'
     lines = []
     for i, article in enumerate(articles):
         t = html.escape(article["title"])
-        u = html.escape(article["url"])
+        u = html.escape(article["url"], quote=True)
         domain = urllib.parse.urlparse(article["url"]).hostname or ""
         domain = domain.removeprefix("www.")
-        source_html = f'\n                          <span class="article-source">{html.escape(domain)}</span>' if domain else ""
+        source_html = f'\n                    <span class="article-source">{html.escape(domain)}</span>' if domain else ""
         idx = f"{i + 1:02d}"
+
+        # Data attrs for modal
+        dt = html.escape(article["title"], quote=True)
+        data = (
+            f' role="button" tabindex="0"'
+            f' data-modal-type="article"'
+            f' data-title="{dt}"'
+            f' data-url="{u}"'
+        )
+        if domain:
+            data += f' data-source="{html.escape(domain, quote=True)}"'
+        desc = article.get("description", "")
+        if len(desc) > 400:
+            desc = desc[:397] + "…"
+        if desc:
+            data += f' data-description="{html.escape(desc, quote=True)}"'
+
         lines.append(
-            f'                <div class="panel-row">\n'
+            f'                <div class="panel-row"{data}>\n'
             f'                  <span class="row-index">{idx}</span>\n'
             f'                  <div class="row-content">\n'
-            f'                    <a href="{u}" target="_blank" rel="noopener noreferrer">\n'
-            f'                      <div class="article-row-inner">\n'
-            f'                        <div>\n'
-            f'                          <div class="article-title">{t}</div>{source_html}\n'
-            f'                        </div>\n'
-            f'                      </div>\n'
-            f'                    </a>\n'
+            f'                    <div class="article-title">{t}</div>{source_html}\n'
             f'                  </div>\n'
             f'                </div>'
         )
