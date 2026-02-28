@@ -90,6 +90,9 @@ INSTAPAPER_LIMIT = CONFIG["sources"]["instapaper"]["limit"]
 LASTFM_USERNAME = CONFIG["sources"]["lastfm"]["username"]
 LASTFM_API_KEY = os.environ.get("LASTFM_API_KEY", "")
 LASTFM_LIMIT = CONFIG["sources"]["lastfm"]["limit"]
+TMDB_API_KEY = os.environ.get("TMDB_API_KEY", "")
+TMDB_API = "https://api.themoviedb.org/3"
+TMDB_IMG = "https://image.tmdb.org/t/p/w300"
 
 INDEX_PATH = "index.html"
 STYLE_PATH = "style.css"
@@ -263,6 +266,63 @@ def _star_rating(rating: float) -> str:
     return "★" * full + ("½" if half else "")
 
 
+def fetch_tmdb_data(title: str, year: str, api_key: str) -> dict:
+    """Fetch poster, director, and synopsis from TMDB. Returns {} on failure or missing key."""
+    if not api_key:
+        return {}
+    params = urllib.parse.urlencode({"query": title, "year": year, "api_key": api_key})
+    req = urllib.request.Request(
+        f"{TMDB_API}/search/movie?{params}",
+        headers={"User-Agent": "Mozilla/5.0"},
+    )
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        data = json.loads(resp.read().decode())
+    results = data.get("results", [])
+    if not results:
+        return {}
+    movie = results[0]
+    movie_id = movie.get("id")
+    poster_path = movie.get("poster_path", "")
+    overview = movie.get("overview", "")
+    if len(overview) > 400:
+        overview = overview[:397] + "…"
+
+    director = ""
+    if movie_id:
+        req2 = urllib.request.Request(
+            f"{TMDB_API}/movie/{movie_id}/credits?api_key={api_key}",
+            headers={"User-Agent": "Mozilla/5.0"},
+        )
+        with urllib.request.urlopen(req2, timeout=10) as resp2:
+            credits = json.loads(resp2.read().decode())
+        for crew_member in credits.get("crew", []):
+            if crew_member.get("job") == "Director":
+                director = crew_member.get("name", "")
+                break
+
+    return {
+        "poster": f"{TMDB_IMG}{poster_path}" if poster_path else "",
+        "director": director,
+        "synopsis": overview,
+    }
+
+
+def enrich_films_with_tmdb(films: list[dict], api_key: str) -> list[dict]:
+    """Add poster/director/synopsis to each film dict via TMDB. Failures are skipped."""
+    if not api_key:
+        print("  ⚠  TMDB_API_KEY not set — film modals will show Letterboxd data only.")
+        return films
+    for film in films:
+        try:
+            tmdb = fetch_tmdb_data(film["title"], film.get("year", ""), api_key)
+            film.update(tmdb)
+            if tmdb.get("director"):
+                print(f"    TMDB: {film['title']} → dir. {tmdb['director']}")
+        except Exception as e:
+            print(f"  ⚠  TMDB lookup failed for {film['title']!r}: {e}")
+    return films
+
+
 def build_film_html(films: list[dict]) -> str:
     """Turn a list of films into panel-row divs."""
     if not films:
@@ -270,16 +330,37 @@ def build_film_html(films: list[dict]) -> str:
     lines = []
     for i, film in enumerate(films):
         t = html.escape(film["title"])
-        y = html.escape(film["year"]) if film["year"] else ""
+        y = html.escape(film["year"]) if film.get("year") else ""
         stars = _star_rating(film["rating"])
         idx = f"{i + 1:02d}"
+
+        # Data attrs for modal
+        dt = html.escape(film["title"], quote=True)
+        data = (
+            f' role="button" tabindex="0"'
+            f' data-modal-type="film"'
+            f' data-title="{dt}"'
+        )
+        if film.get("year"):
+            data += f' data-year="{html.escape(film["year"], quote=True)}"'
+        if stars:
+            data += f' data-stars="{html.escape(stars, quote=True)}"'
+        if film.get("url"):
+            data += f' data-url="{html.escape(film["url"], quote=True)}"'
+        if film.get("poster"):
+            data += f' data-poster="{html.escape(film["poster"], quote=True)}"'
+        if film.get("director"):
+            data += f' data-director="{html.escape(film["director"], quote=True)}"'
+        if film.get("synopsis"):
+            data += f' data-synopsis="{html.escape(film["synopsis"], quote=True)}"'
+
         if stars:
             aria = f' aria-label="Rated {film["rating"]} out of 5"'
             stars_html = f'\n                  <span class="row-meta film-stars"{aria}>{stars}</span>'
         else:
             stars_html = ""
         lines.append(
-            f'                <div class="panel-row">\n'
+            f'                <div class="panel-row"{data}>\n'
             f'                  <span class="row-index">{idx}</span>\n'
             f'                  <div class="row-content">\n'
             f'                    <div class="film-title">{t}</div>\n'
