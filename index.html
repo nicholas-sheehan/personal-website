@@ -1454,7 +1454,7 @@ main {
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-02-28T06:22:26Z">28 Feb 2026 at 06:22 UTC</span><span class="next-update" data-next="2026-02-28T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-02-28T06:30:29Z">28 Feb 2026 at 06:30 UTC</span><span class="next-update" data-next="2026-02-28T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
@@ -1515,5 +1515,157 @@ main {
           </div>
         </div>
       </div>
+      <script>
+        (function () {
+          var overlay = document.getElementById('detail-modal');
+          var box = overlay.querySelector('.modal-box');
+          var closeBtn = overlay.querySelector('.modal-close');
+          var coverEl = overlay.querySelector('.modal-cover');
+          var titleEl = overlay.querySelector('.modal-title');
+          var metaEl = overlay.querySelector('.modal-meta');
+          var descEl = overlay.querySelector('.modal-desc');
+          var linkEl = overlay.querySelector('.modal-link');
+          var typeLabelEl = overlay.querySelector('.modal-type-label');
+          var indexEl = overlay.querySelector('.modal-index');
+          var activeRow = null;
+
+          var TYPE_LABELS = {
+            book:    '[▓] BOOKS',
+            film:    '[▶] FILMS',
+            music:   '[♫] MUSIC',
+            article: '[≡] ARTICLES',
+          };
+
+          function openModal(row) {
+            var type = row.dataset.modalType;
+            var title = row.dataset.title || '';
+            var url = row.dataset.url || '#';
+
+            // Accent colour and type label
+            box.dataset.modalType = type;
+            typeLabelEl.textContent = TYPE_LABELS[type] || '';
+
+            // Item index within its panel (e.g. "02 / 05")
+            var panelBody = row.closest('.panel-body');
+            var siblings = panelBody
+              ? Array.from(panelBody.querySelectorAll('.panel-row[role="button"]'))
+              : [row];
+            var idx = siblings.indexOf(row) + 1;
+            indexEl.textContent = idx + ' / ' + siblings.length;
+
+            // Title
+            titleEl.textContent = title;
+
+            // Cover / poster image
+            var coverSrc = type === 'film'
+              ? (row.dataset.poster || '')
+              : (row.dataset.cover || '');
+            if (coverSrc) {
+              coverEl.src = coverSrc;
+              coverEl.alt = title;
+              if (type === 'music') {
+                coverEl.setAttribute('data-music', '');
+              } else {
+                coverEl.removeAttribute('data-music');
+              }
+              coverEl.hidden = false;
+            } else {
+              coverEl.src = '';
+              coverEl.hidden = true;
+            }
+
+            // Meta, description, link -- per content type
+            var meta = '', desc = '', linkText = '';
+
+            if (type === 'book') {
+              var bookParts = [row.dataset.author, row.dataset.stars].filter(Boolean);
+              meta = bookParts.join(' · ');
+              desc = row.dataset.description || '';
+              linkText = '-> View on Goodreads';
+            } else if (type === 'film') {
+              var director = row.dataset.director ? 'dir. ' + row.dataset.director : '';
+              var filmParts = [row.dataset.year, row.dataset.stars, director].filter(Boolean);
+              meta = filmParts.join(' · ');
+              desc = row.dataset.synopsis || '';
+              linkText = '-> View on Letterboxd';
+            } else if (type === 'music') {
+              var plays = row.dataset.plays ? row.dataset.plays + ' plays' : '';
+              var musicParts = [row.dataset.artist, row.dataset.album, plays].filter(Boolean);
+              meta = musicParts.join(' · ');
+              desc = row.dataset.bio || '';
+              linkText = '-> Listen on Last.fm';
+            } else if (type === 'article') {
+              meta = row.dataset.source || '';
+              desc = row.dataset.description || '';
+              linkText = meta ? '-> Read on ' + meta : '-> Read article';
+            }
+
+            metaEl.textContent = meta;
+
+            if (desc) {
+              descEl.textContent = desc;
+              descEl.hidden = false;
+            } else {
+              descEl.hidden = true;
+            }
+
+            linkEl.textContent = linkText;
+            linkEl.href = url;
+
+            // Show modal
+            overlay.hidden = false;
+            document.body.style.overflow = 'hidden';
+            activeRow = row;
+            closeBtn.focus();
+          }
+
+          function closeModal() {
+            overlay.hidden = true;
+            document.body.style.overflow = '';
+            if (activeRow) {
+              activeRow.focus();
+              activeRow = null;
+            }
+          }
+
+          // Attach click and keyboard to each interactive row
+          document.querySelectorAll('.panel-row[role="button"]').forEach(function (row) {
+            row.addEventListener('click', function () { openModal(row); });
+            row.addEventListener('keydown', function (e) {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openModal(row);
+              }
+            });
+          });
+
+          // Close handlers
+          closeBtn.addEventListener('click', closeModal);
+          overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) closeModal();
+          });
+          document.addEventListener('keydown', function (e) {
+            if (!overlay.hidden && e.key === 'Escape') closeModal();
+          });
+
+          // Basic tab trap within modal
+          overlay.addEventListener('keydown', function (e) {
+            if (overlay.hidden || e.key !== 'Tab') return;
+            var focusable = Array.from(
+              overlay.querySelectorAll('button, a[href]')
+            ).filter(function (el) { return !el.hidden; });
+            if (focusable.length === 0) return;
+            var first = focusable[0];
+            var last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+              e.preventDefault();
+              last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+              e.preventDefault();
+              first.focus();
+            }
+          });
+        })();
+      </script>
 </body>
 </html>
