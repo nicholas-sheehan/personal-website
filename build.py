@@ -748,7 +748,7 @@ LASTFM_API = "https://ws.audioscrobbler.com/2.0/"
 
 
 def fetch_lastfm_top_tracks(username: str, api_key: str, limit: int) -> list[dict]:
-    """Return a list of {title, artist, plays} dicts from Last.fm top tracks."""
+    """Return a list of {title, artist, plays, url} dicts from Last.fm top tracks."""
     params = urllib.parse.urlencode({
         "method": "user.getTopTracks",
         "user": username,
@@ -802,7 +802,7 @@ def fetch_lastfm_artist_info(artist: str, api_key: str) -> dict:
         data = json.loads(resp.read().decode())
     bio_raw = data.get("artist", {}).get("bio", {}).get("summary", "")
     bio = _strip_html(bio_raw)
-    bio = re.sub(r"\s*Read more about\b.*$", "", bio, flags=re.IGNORECASE | re.DOTALL).strip()
+    bio = re.sub(r"\s*Read more on Last\.fm\b.*$", "", bio, flags=re.IGNORECASE).strip()
     if len(bio) > 300:
         bio = bio[:297] + "…"
     return {"bio": bio}
@@ -820,7 +820,7 @@ def enrich_tracks_with_lastfm(tracks: list[dict], api_key: str) -> list[dict]:
             track.update(info)
         except Exception as e:
             print(f"  ⚠  Last.fm track.getInfo failed for {track['title']!r}: {e}")
-        if artist not in artist_bios:
+        if artist not in artist_bios and artist:
             try:
                 a_info = fetch_lastfm_artist_info(artist, api_key)
                 artist_bios[artist] = a_info.get("bio", "")
@@ -851,7 +851,7 @@ def build_music_html(tracks: list[dict]) -> str:
             f' data-modal-type="music"'
             f' data-title="{dt}"'
             f' data-artist="{da}"'
-            f' data-plays="{p}"'
+            f' data-plays="{html.escape(str(p), quote=True)}"'
         )
         if track.get("url"):
             data += f' data-url="{html.escape(track["url"], quote=True)}"'
