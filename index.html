@@ -1581,23 +1581,23 @@ main {
               var bookParts = [row.dataset.author, row.dataset.stars].filter(Boolean);
               meta = bookParts.join(' · ');
               desc = row.dataset.description || '';
-              linkText = '-> View on Goodreads';
+              linkText = '→ View on Goodreads';
             } else if (type === 'film') {
               var director = row.dataset.director ? 'dir. ' + row.dataset.director : '';
               var filmParts = [row.dataset.year, row.dataset.stars, director].filter(Boolean);
               meta = filmParts.join(' · ');
               desc = row.dataset.synopsis || '';
-              linkText = '-> View on Letterboxd';
+              linkText = '→ View on Letterboxd';
             } else if (type === 'music') {
               var plays = row.dataset.plays ? row.dataset.plays + ' plays' : '';
               var musicParts = [row.dataset.artist, row.dataset.album, plays].filter(Boolean);
               meta = musicParts.join(' · ');
               desc = row.dataset.bio || '';
-              linkText = '-> Listen on Last.fm';
+              linkText = '→ Listen on Last.fm';
             } else if (type === 'article') {
               meta = row.dataset.source || '';
               desc = row.dataset.description || '';
-              linkText = meta ? '-> Read on ' + meta : '-> Read article';
+              linkText = meta ? '→ Read on ' + meta : '→ Read article';
             }
 
             metaEl.textContent = meta;
