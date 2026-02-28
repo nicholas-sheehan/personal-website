@@ -138,7 +138,7 @@ def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
         rating_text = rating_el.text.strip() if rating_el is not None and rating_el.text else "0"
         rating = min(int(rating_text), 5) if rating_text.isdigit() else 0
         cover = cover_el.text.strip() if cover_el is not None and cover_el.text else ""
-        description = desc_el.text.strip() if desc_el is not None and desc_el.text else ""
+        description = _strip_html(desc_el.text.strip()) if desc_el is not None and desc_el.text else ""
         if len(description) > 400:
             description = description[:397] + "…"
         url = link_el.text.strip() if link_el is not None and link_el.text else ""
