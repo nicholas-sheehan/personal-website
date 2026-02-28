@@ -106,7 +106,7 @@ ASSETS_DIR = "assets"
 # ══════════════════════════════════════════════════════════════════
 
 def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
-    """Return a list of {title, author, rating} dicts from the RSS feed."""
+    """Return a list of {title, author, rating, cover, description, url} dicts from the RSS feed."""
     req = urllib.request.Request(rss_url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=15) as resp:
         tree = ET.parse(resp)
@@ -116,6 +116,9 @@ def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
         title_el = item.find("title")
         author_el = item.find("author_name")
         rating_el = item.find("user_rating")
+        cover_el = item.find("book_image_url")
+        desc_el = item.find("book_description")
+        link_el = item.find("link")
 
         if title_el is None or title_el.text is None:
             continue
@@ -124,7 +127,16 @@ def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
         author = author_el.text.strip() if author_el is not None and author_el.text else "Unknown"
         rating_text = rating_el.text.strip() if rating_el is not None and rating_el.text else "0"
         rating = min(int(rating_text), 5) if rating_text.isdigit() else 0
-        books.append({"title": title, "author": author, "rating": rating})
+        cover = cover_el.text.strip() if cover_el is not None and cover_el.text else ""
+        description = desc_el.text.strip() if desc_el is not None and desc_el.text else ""
+        if len(description) > 400:
+            description = description[:397] + "…"
+        url = link_el.text.strip() if link_el is not None and link_el.text else ""
+
+        books.append({
+            "title": title, "author": author, "rating": rating,
+            "cover": cover, "description": description, "url": url,
+        })
 
         if limit and len(books) >= limit:
             break
@@ -142,13 +154,32 @@ def build_book_html(books: list[dict]) -> str:
         a = html.escape(book["author"])
         rating = book.get("rating", 0)
         idx = f"{i + 1:02d}"
+
+        # Data attrs for modal
+        dt = html.escape(book["title"], quote=True)
+        da = html.escape(book["author"], quote=True)
+        data = (
+            f' role="button" tabindex="0"'
+            f' data-modal-type="book"'
+            f' data-title="{dt}"'
+            f' data-author="{da}"'
+        )
+        if rating:
+            data += f' data-stars="{"★" * rating}"'
+        if book.get("cover"):
+            data += f' data-cover="{html.escape(book["cover"], quote=True)}"'
+        if book.get("description"):
+            data += f' data-description="{html.escape(book["description"], quote=True)}"'
+        if book.get("url"):
+            data += f' data-url="{html.escape(book["url"], quote=True)}"'
+
         if rating:
             aria = f' aria-label="Rated {rating} out of 5"'
             stars_html = f'\n                  <span class="row-meta book-stars"{aria}>{"★" * rating}</span>'
         else:
             stars_html = ""
         lines.append(
-            f'                <div class="panel-row">\n'
+            f'                <div class="panel-row"{data}>\n'
             f'                  <span class="row-index">{idx}</span>\n'
             f'                  <div class="row-content">\n'
             f'                    <div class="book-title">{t}</div>\n'
