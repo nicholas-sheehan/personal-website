@@ -40,7 +40,7 @@ _Brainstormed 2026-02-22. All five iterations approved._
 - Pool large enough that runs feel unique; overlay fades as it does now after sequence completes
 
 ### Easter egg — Snake
-- Trigger: typing the word `TONIC` anywhere on the page (global keystroke listener, silent buffer)
+- Trigger: typing the word `SNAKE` anywhere on the page (global keystroke listener, silent buffer)
 - Only discoverable by someone actively poking around
 - Snake renders fullscreen over the site using the existing palette — green snake on `#050a14`, accent colours
 - ESC or game-over dismisses it and returns to the site
