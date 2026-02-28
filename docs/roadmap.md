@@ -77,11 +77,11 @@ Visual identity refresh — bring favicon and OG image in line with the Y2K aest
 - [x] Favicon redesign — dark `#050a14` background, accent-blue "N" in JetBrains Mono Bold; `favicon.png` (48px), `favicon-192.png` (192px), `favicon.ico` (multi-res 16/32/48)
 - [x] OG image redesign — Y2K palette (`#050a14`), top+left accent border, JetBrains Mono font, `nicsheehan.com` label bottom-right; avatar layout unchanged
 
-## Iteration 8 — Boot sequence + Easter egg ⬜ planned 2026-02-22
+## Iteration 8 — Boot sequence + Easter egg ✅ shipped 2026-02-28
 Theatrical delight. Extends the existing boot overlay with personality.
 
 - [x] Randomised boot sequence — pool of ~20 quirky messages, pick 4–6 per load, display sequentially with `[ OK ]` / `[DONE]` suffixes
-- [ ] Snake easter egg — triggered by typing `TONIC` anywhere on page; fullscreen, existing palette; ESC or game-over dismisses
+- [x] Snake easter egg — triggered by typing `SNAKE` anywhere on page; fullscreen, existing palette; ESC or game-over dismisses
 
 ## Iteration 9 — Item detail modal + links out ⬜ planned 2026-02-22
 Makes content interactive and connected to source services.
