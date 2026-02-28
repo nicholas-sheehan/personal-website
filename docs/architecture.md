@@ -5,7 +5,7 @@ nicsheehan.com is a fully headless static site. All content is fetched from exte
 ## How it works
 
 ```mermaid
-flowchart LR
+flowchart TD
     subgraph sources["External Sources — build time"]
         GV[Gravatar API]
         GR[Goodreads RSS]
