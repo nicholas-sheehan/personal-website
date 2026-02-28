@@ -2,13 +2,14 @@
 """
 Build script for nicsheehan.com
 
-Fetches data from six sources and writes them into index.html:
+Fetches data from seven sources and writes them into index.html:
   1. site.toml — site metadata, analytics, and data source config
   2. Gravatar profile (via REST API — GRAVATAR_API_KEY env var for full data)
   3. Goodreads "currently reading" and "read" shelves (via RSS — no auth needed)
   4. Letterboxd recently watched films (via RSS — no auth needed)
   5. Instapaper starred/liked articles (via API — OAuth 1.0a)
   6. Last.fm top tracks this month (via REST API — LASTFM_API_KEY env var)
+  7. TMDB (via REST API — TMDB_API_KEY env var, for film poster/director data; graceful fallback if unset)
 
 Usage:
     python build.py              # full build
@@ -42,6 +43,11 @@ Setup — Instapaper:
 Setup — Last.fm:
     Set sources.lastfm.username in site.toml to your Last.fm username.
     Set LASTFM_API_KEY env var (get one at last.fm/api/account/create).
+
+Setup — TMDB:
+    Create a free account at themoviedb.org and generate an API key (v3 auth).
+    Set TMDB_API_KEY env var (get one at themoviedb.org/settings/api).
+    Falls back gracefully if unset — film modals show Letterboxd data only.
 """
 
 import base64
@@ -90,6 +96,7 @@ INSTAPAPER_LIMIT = CONFIG["sources"]["instapaper"]["limit"]
 LASTFM_USERNAME = CONFIG["sources"]["lastfm"]["username"]
 LASTFM_API_KEY = os.environ.get("LASTFM_API_KEY", "")
 LASTFM_LIMIT = CONFIG["sources"]["lastfm"]["limit"]
+
 TMDB_API_KEY = os.environ.get("TMDB_API_KEY", "")
 TMDB_API = "https://api.themoviedb.org/3"
 TMDB_IMG = "https://image.tmdb.org/t/p/w300"
@@ -295,8 +302,9 @@ def fetch_tmdb_data(title: str, year: str, api_key: str) -> dict:
 
     director = ""
     if movie_id:
+        credits_params = urllib.parse.urlencode({"api_key": api_key})
         req2 = urllib.request.Request(
-            f"{TMDB_API}/movie/{movie_id}/credits?api_key={api_key}",
+            f"{TMDB_API}/movie/{movie_id}/credits?{credits_params}",
             headers={"User-Agent": "Mozilla/5.0"},
         )
         with urllib.request.urlopen(req2, timeout=10) as resp2:
@@ -1077,6 +1085,8 @@ def cmd_build():
         try:
             films = fetch_letterboxd(LETTERBOXD_RSS, LETTERBOXD_LIMIT)
             print(f"  Found {len(films)} recent film(s).")
+            print("Enriching films via TMDB…")
+            films = enrich_films_with_tmdb(films, TMDB_API_KEY)
             src = inject(src, LETTERBOXD_PATTERN, build_film_html(films), "letterboxd")
         except Exception as e:
             print(f"  ⚠  Letterboxd fetch failed: {e} — keeping existing content")
@@ -1104,6 +1114,8 @@ def cmd_build():
         try:
             tracks = fetch_lastfm_top_tracks(LASTFM_USERNAME, LASTFM_API_KEY, LASTFM_LIMIT)
             print(f"  Found {len(tracks)} top track(s).")
+            print("Enriching tracks via Last.fm…")
+            tracks = enrich_tracks_with_lastfm(tracks, LASTFM_API_KEY)
             src = inject(src, MUSIC_PATTERN, build_music_html(tracks), "music")
         except Exception as e:
             print(f"  ⚠  Last.fm fetch failed: {e} — keeping existing content")
