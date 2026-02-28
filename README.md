@@ -4,7 +4,7 @@ Personal website for Nicholas Sheehan. A static site that pulls all its content 
 
 ## How it works
 
-`build.py` fetches data from five sources, injects it into `index.html`, and GitHub Pages serves the result. A GitHub Actions workflow runs this daily at 9am AEDT / 8am AEST, commits any changes, and deploys.
+`build.py` fetches data from external services, injects it into `index.html`, and GitHub Pages serves the result. A GitHub Actions workflow runs this daily at 9am AEDT / 8am AEST, commits any changes, and deploys.
 
 ## Content sources
 
@@ -17,6 +17,7 @@ Personal website for Nicholas Sheehan. A static site that pulls all its content 
 | **Recently watched** | [Letterboxd](https://letterboxd.com) | Log and rate films on Letterboxd. The 5 most recent entries are shown via RSS. |
 | **Reads I recommend** | [Instapaper](https://www.instapaper.com) | Star articles in Instapaper. The 5 most recent starred articles are shown. |
 | **Listening to lately** | [Last.fm](https://www.last.fm) | Your top 5 tracks of the current month are pulled automatically via the Last.fm API. |
+| **Film enrichment** | [TMDB](https://www.themoviedb.org) | Poster, director, and synopsis are fetched automatically for each film. Gracefully skipped if key is unset. |
 
 ## When does the site update?
 
@@ -36,6 +37,7 @@ These are configured in the repo under Settings → Secrets and variables → Ac
 | `INSTAPAPER_OAUTH_TOKEN` | Instapaper user token (generated via `build.py auth`) |
 | `INSTAPAPER_OAUTH_TOKEN_SECRET` | Instapaper user token secret |
 | `LASTFM_API_KEY` | Last.fm API key (get one at last.fm/api/account/create) |
+| `TMDB_API_KEY` | TMDB API key for film posters/director/synopsis (get one at themoviedb.org/settings/api) |
 
 ## Running locally
 
@@ -47,6 +49,7 @@ INSTAPAPER_CONSUMER_SECRET="your-secret" \
 INSTAPAPER_OAUTH_TOKEN="your-token" \
 INSTAPAPER_OAUTH_TOKEN_SECRET="your-secret" \
 LASTFM_API_KEY="your-key" \
+TMDB_API_KEY="your-key" \
 python3 build.py
 ```
 
