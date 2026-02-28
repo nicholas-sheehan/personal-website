@@ -10,7 +10,7 @@
 Two theatrical features that deepen the Y2K / PS2 Memory Card aesthetic:
 
 1. **Randomised boot sequence** — replaces the current static 2-line boot overlay with a JS-driven sequence of fake system-check messages, picked randomly per load.
-2. **Snake easter egg** — a fullscreen Snake game triggered by typing `TONIC` on a keyboard.
+2. **Snake easter egg** — a fullscreen Snake game triggered by typing `SNAKE` on a keyboard.
 
 Both are implemented as static inline `<script>` blocks in `index.html`, outside any `<!-- marker -->` pairs, so CI builds never touch them. No changes to `build.py`.
 
@@ -112,7 +112,7 @@ JS removes this animation before taking control.
 
 ### Trigger
 
-`keydown` listener buffers last 5 keys. Matches `TONIC` (case-insensitive). Skipped on touch-primary devices (`pointer: coarse` media query check on init).
+`keydown` listener buffers last 5 keys. Matches `SNAKE` (case-insensitive). Skipped on touch-primary devices (`pointer: coarse` media query check on init).
 
 ### Overlay
 
