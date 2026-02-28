@@ -586,8 +586,18 @@ main {
   border-bottom: none;
 }
 
-.panel--articles .panel-row:hover {
+/* Interactive rows (modal trigger) */
+.panel-row[role="button"] {
+  cursor: pointer;
+}
+
+.panel-row[role="button"]:hover {
   background: var(--panel-hover);
+}
+
+.panel-row[role="button"]:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -2px;
 }
 
 /* Row index number */
@@ -766,31 +776,7 @@ main {
   font-weight: 400;
   color: var(--text-primary);
   line-height: 1.45;
-  text-decoration: underline;
-  text-decoration-color: var(--border-bright);
-  text-underline-offset: 0.15em;
   text-shadow: 0 0 6px rgba(180, 210, 255, 0.12);
-  transition: color 0.1s ease, text-decoration-color 0.1s ease;
-}
-
-.panel-row a {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-
-.panel-row a:hover .article-title {
-  color: var(--accent-hover);
-  text-decoration-color: var(--accent-hover);
-}
-
-.panel-row a:focus-visible {
-  outline: none;
-}
-
-.panel-row a:focus-visible .article-title {
-  outline: 1px solid var(--accent);
-  outline-offset: 2px;
 }
 
 /* Article source domain tag */
@@ -899,19 +885,6 @@ main {
     flex-wrap: nowrap;
   }
 
-  /* Article source shifts right on desktop */
-  .article-row-inner {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--space-3);
-  }
-
-  /* Allow article title to truncate inside the flex container */
-  .article-row-inner > div {
-    min-width: 0;
-  }
-
   .article-source {
     margin-top: 0;
     flex-shrink: 0;
@@ -986,6 +959,166 @@ main {
   }
 }
 
+
+/* ──────────────────────────────────────────────
+   ITEM DETAIL MODAL
+   ────────────────────────────────────────────── */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: rgba(5, 10, 20, 0.85);
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  .modal-overlay { backdrop-filter: blur(2px); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .modal-overlay { animation: modal-fade-in 0.15s ease; }
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-box {
+  background: var(--panel);
+  border-top: 4px solid var(--modal-accent, var(--accent));
+  max-width: 400px;
+  width: 100%;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  font-family: var(--font-mono);
+}
+
+/* Accent colour per content type */
+.modal-box[data-modal-type="book"]    { --modal-accent: #22c55e; }
+.modal-box[data-modal-type="film"]    { --modal-accent: #f59e0b; }
+.modal-box[data-modal-type="music"]   { --modal-accent: #a855f7; }
+.modal-box[data-modal-type="article"] { --modal-accent: #3b82f6; }
+
+/* Header band — matches .panel-header rhythm */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.modal-close:hover { color: var(--text-primary); }
+
+.modal-close:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.modal-type-label {
+  color: var(--modal-accent, var(--accent));
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  flex: 1;
+}
+
+.modal-index {
+  color: var(--text-tertiary);
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+/* Content area */
+.modal-content {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+.modal-cover {
+  width: 80px;
+  height: auto;
+  max-height: 120px;
+  object-fit: cover;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.modal-cover[data-music] {
+  width: 64px;
+}
+
+.modal-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Typography */
+.modal-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  text-shadow: 0 0 6px rgba(180, 210, 255, 0.12);
+  margin: 0;
+}
+
+.modal-meta {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.modal-desc {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  margin: 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Outbound link — matches .panel-footer-link style */
+.modal-link {
+  display: inline-block;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  margin-top: var(--space-1);
+}
+
+.modal-link:hover { color: var(--text-secondary); }
+
+.modal-link:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
   </style>
 <!-- style:end -->
 </head>
@@ -1052,7 +1185,7 @@ main {
           <!-- Currently reading data (hidden — used by status strip above) -->
           <div hidden aria-hidden="true">
 <!-- goodreads:start -->
-                <div class="panel-row">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="Zorba the Greek" data-author="Nikos Kazantzakis" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1391846500l/6163496._SY75_.jpg" data-description="The classic novel, international sensation, and inspiration for the film starring Anthony Quinn explores the struggle between the aesthetic and the rational, the inner life and the life of the mind.&lt;br /&gt;&lt;br /&gt;The classic novel Zorba the Greek is the story of two men, their incredible friendship, and the importance of living life to the fullest. Zorba, a Greek working man, is a larger-than-life…" data-url="https://www.goodreads.com/review/show/8331406273?utm_medium=api&amp;utm_source=rss">
                   <span class="row-index">01</span>
                   <div class="row-content">
                     <div class="book-title">Zorba the Greek</div>
@@ -1076,7 +1209,7 @@ main {
               </div>
               <div class="panel-body">
 <!-- goodreads-read:start -->
-                <div class="panel-row">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="The Fall" data-author="Albert Camus" data-stars="★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1606992083l/50742903._SY75_.jpg" data-description="Jean-Baptiste Clamence, a successful Parisian barrister, has come to recognize the deep-seated hypocrisy of his existence. His epigrammatic and, above all, discomforting monologue gradually saps, then undermines, the reader&#x27;s own complacency." data-url="https://www.goodreads.com/review/show/7733808121?utm_medium=api&amp;utm_source=rss">
                   <span class="row-index">01</span>
                   <div class="row-content">
                     <div class="book-title">The Fall</div>
@@ -1084,7 +1217,7 @@ main {
                   </div>
                   <span class="row-meta book-stars" aria-label="Rated 3 out of 5">★★★</span>
                 </div>
-                <div class="panel-row">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="EXCLUSIVE!: Dispatches from The Paris End" data-author="Cameron Hurst" data-stars="★★★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1761610426l/243266424._SX50_.jpg" data-description="A few years ago, Cameron Hurst, Sally Olds, and Oscar Schwartz sat down for a beer at a Melbourne pub and decided to start a newsletter. It would be called &lt;i&gt;The Paris End&lt;/i&gt;, after the aspirationally cosmopolitan (yet persistently grotty) hilltop at the eastern end of Melbourne’s city centre. It would seek to make much of a striving metropolis. It would publish hyperlocal, irreverent, long-f…" data-url="https://www.goodreads.com/review/show/8143798699?utm_medium=api&amp;utm_source=rss">
                   <span class="row-index">02</span>
                   <div class="row-content">
                     <div class="book-title">EXCLUSIVE!: Dispatches from The Paris End</div>
@@ -1092,7 +1225,7 @@ main {
                   </div>
                   <span class="row-meta book-stars" aria-label="Rated 5 out of 5">★★★★★</span>
                 </div>
-                <div class="panel-row">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="When the Going Was Good: An Editor&#x27;s Adventures During the Last Golden Age of Magazines" data-author="Graydon Carter" data-stars="★★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1727232797l/218494525._SY75_.jpg" data-description="&lt;b&gt;From the pages of &lt;i&gt;Vanity Fair&lt;/i&gt; to the red carpets of Hollywood, editor Graydon Carter’s memoir revives the glamorous heyday of print magazines when they were at the vanguard of American culture&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;When Graydon Carter was offered the editorship of &lt;i&gt;Vanity Fair &lt;/i&gt;in 1992, he knew he faced an uphill battle—how to make the esteemed and long-established magazine his own. Not…" data-url="https://www.goodreads.com/review/show/7733806182?utm_medium=api&amp;utm_source=rss">
                   <span class="row-index">03</span>
                   <div class="row-content">
                     <div class="book-title">When the Going Was Good: An Editor&#x27;s Adventures During the Last Golden Age of Magazines</div>
@@ -1100,7 +1233,7 @@ main {
                   </div>
                   <span class="row-meta book-stars" aria-label="Rated 4 out of 5">★★★★</span>
                 </div>
-                <div class="panel-row">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="Post Office" data-author="Charles Bukowski" data-stars="★★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1555887577l/40409718._SX50_.jpg" data-description="查尔斯·布考斯基（Charles Bukowski，1920～1994），20世纪美国最有影响力的诗人、小说家之一。阿尔贝•加缪称他为美国当代最伟大的作家，《时代周刊》评论他是美国底层社会的桂冠诗人。他的创作继往开来，独树一帜，被誉为“地狱的海明威”。&lt;br /&gt;&lt;br /&gt;布考斯基年轻时做过洗碗工、卡车司机、邮差、门卫、仓库管理员、电梯操作员等多种底层工作，其写作的主题大多源自他的生活经历。&lt;br /&gt;&lt;br /&gt;《邮差》是布考斯基的长篇小说处女作，也是其代表作之一，至今已被翻译成十六种语言。书中的主人公，人到中年的亨利·切那斯基是美国社会典型的失败者，从事着勉强糊口的邮差工作，支撑他的是啤酒和威士忌、赌马和一夜之欢的女人。每天他从宿醉中挣扎着爬起床，或者徒步于暴晒，或者被雨水浸透，游荡在洛杉矶无数阴暗的角落，试图在混乱、艰难的底层生活的折磨中生存下来……&lt;br /&gt;&lt;br /&gt;布…" data-url="https://www.goodreads.com/review/show/8046872170?utm_medium=api&amp;utm_source=rss">
                   <span class="row-index">04</span>
                   <div class="row-content">
                     <div class="book-title">Post Office</div>
@@ -1108,7 +1241,7 @@ main {
                   </div>
                   <span class="row-meta book-stars" aria-label="Rated 4 out of 5">★★★★</span>
                 </div>
-                <div class="panel-row">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="The Knockout Artist" data-author="Harry Crews" data-stars="★★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1720503597l/200234632._SY75_.jpg" data-description="A favorite of longtime Harry Crews fans, The Knockout Artist (1988) portrays Eugene Talmadge Biggs, a young boxer from rural Georgia whose champion rise is diverted by a vulnerability, or gift, for knocking himself unconscious. As he begins to exploit his talents, the notorious Knockout Artist journeys a hero’s descent into the New Orleans underworld and meets characters who have long since che…" data-url="https://www.goodreads.com/review/show/7961408644?utm_medium=api&amp;utm_source=rss">
                   <span class="row-index">05</span>
                   <div class="row-content">
                     <div class="book-title">The Knockout Artist</div>
@@ -1134,7 +1267,7 @@ main {
               </div>
               <div class="panel-body">
 <!-- letterboxd:start -->
-                <div class="panel-row">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Wuthering Heights" data-year="2026" data-stars="★★" data-url="https://letterboxd.com/tonic2/film/wuthering-heights-2026/">
                   <span class="row-index">01</span>
                   <div class="row-content">
                     <div class="film-title">Wuthering Heights</div>
@@ -1142,7 +1275,7 @@ main {
                   </div>
                   <span class="row-meta film-stars" aria-label="Rated 2.0 out of 5">★★</span>
                 </div>
-                <div class="panel-row">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Marty Supreme" data-year="2025" data-stars="★★★★" data-url="https://letterboxd.com/tonic2/film/marty-supreme/">
                   <span class="row-index">02</span>
                   <div class="row-content">
                     <div class="film-title">Marty Supreme</div>
@@ -1150,7 +1283,7 @@ main {
                   </div>
                   <span class="row-meta film-stars" aria-label="Rated 4.0 out of 5">★★★★</span>
                 </div>
-                <div class="panel-row">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Avatar: Fire and Ash" data-year="2025" data-stars="★★★½" data-url="https://letterboxd.com/tonic2/film/avatar-fire-and-ash/">
                   <span class="row-index">03</span>
                   <div class="row-content">
                     <div class="film-title">Avatar: Fire and Ash</div>
@@ -1158,7 +1291,7 @@ main {
                   </div>
                   <span class="row-meta film-stars" aria-label="Rated 3.5 out of 5">★★★½</span>
                 </div>
-                <div class="panel-row">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="28 Years Later: The Bone Temple" data-year="2026" data-stars="★★★★" data-url="https://letterboxd.com/tonic2/film/28-years-later-the-bone-temple/">
                   <span class="row-index">04</span>
                   <div class="row-content">
                     <div class="film-title">28 Years Later: The Bone Temple</div>
@@ -1166,7 +1299,7 @@ main {
                   </div>
                   <span class="row-meta film-stars" aria-label="Rated 4.0 out of 5">★★★★</span>
                 </div>
-                <div class="panel-row">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Dead Calm" data-year="1989" data-stars="★★★½" data-url="https://letterboxd.com/tonic2/film/dead-calm/">
                   <span class="row-index">05</span>
                   <div class="row-content">
                     <div class="film-title">Dead Calm</div>
@@ -1321,7 +1454,7 @@ main {
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-02-28T04:33:05Z">28 Feb 2026 at 04:33 UTC</span><span class="next-update" data-next="2026-02-28T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-02-28T06:22:26Z">28 Feb 2026 at 06:22 UTC</span><span class="next-update" data-next="2026-02-28T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
@@ -1351,9 +1484,7 @@ main {
   "image": "https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e",
   "sameAs": [
     "https://gravatar.com/nicsheehanau",
-    "https://www.linkedin.com/in/nicsheehan/",
-    "https://www.goodreads.com/user/show/175639385",
-    "https://letterboxd.com/tonic2"
+    "https://www.linkedin.com/in/nicsheehan"
   ]
 }
     </script>
@@ -1364,5 +1495,25 @@ main {
 <!-- analytics:start -->
   <script data-goatcounter="https://nicsheehan.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <!-- analytics:end -->
+      <!-- Item detail modal -->
+      <div id="detail-modal" class="modal-overlay" role="dialog"
+           aria-modal="true" aria-labelledby="modal-title" hidden>
+        <div class="modal-box">
+          <div class="modal-header">
+            <button class="modal-close" aria-label="Close">[ X ]</button>
+            <span class="modal-type-label" aria-hidden="true"></span>
+            <span class="modal-index" aria-hidden="true"></span>
+          </div>
+          <div class="modal-content">
+            <img class="modal-cover" src="" alt="" hidden>
+            <div class="modal-body">
+              <h2 class="modal-title" id="modal-title"></h2>
+              <p class="modal-meta"></p>
+              <p class="modal-desc" hidden></p>
+              <a class="modal-link" target="_blank" rel="noopener noreferrer"></a>
+            </div>
+          </div>
+        </div>
+      </div>
 </body>
 </html>
