@@ -257,6 +257,12 @@ def fetch_letterboxd(rss_url: str, limit: int) -> list[dict]:
     return films
 
 
+def _strip_html(text: str) -> str:
+    """Strip HTML tags and decode entities from a string."""
+    text = re.sub(r"<[^>]+>", "", text)
+    return html.unescape(text).strip()
+
+
 def _star_rating(rating: float) -> str:
     """Convert a numeric rating (0.5–5.0) to star characters."""
     if rating is None:
@@ -762,7 +768,66 @@ def fetch_lastfm_top_tracks(username: str, api_key: str, limit: int) -> list[dic
             "title": track.get("name", ""),
             "artist": track.get("artist", {}).get("name", ""),
             "plays": int(track.get("playcount", 0) or 0),
+            "url": track.get("url", ""),
         })
+    return tracks
+
+
+def fetch_lastfm_track_info(title: str, artist: str, api_key: str) -> dict:
+    """Return {album} dict from Last.fm track.getInfo. Raises on network/JSON error."""
+    params = urllib.parse.urlencode({
+        "method": "track.getInfo",
+        "track": title,
+        "artist": artist,
+        "api_key": api_key,
+        "format": "json",
+    })
+    req = urllib.request.Request(f"{LASTFM_API}?{params}", headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        data = json.loads(resp.read().decode())
+    album = data.get("track", {}).get("album", {}).get("title", "")
+    return {"album": album}
+
+
+def fetch_lastfm_artist_info(artist: str, api_key: str) -> dict:
+    """Return {bio} dict from Last.fm artist.getInfo. Raises on network/JSON error."""
+    params = urllib.parse.urlencode({
+        "method": "artist.getInfo",
+        "artist": artist,
+        "api_key": api_key,
+        "format": "json",
+    })
+    req = urllib.request.Request(f"{LASTFM_API}?{params}", headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        data = json.loads(resp.read().decode())
+    bio_raw = data.get("artist", {}).get("bio", {}).get("summary", "")
+    bio = _strip_html(bio_raw)
+    bio = re.sub(r"\s*Read more about\b.*$", "", bio, flags=re.IGNORECASE | re.DOTALL).strip()
+    if len(bio) > 300:
+        bio = bio[:297] + "…"
+    return {"bio": bio}
+
+
+def enrich_tracks_with_lastfm(tracks: list[dict], api_key: str) -> list[dict]:
+    """Add album and artist bio to each track dict via Last.fm. Failures are skipped."""
+    if not api_key:
+        return tracks
+    artist_bios: dict[str, str] = {}
+    for track in tracks:
+        artist = track["artist"]
+        try:
+            info = fetch_lastfm_track_info(track["title"], artist, api_key)
+            track.update(info)
+        except Exception as e:
+            print(f"  ⚠  Last.fm track.getInfo failed for {track['title']!r}: {e}")
+        if artist not in artist_bios:
+            try:
+                a_info = fetch_lastfm_artist_info(artist, api_key)
+                artist_bios[artist] = a_info.get("bio", "")
+            except Exception as e:
+                print(f"  ⚠  Last.fm artist.getInfo failed for {artist!r}: {e}")
+                artist_bios[artist] = ""
+        track["bio"] = artist_bios.get(artist, "")
     return tracks
 
 
@@ -777,8 +842,26 @@ def build_music_html(tracks: list[dict]) -> str:
         p = track["plays"]
         play_word = "play" if p == 1 else "plays"
         idx = f"{i + 1:02d}"
+
+        # Data attrs for modal
+        dt = html.escape(track["title"], quote=True)
+        da = html.escape(track["artist"], quote=True)
+        data = (
+            f' role="button" tabindex="0"'
+            f' data-modal-type="music"'
+            f' data-title="{dt}"'
+            f' data-artist="{da}"'
+            f' data-plays="{p}"'
+        )
+        if track.get("url"):
+            data += f' data-url="{html.escape(track["url"], quote=True)}"'
+        if track.get("album"):
+            data += f' data-album="{html.escape(track["album"], quote=True)}"'
+        if track.get("bio"):
+            data += f' data-bio="{html.escape(track["bio"], quote=True)}"'
+
         lines.append(
-            f'                <div class="panel-row">\n'
+            f'                <div class="panel-row"{data}>\n'
             f'                  <span class="row-index">{idx}</span>\n'
             f'                  <div class="row-content">\n'
             f'                    <div class="track-title">{t}</div>\n'
