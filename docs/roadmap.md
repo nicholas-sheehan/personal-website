@@ -96,7 +96,14 @@ Makes content interactive and connected to source services.
 - Fixed Last.fm bio suffix regex (`Read more on Last.fm` not `Read more about`)
 - Consistent `html.escape(quote=True)` on all data attribute values
 
-## Iteration 10 — Currently playing (live API) ⬜ planned 2026-02-22
+## Iteration 10 — Book modal enhancements ⬜ planned 2026-03-02
+Small data quality improvements to the book panel modals. Plan: `docs/plans/2026-03-02-book-modal-enhancements.md`.
+
+- [ ] Higher-res cover images — use `book_large_image_url` (fallback to `book_image_url`)
+- [ ] Finished date — extract `user_read_at`, render "Finished Month Year" in modal meta
+- [ ] User review over synopsis — show own Goodreads review in modal if present, else synopsis
+
+## Iteration 11 — Currently playing (live API) ⬜ planned 2026-02-22
 First live data source — small serverless layer alongside the static site.
 
 - [ ] Cloudflare Worker proxying Last.fm `user.getRecentTracks` (`nowplaying` flag); `LASTFM_API_KEY` as Cloudflare secret
@@ -104,7 +111,7 @@ First live data source — small serverless layer alongside the static site.
 - [ ] "Currently playing" strip with purple accent, matching currently-reading callout style
 - [ ] Animating CSS waveform icon (bars scaling up/down) to denote live data
 
-## Iteration 11 — Data Explorer Mode ⬜ planned 2026-02-22
+## Iteration 12 — Data Explorer Mode ⬜ planned 2026-02-22
 Theatrical data experience. The biggest lift.
 
 - [ ] Triggered by keyboard shortcut (`/` or `~`)
@@ -113,6 +120,9 @@ Theatrical data experience. The biggest lift.
 - [ ] Detailed design to be brainstormed as its own session before implementation
 
 ---
+
+## Dev environment improvements
+- [ ] Switch git remote from HTTPS to SSH (`git remote set-url origin git@github.com:nicholas-sheehan/personal-website.git`) — requires SSH key set up with GitHub
 
 ## Discussed and decided against
 - Separate `twitter_title`/`twitter_description` in TOML — unnecessary, they always match `site.title`/`site.description`
