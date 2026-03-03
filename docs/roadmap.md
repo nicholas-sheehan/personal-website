@@ -103,7 +103,17 @@ Small data quality improvements to the book panel modals. Plan: `docs/plans/2026
 - [x] Finished date — extract `user_read_at`, render "Finished Month Year" in modal meta
 - [x] User review over synopsis — show own Goodreads review in modal if present, else synopsis
 
-## Iteration 11 — Currently playing (live API) ⬜ planned 2026-02-22
+## Iteration 11 — Visual polish & modal improvements ⬜ planned 2026-03-03
+Pure frontend — no new infrastructure. Quick wins that make the site feel more considered.
+
+- [ ] Heading distortion — replace with full-page "warm-up" animation: all content distorted/glitched on load, easing out over ~3s after boot sequence completes (screen dialling in effect)
+- [ ] Modal close button — move from top-right corner to top-left
+- [ ] Modal synopsis length — increase character cap (current truncation is too aggressive); increase modal max-width / overall size to avoid feeling crowded with longer text
+- [ ] Modal meta hierarchy — visually distinguish source data (author, title) from personal data (star rating, finished date); e.g. separate line, different colour, or divider
+- [ ] Modal navigation — left/right arrow buttons (and keyboard ← →) to move between items within the same panel; scoped to panel type (e.g. books only when in a book modal)
+- [ ] Bottom panel alignment — resolve height mismatch between music and articles panels; preferred fix: add a Last.fm profile footer link to the music panel (mirrors Goodreads / Letterboxd footer link pattern in books and films panels)
+
+## Iteration 12 — Currently playing (live API) ⬜ planned 2026-02-22
 First live data source — small serverless layer alongside the static site.
 
 - [ ] Cloudflare Worker proxying Last.fm `user.getRecentTracks` (`nowplaying` flag); `LASTFM_API_KEY` as Cloudflare secret
@@ -111,22 +121,13 @@ First live data source — small serverless layer alongside the static site.
 - [ ] "Currently playing" strip with purple accent, matching currently-reading callout style
 - [ ] Animating CSS waveform icon (bars scaling up/down) to denote live data
 
-## Iteration 12 — Data Explorer Mode ⬜ planned 2026-02-22
-Theatrical data experience. The biggest lift.
+## Iteration 13 — Data Explorer Mode ⬜ planned 2026-02-22
+Theatrical data experience. The biggest lift — requires a dedicated design session before implementation.
 
 - [ ] Triggered by keyboard shortcut (`/` or `~`)
 - [ ] Full-page takeover — aggregate stats + visualisations across all four data sources
 - [ ] Navigation between views: reading history, listening patterns, watch log
 - [ ] Detailed design to be brainstormed as its own session before implementation
-
-## Iteration 13 — Visual polish & modal improvements ⬜ planned 2026-03-03
-
-- [ ] Heading distortion — either remove entirely, or replace with a full-page "warm-up" animation: all content distorted/glitched on load, easing out over ~3s after boot sequence completes (screen dialling in effect); heading-only distortion not preferred
-- [ ] Modal close button — move from top-right corner to top-left
-- [ ] Modal synopsis length — increase character cap (current truncation is too aggressive); increase modal max-width / overall size to avoid feeling crowded with longer text
-- [ ] Modal meta hierarchy — visually distinguish source data (author, title) from personal data (star rating, finished date); e.g. separate line, different colour, or divider
-- [ ] Modal navigation — left/right arrow buttons (and keyboard ← →) to move between items within the same panel; scoped to panel type (e.g. books only when in a book modal)
-- [ ] Bottom panel alignment — resolve height mismatch between music and articles panels; preferred fix: add a Last.fm profile footer link to the music panel (mirrors Goodreads / Letterboxd footer link pattern in books and films panels)
 
 ---
 
