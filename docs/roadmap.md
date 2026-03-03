@@ -96,12 +96,12 @@ Makes content interactive and connected to source services.
 - Fixed Last.fm bio suffix regex (`Read more on Last.fm` not `Read more about`)
 - Consistent `html.escape(quote=True)` on all data attribute values
 
-## Iteration 10 — Book modal enhancements ⬜ planned 2026-03-02
+## Iteration 10 — Book modal enhancements ✅ shipped 2026-03-03
 Small data quality improvements to the book panel modals. Plan: `docs/plans/2026-03-02-book-modal-enhancements.md`.
 
-- [ ] Higher-res cover images — use `book_large_image_url` (fallback to `book_image_url`)
-- [ ] Finished date — extract `user_read_at`, render "Finished Month Year" in modal meta
-- [ ] User review over synopsis — show own Goodreads review in modal if present, else synopsis
+- [x] Higher-res cover images — use `book_large_image_url` (fallback to `book_image_url`)
+- [x] Finished date — extract `user_read_at`, render "Finished Month Year" in modal meta
+- [x] User review over synopsis — show own Goodreads review in modal if present, else synopsis
 
 ## Iteration 11 — Currently playing (live API) ⬜ planned 2026-02-22
 First live data source — small serverless layer alongside the static site.
