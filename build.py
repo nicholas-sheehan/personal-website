@@ -52,6 +52,7 @@ Setup — TMDB:
 
 import base64
 from datetime import datetime, timedelta, timezone
+from email.utils import parsedate
 import hashlib
 import hmac
 import html
@@ -116,36 +117,58 @@ ASSETS_DIR = "assets"
 # ══════════════════════════════════════════════════════════════════
 
 def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
-    """Return a list of {title, author, rating, cover, description, url} dicts from the RSS feed."""
+    """Return a list of {title, author, rating, cover, large_cover, description, finished, url} dicts from the RSS feed."""
     req = urllib.request.Request(rss_url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=15) as resp:
         tree = ET.parse(resp)
 
     books = []
     for item in tree.findall(".//item"):
-        title_el = item.find("title")
-        author_el = item.find("author_name")
-        rating_el = item.find("user_rating")
-        cover_el = item.find("book_image_url")
-        desc_el = item.find("book_description")
-        link_el = item.find("link")
+        title_el      = item.find("title")
+        author_el     = item.find("author_name")
+        rating_el     = item.find("user_rating")
+        cover_el      = item.find("book_image_url")
+        large_cover_el = item.find("book_large_image_url")
+        desc_el       = item.find("book_description")
+        review_el     = item.find("user_review")
+        read_at_el    = item.find("user_read_at")
+        link_el       = item.find("link")
 
         if title_el is None or title_el.text is None:
             continue
 
-        title = title_el.text.strip()
+        title  = title_el.text.strip()
         author = author_el.text.strip() if author_el is not None and author_el.text else "Unknown"
         rating_text = rating_el.text.strip() if rating_el is not None and rating_el.text else "0"
         rating = min(int(rating_text), 5) if rating_text.isdigit() else 0
-        cover = cover_el.text.strip() if cover_el is not None and cover_el.text else ""
-        description = _strip_html(desc_el.text.strip()) if desc_el is not None and desc_el.text else ""
-        if len(description) > 400:
-            description = description[:397] + "…"
+        cover       = cover_el.text.strip() if cover_el is not None and cover_el.text else ""
+        large_cover = large_cover_el.text.strip() if large_cover_el is not None and large_cover_el.text else ""
+
+        # Description: user review takes priority over synopsis
+        review_raw = _strip_html(review_el.text.strip()) if review_el is not None and review_el.text else ""
+        if len(review_raw) > 400:
+            review_raw = review_raw[:397] + "…"
+        synopsis_raw = _strip_html(desc_el.text.strip()) if desc_el is not None and desc_el.text else ""
+        if len(synopsis_raw) > 400:
+            synopsis_raw = synopsis_raw[:397] + "…"
+        description = review_raw if review_raw else synopsis_raw
+
+        # Finished date (read shelf only — currently-reading items have empty user_read_at)
+        finished = ""
+        if read_at_el is not None and read_at_el.text:
+            parsed = parsedate(read_at_el.text.strip())
+            if parsed:
+                try:
+                    finished = datetime(parsed[0], parsed[1], parsed[2]).strftime("Finished %B %Y")
+                except Exception:
+                    pass
+
         url = link_el.text.strip() if link_el is not None and link_el.text else ""
 
         books.append({
             "title": title, "author": author, "rating": rating,
-            "cover": cover, "description": description, "url": url,
+            "cover": cover, "large_cover": large_cover,
+            "description": description, "finished": finished, "url": url,
         })
 
         if limit and len(books) >= limit:
@@ -176,8 +199,11 @@ def build_book_html(books: list[dict]) -> str:
         )
         if rating:
             data += f' data-stars="{"★" * rating}"'
-        if book.get("cover"):
-            data += f' data-cover="{html.escape(book["cover"], quote=True)}"'
+        cover_src = book.get("large_cover") or book.get("cover", "")
+        if cover_src:
+            data += f' data-cover="{html.escape(cover_src, quote=True)}"'
+        if book.get("finished"):
+            data += f' data-finished="{html.escape(book["finished"], quote=True)}"'
         if book.get("description"):
             data += f' data-description="{html.escape(book["description"], quote=True)}"'
         if book.get("url"):
