@@ -6,6 +6,8 @@ Personal website for Nicholas Sheehan. A static site that pulls all its content 
 
 `build.py` fetches data from external services, injects it into `index.html`, and GitHub Pages serves the result. A GitHub Actions workflow runs this daily at 9am AEDT / 8am AEST, commits any changes, and deploys.
 
+See [docs/architecture.md](docs/architecture.md) for a full diagram of the build and hosting stack, and [docs/pipeline.md](docs/pipeline.md) for the development workflow and branch strategy.
+
 ## Content sources
 
 | What | Service | How to update |
@@ -22,7 +24,7 @@ Personal website for Nicholas Sheehan. A static site that pulls all its content 
 ## When does the site update?
 
 - **Automatically** every day at 9am AEDT / 8am AEST via GitHub Actions
-- **On every push** to the `main` branch
+- **On every push** to `main` or `staging` (staging builds but does not deploy)
 - **Manually** from the [Actions tab](https://github.com/nicholas-sheehan/personal-website/actions/workflows/build.yml) → "Run workflow"
 
 ## GitHub secrets
