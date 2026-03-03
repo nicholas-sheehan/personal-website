@@ -119,6 +119,15 @@ Theatrical data experience. The biggest lift.
 - [ ] Navigation between views: reading history, listening patterns, watch log
 - [ ] Detailed design to be brainstormed as its own session before implementation
 
+## Iteration 13 — Visual polish & modal improvements ⬜ planned 2026-03-03
+
+- [ ] Heading distortion — either remove entirely, or replace with a full-page "warm-up" animation: all content distorted/glitched on load, easing out over ~3s after boot sequence completes (screen dialling in effect); heading-only distortion not preferred
+- [ ] Modal close button — move from top-right corner to top-left
+- [ ] Modal synopsis length — increase character cap (current truncation is too aggressive); increase modal max-width / overall size to avoid feeling crowded with longer text
+- [ ] Modal meta hierarchy — visually distinguish source data (author, title) from personal data (star rating, finished date); e.g. separate line, different colour, or divider
+- [ ] Modal navigation — left/right arrow buttons (and keyboard ← →) to move between items within the same panel; scoped to panel type (e.g. books only when in a book modal)
+- [ ] Bottom panel alignment — resolve height mismatch between music and articles panels; preferred fix: add a Last.fm profile footer link to the music panel (mirrors Goodreads / Letterboxd footer link pattern in books and films panels)
+
 ---
 
 ## Dev environment improvements

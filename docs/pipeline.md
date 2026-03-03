@@ -8,7 +8,7 @@
 | `staging` | Pre-production — full build with real data, no deploy | Local preview only |
 | Feature branches | Active development — one per iteration | Local preview only |
 
-**`main` is protected.** No direct pushes. All changes flow through a pull request.
+**Never push directly to `main`.** All changes flow through a pull request. The build bot pushes feed updates directly as part of CI — this is the only exception.
 
 ## How changes move to production
 
