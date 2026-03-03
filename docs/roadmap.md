@@ -133,7 +133,7 @@ Theatrical data experience. The biggest lift.
 ## Dev environment improvements
 - [ ] Switch git remote from HTTPS to SSH (`git remote set-url origin git@github.com:nicholas-sheehan/personal-website.git`) — requires SSH key set up with GitHub
 - [ ] Install `gh` CLI properly (Homebrew: `brew install gh`) so it doesn't need re-downloading each session
-- [ ] Enable squash merges on PRs (repo Settings → Pull Requests → Allow squash merging) — eliminates timestamp conflicts on `staging → main` by rewriting the merge as a single commit on top of current main
+- [x] Squash-only merges — unticked "Allow merge commits" and "Allow rebase merging"; squash is now the only option, eliminating timestamp conflicts on `staging → main` ✅ 2026-03-03
 - [ ] Process habit: commit any open docs/working-tree changes before starting worktree work — prevents `git checkout staging` failing mid-flow
 
 ## Discussed and decided against
