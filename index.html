@@ -1101,9 +1101,16 @@ main {
   margin: 0;
 }
 
-.modal-meta {
+.modal-meta-source {
   font-size: 0.7rem;
   color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.modal-meta-personal {
+  font-size: 0.7rem;
+  color: var(--modal-accent, var(--accent));
   margin: 0;
   line-height: 1.4;
 }
@@ -1441,7 +1448,7 @@ The Dunda…">
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-05T10:36:22Z">5 Mar 2026 at 10:36 UTC</span><span class="next-update" data-next="2026-03-05T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-05T10:38:28Z">5 Mar 2026 at 10:38 UTC</span><span class="next-update" data-next="2026-03-05T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
@@ -1495,7 +1502,8 @@ The Dunda…">
             <img class="modal-cover" src="" alt="" hidden>
             <div class="modal-body">
               <h2 class="modal-title" id="modal-title"></h2>
-              <p class="modal-meta"></p>
+              <p class="modal-meta-source"></p>
+              <p class="modal-meta-personal" hidden></p>
               <p class="modal-desc" hidden></p>
               <a class="modal-link" target="_blank" rel="noopener noreferrer"></a>
             </div>
@@ -1509,7 +1517,8 @@ The Dunda…">
           var closeBtn = overlay.querySelector('.modal-close');
           var coverEl = overlay.querySelector('.modal-cover');
           var titleEl = overlay.querySelector('.modal-title');
-          var metaEl = overlay.querySelector('.modal-meta');
+          var metaSourceEl = overlay.querySelector('.modal-meta-source');
+          var metaPersonalEl = overlay.querySelector('.modal-meta-personal');
           var descEl = overlay.querySelector('.modal-desc');
           var linkEl = overlay.querySelector('.modal-link');
           var typeLabelEl = overlay.querySelector('.modal-type-label');
@@ -1562,32 +1571,42 @@ The Dunda…">
             }
 
             // Meta, description, link -- per content type
-            var meta = '', desc = '', linkText = '';
+            var metaSource = '', metaPersonal = '', desc = '', linkText = '';
 
             if (type === 'book') {
-              var bookParts = [row.dataset.author, row.dataset.stars, row.dataset.finished].filter(Boolean);
-              meta = bookParts.join(' · ');
+              metaSource = row.dataset.author || '';
+              var bookPersonalParts = [row.dataset.stars, row.dataset.finished].filter(Boolean);
+              metaPersonal = bookPersonalParts.join(' · ');
               desc = row.dataset.description || '';
               linkText = '→ View on Goodreads';
             } else if (type === 'film') {
               var director = row.dataset.director ? 'dir. ' + row.dataset.director : '';
-              var filmParts = [row.dataset.year, row.dataset.stars, director].filter(Boolean);
-              meta = filmParts.join(' · ');
+              var filmSourceParts = [row.dataset.year, director].filter(Boolean);
+              metaSource = filmSourceParts.join(' · ');
+              metaPersonal = row.dataset.stars || '';
               desc = row.dataset.synopsis || '';
               linkText = '→ View on Letterboxd';
             } else if (type === 'music') {
-              var plays = row.dataset.plays ? row.dataset.plays + ' plays' : '';
-              var musicParts = [row.dataset.artist, row.dataset.album, plays].filter(Boolean);
-              meta = musicParts.join(' · ');
+              var musicSourceParts = [row.dataset.artist, row.dataset.album].filter(Boolean);
+              metaSource = musicSourceParts.join(' · ');
+              metaPersonal = row.dataset.plays ? row.dataset.plays + ' plays' : '';
               desc = row.dataset.bio || '';
               linkText = '→ Listen on Last.fm';
             } else if (type === 'article') {
-              meta = row.dataset.source || '';
+              metaSource = row.dataset.source || '';
+              metaPersonal = '';
               desc = row.dataset.description || '';
-              linkText = meta ? '→ Read on ' + meta : '→ Read article';
+              linkText = metaSource ? '→ Read on ' + metaSource : '→ Read article';
             }
 
-            metaEl.textContent = meta;
+            metaSourceEl.textContent = metaSource;
+
+            if (metaPersonal) {
+              metaPersonalEl.textContent = metaPersonal;
+              metaPersonalEl.hidden = false;
+            } else {
+              metaPersonalEl.hidden = true;
+            }
 
             if (desc) {
               descEl.textContent = desc;

@@ -1079,9 +1079,16 @@ main {
   margin: 0;
 }
 
-.modal-meta {
+.modal-meta-source {
   font-size: 0.7rem;
   color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.modal-meta-personal {
+  font-size: 0.7rem;
+  color: var(--modal-accent, var(--accent));
   margin: 0;
   line-height: 1.4;
 }
