@@ -131,6 +131,20 @@ html {
   line-height: 1.8;
 }
 
+/* Warm-up animation: screen dialling in after boot */
+@keyframes warmup {
+  0%   { filter: brightness(0.65); }
+  100% { filter: brightness(1);    }
+}
+
+.warming-up {
+  animation: warmup 0.6s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .warming-up { animation: none; }
+}
+
 
 /* Main content: hidden until JS reveals it.
    Fallback: becomes visible after 1s if JS never runs. */
@@ -993,7 +1007,7 @@ main {
 .modal-box {
   background: var(--panel);
   border-top: 4px solid var(--modal-accent, var(--accent));
-  max-width: 400px;
+  max-width: 560px;
   width: 100%;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
@@ -1048,6 +1062,41 @@ main {
   flex-shrink: 0;
 }
 
+.modal-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.modal-prev,
+.modal-next {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: var(--space-2) var(--space-3);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.modal-prev:hover,
+.modal-next:hover { color: var(--text-primary); }
+
+.modal-prev:disabled,
+.modal-next:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.modal-prev:focus-visible,
+.modal-next:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* Content area */
 .modal-content {
   display: flex;
@@ -1086,9 +1135,16 @@ main {
   margin: 0;
 }
 
-.modal-meta {
+.modal-meta-source {
   font-size: 0.7rem;
   color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.modal-meta-personal {
+  font-size: 0.7rem;
+  color: var(--modal-accent, var(--accent));
   margin: 0;
   line-height: 1.4;
 }
@@ -1098,10 +1154,6 @@ main {
   color: var(--text-tertiary);
   margin: 0;
   line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 /* Outbound link — matches .panel-footer-link style */
@@ -1269,7 +1321,7 @@ main {
               </div>
               <div class="panel-body">
 <!-- letterboxd:start -->
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Terminator 2: Judgment Day" data-year="1991" data-stars="★★★★★" data-url="https://letterboxd.com/tonic2/film/terminator-2-judgment-day/1/" data-poster="https://image.tmdb.org/t/p/w300/jFTVD4XoWQTcg7wdyJKa8PEds5q.jpg" data-director="James Cameron" data-synopsis="Ten years after the events of the original, a reprogrammed T-800 is sent back in time to protect young John Connor from the shape-shifting T-1000. Together with his mother Sarah, he fights to stop Skynet from triggering a nuclear apocalypse.">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Terminator 2: Judgment Day" data-year="1991" data-stars="★★★★★" data-url="https://letterboxd.com/tonic2/film/terminator-2-judgment-day/1/">
                   <span class="row-index">01</span>
                   <div class="row-content">
                     <div class="film-title">Terminator 2: Judgment Day</div>
@@ -1277,7 +1329,7 @@ main {
                   </div>
                   <span class="row-meta film-stars" aria-label="Rated 5.0 out of 5">★★★★★</span>
                 </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Wuthering Heights" data-year="2026" data-stars="★★" data-url="https://letterboxd.com/tonic2/film/wuthering-heights-2026/" data-poster="https://image.tmdb.org/t/p/w300/ywRO5dyE8RyyXJd6cvd69jLZeic.jpg" data-director="Emerald Fennell" data-synopsis="Tragedy strikes when Heathcliff falls in love with Catherine Earnshaw, a woman from a wealthy family in 18th-century England.">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Wuthering Heights" data-year="2026" data-stars="★★" data-url="https://letterboxd.com/tonic2/film/wuthering-heights-2026/">
                   <span class="row-index">02</span>
                   <div class="row-content">
                     <div class="film-title">Wuthering Heights</div>
@@ -1285,7 +1337,7 @@ main {
                   </div>
                   <span class="row-meta film-stars" aria-label="Rated 2.0 out of 5">★★</span>
                 </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Marty Supreme" data-year="2025" data-stars="★★★★" data-url="https://letterboxd.com/tonic2/film/marty-supreme/" data-poster="https://image.tmdb.org/t/p/w300/lYWEXbQgRTR4ZQleSXAgRbxAjvq.jpg" data-director="Josh Safdie" data-synopsis="Marty Mauser, a young man with a dream no one respects, goes to hell and back in pursuit of greatness.">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Marty Supreme" data-year="2025" data-stars="★★★★" data-url="https://letterboxd.com/tonic2/film/marty-supreme/">
                   <span class="row-index">03</span>
                   <div class="row-content">
                     <div class="film-title">Marty Supreme</div>
@@ -1293,7 +1345,7 @@ main {
                   </div>
                   <span class="row-meta film-stars" aria-label="Rated 4.0 out of 5">★★★★</span>
                 </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Avatar: Fire and Ash" data-year="2025" data-stars="★★★½" data-url="https://letterboxd.com/tonic2/film/avatar-fire-and-ash/" data-poster="https://image.tmdb.org/t/p/w300/bRBeSHfGHwkEpImlhxPmOcUsaeg.jpg" data-director="James Cameron" data-synopsis="In the wake of the devastating war against the RDA and the loss of their eldest son, Jake Sully and Neytiri face a new threat on Pandora: the Ash People, a violent and power-hungry Na&#x27;vi tribe led by the ruthless Varang. Jake&#x27;s family must fight for their survival and the future of Pandora in a conflict that pushes them to their emotional and physical limits.">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Avatar: Fire and Ash" data-year="2025" data-stars="★★★½" data-url="https://letterboxd.com/tonic2/film/avatar-fire-and-ash/">
                   <span class="row-index">04</span>
                   <div class="row-content">
                     <div class="film-title">Avatar: Fire and Ash</div>
@@ -1301,7 +1353,7 @@ main {
                   </div>
                   <span class="row-meta film-stars" aria-label="Rated 3.5 out of 5">★★★½</span>
                 </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="28 Years Later: The Bone Temple" data-year="2026" data-stars="★★★★" data-url="https://letterboxd.com/tonic2/film/28-years-later-the-bone-temple/" data-poster="https://image.tmdb.org/t/p/w300/kK1BGkG3KAvWB0WMV1DfOx9yTMZ.jpg" data-director="Nia DaCosta" data-synopsis="Dr. Kelson finds himself in a shocking new relationship - with consequences that could change the world as they know it - and Spike&#x27;s encounter with Jimmy Crystal becomes a nightmare he can&#x27;t escape.">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="28 Years Later: The Bone Temple" data-year="2026" data-stars="★★★★" data-url="https://letterboxd.com/tonic2/film/28-years-later-the-bone-temple/">
                   <span class="row-index">05</span>
                   <div class="row-content">
                     <div class="film-title">28 Years Later: The Bone Temple</div>
@@ -1370,6 +1422,9 @@ The Dunda…">
                 </div>
 <!-- music:end -->
               </div>
+              <footer class="panel-footer">
+                <a href="https://www.last.fm/user/tonic-lastfm" class="panel-footer-link" target="_blank" rel="noopener noreferrer">→ Last.fm</a>
+              </footer>
             </section>
 
             <!-- ARTICLES -->
@@ -1427,7 +1482,7 @@ The Dunda…">
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-04T22:34:01Z">4 Mar 2026 at 22:34 UTC</span><span class="next-update" data-next="2026-03-05T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-05T11:00:11Z">5 Mar 2026 at 11:00 UTC</span><span class="next-update" data-next="2026-03-05T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
@@ -1457,15 +1512,13 @@ The Dunda…">
   "image": "https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e",
   "sameAs": [
     "https://gravatar.com/nicsheehanau",
-    "https://www.linkedin.com/in/nicsheehan/",
-    "https://www.goodreads.com/user/show/175639385",
-    "https://letterboxd.com/tonic2"
+    "https://www.linkedin.com/in/nicsheehan"
   ]
 }
     </script>
 <!-- jsonld:end -->
 <script>(function(){var b=document.querySelector('.colophon-buildtime');if(b&&b.dataset.built){try{b.textContent=new Date(b.dataset.built).toLocaleString(undefined,{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(x){}}var e=document.querySelector('.next-update');if(!e)return;function t(){var n=new Date(e.dataset.next),d=n-new Date();if(d<=0){e.textContent=' \xb7 updating soon';return;}var h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000);e.textContent=' \xb7 next in '+h+'h '+m+'m';}t();setInterval(t,60000);})();</script>
-<script>(function(){var M=["INIT BIOS REV 3.11.0...............[ OK ]","CHECKING MEMORY (8192 MB)..........[ OK ]","LOADING KERNEL v6.6.0..............[ OK ]","MOUNTING /dev/sda1.................[ OK ]","MOUNTING /dev/shm..................[ OK ]","FSCK: NO ERRORS FOUND..............[ OK ]","SYNCING HARDWARE CLOCK.............[ OK ]","CHECKING ENTROPY POOL..............[ OK ]","LOADING MODULE: display............[ OK ]","LOADING MODULE: network............[ OK ]","LOADING MODULE: input..............[ OK ]","LOADING MODULE: audio..............[ OK ]","ALLOCATING FRAMEBUFFER (1920x1080).[ OK ]","CALIBRATING CRT SCANLINES..........[ OK ]","STARTING NETWORK MANAGER...........[ OK ]","ESTABLISHING UPLINK................[DONE]","WARMING PHOSPHOR TUBES.............[ OK ]","VERIFYING CHECKSUMS: PASS..........[ OK ]","FLUSHING WRITE BUFFER..............[DONE]","AUTHENTICATING SESSION.............[ OK ]","QUEUEING UP DATABANK...............[ OK ]"];var o=document.querySelector(".boot-overlay");var mn=document.querySelector("main");if(!o||!mn)return;mn.style.animation="none";var reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;var pool=M.slice();for(var i=pool.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=pool[i];pool[i]=pool[j];pool[j]=t;}var count=5+Math.round(Math.random());var chosen=pool.slice(0,count);function addLine(txt){var p=document.createElement("p");p.className="boot-overlay-line";p.textContent=txt;o.appendChild(p);}function fadeOut(){o.style.opacity="0";setTimeout(function(){o.style.display="none";mn.style.visibility="visible";},300);}if(reduced){chosen.forEach(addLine);o.style.opacity="1";setTimeout(function(){o.style.display="none";mn.style.visibility="visible";},200);return;}requestAnimationFrame(function(){requestAnimationFrame(function(){o.style.opacity="1";});});var d=300;chosen.forEach(function(msg){setTimeout(function(){addLine(msg);},d);d+=400;});setTimeout(fadeOut,d+400);})();</script>
+<script>(function(){var M=["INIT BIOS REV 3.11.0...............[ OK ]","CHECKING MEMORY (8192 MB)..........[ OK ]","LOADING KERNEL v6.6.0..............[ OK ]","MOUNTING /dev/sda1.................[ OK ]","MOUNTING /dev/shm..................[ OK ]","FSCK: NO ERRORS FOUND..............[ OK ]","SYNCING HARDWARE CLOCK.............[ OK ]","CHECKING ENTROPY POOL..............[ OK ]","LOADING MODULE: display............[ OK ]","LOADING MODULE: network............[ OK ]","LOADING MODULE: input..............[ OK ]","LOADING MODULE: audio..............[ OK ]","ALLOCATING FRAMEBUFFER (1920x1080).[ OK ]","CALIBRATING CRT SCANLINES..........[ OK ]","STARTING NETWORK MANAGER...........[ OK ]","ESTABLISHING UPLINK................[DONE]","WARMING PHOSPHOR TUBES.............[ OK ]","VERIFYING CHECKSUMS: PASS..........[ OK ]","FLUSHING WRITE BUFFER..............[DONE]","AUTHENTICATING SESSION.............[ OK ]","QUEUEING UP DATABANK...............[ OK ]"];var o=document.querySelector(".boot-overlay");var mn=document.querySelector("main");if(!o||!mn)return;mn.style.animation="none";var reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;var pool=M.slice();for(var i=pool.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=pool[i];pool[i]=pool[j];pool[j]=t;}var count=5+Math.round(Math.random());var chosen=pool.slice(0,count);function addLine(txt){var p=document.createElement("p");p.className="boot-overlay-line";p.textContent=txt;o.appendChild(p);}function fadeOut(){o.style.opacity="0";setTimeout(function(){o.style.display="none";mn.style.animation="";mn.style.visibility="visible";mn.classList.add("warming-up");},300);}if(reduced){chosen.forEach(addLine);o.style.opacity="1";setTimeout(function(){o.style.display="none";mn.style.visibility="visible";},200);return;}requestAnimationFrame(function(){requestAnimationFrame(function(){o.style.opacity="1";});});var d=300;chosen.forEach(function(msg){setTimeout(function(){addLine(msg);},d);d+=400;});setTimeout(fadeOut,d+400);})();</script>
 <script>(function(){if(window.matchMedia('(pointer: coarse)').matches)return;var TRIGGER='SNAKE',buf='',overlay=null,canvas=null,ctx=null,COLS=20,ROWS=20,snake,dir,nextDir,food,score,gameOver,loop,active=false;document.addEventListener('keydown',function(e){if(active){handleGameKey(e);return;}var tag=document.activeElement&&document.activeElement.tagName;if(tag==='INPUT'||tag==='TEXTAREA')return;var ch=e.key.length===1?e.key.toUpperCase():'';if(!ch)return;buf=(buf+ch).slice(-TRIGGER.length);if(buf===TRIGGER){buf='';openGame();}});function openGame(){if(!overlay){overlay=document.createElement('div');overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:#050a14;display:flex;align-items:center;justify-content:center;';canvas=document.createElement('canvas');overlay.appendChild(canvas);document.body.appendChild(overlay);}overlay.style.display='flex';active=true;initGame();}function closeGame(){clearInterval(loop);overlay.style.display='none';active=false;buf='';}function cs(){return Math.floor(Math.min(window.innerWidth,window.innerHeight)*0.9/COLS);}function initGame(){var c=cs();canvas.width=COLS*c;canvas.height=ROWS*c;ctx=canvas.getContext('2d');snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];dir={x:1,y:0};nextDir={x:1,y:0};score=0;gameOver=false;placeFood();clearInterval(loop);loop=setInterval(tick,150);draw();}function placeFood(){var empties=[];for(var x=0;x<COLS;x++)for(var y=0;y<ROWS;y++)if(!snake.some(function(s){return s.x===x&&s.y===y;}))empties.push({x:x,y:y});food=empties[Math.floor(Math.random()*empties.length)];}function tick(){dir=nextDir;var h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};if(h.x<0||h.x>=COLS||h.y<0||h.y>=ROWS||snake.some(function(s){return s.x===h.x&&s.y===h.y;})){endGame();return;}snake.unshift(h);if(h.x===food.x&&h.y===food.y){score++;placeFood();clearInterval(loop);loop=setInterval(tick,Math.max(80,150-score*7));}else{snake.pop();}draw();}function draw(){var c=cs();ctx.fillStyle='#050a14';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#22c55e';ctx.fillRect(food.x*c+1,food.y*c+1,c-2,c-2);ctx.fillStyle='#3b82f6';snake.forEach(function(s){ctx.fillRect(s.x*c+1,s.y*c+1,c-2,c-2);});ctx.fillStyle='#94a3b8';ctx.font='bold 14px "JetBrains Mono",monospace';ctx.textAlign='left';ctx.fillText('SCORE: '+score,8,20);}function endGame(){clearInterval(loop);gameOver=true;var cx=canvas.width/2,cy=canvas.height/2;ctx.fillStyle='rgba(5,10,20,0.8)';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.textAlign='center';ctx.fillStyle='#f59e0b';ctx.font='bold 24px "JetBrains Mono",monospace';ctx.fillText('GAME OVER',cx,cy-28);ctx.fillStyle='#e2e8f0';ctx.font='16px "JetBrains Mono",monospace';ctx.fillText('SCORE: '+score,cx,cy+2);ctx.fillStyle='#64748b';ctx.font='13px "JetBrains Mono",monospace';ctx.fillText('[ ESC ] EXIT   [ ENTER ] RESTART',cx,cy+32);}function handleGameKey(e){if(e.key==='Escape'){closeGame();return;}if(gameOver&&e.key==='Enter'){initGame();return;}if(!gameOver){var map={ArrowUp:{x:0,y:-1},ArrowDown:{x:0,y:1},ArrowLeft:{x:-1,y:0},ArrowRight:{x:1,y:0}};var nd=map[e.key];if(nd){e.preventDefault();if(nd.x!==-dir.x||nd.y!==-dir.y)nextDir=nd;}}}})();</script>
 <!-- analytics:start -->
   <script data-goatcounter="https://nicsheehan.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -1475,15 +1528,20 @@ The Dunda…">
            aria-modal="true" aria-labelledby="modal-title" hidden>
         <div class="modal-box">
           <div class="modal-header">
-            <button class="modal-close" aria-label="Close">[ X ]</button>
             <span class="modal-type-label" aria-hidden="true"></span>
-            <span class="modal-index" aria-hidden="true"></span>
+            <div class="modal-nav">
+              <button class="modal-prev" aria-label="Previous item">←</button>
+              <span class="modal-index" aria-hidden="true"></span>
+              <button class="modal-next" aria-label="Next item">→</button>
+            </div>
+            <button class="modal-close" aria-label="Close">[ X ]</button>
           </div>
           <div class="modal-content">
             <img class="modal-cover" src="" alt="" hidden>
             <div class="modal-body">
               <h2 class="modal-title" id="modal-title"></h2>
-              <p class="modal-meta"></p>
+              <p class="modal-meta-source"></p>
+              <p class="modal-meta-personal" hidden></p>
               <p class="modal-desc" hidden></p>
               <a class="modal-link" target="_blank" rel="noopener noreferrer"></a>
             </div>
@@ -1497,12 +1555,16 @@ The Dunda…">
           var closeBtn = overlay.querySelector('.modal-close');
           var coverEl = overlay.querySelector('.modal-cover');
           var titleEl = overlay.querySelector('.modal-title');
-          var metaEl = overlay.querySelector('.modal-meta');
+          var metaSourceEl = overlay.querySelector('.modal-meta-source');
+          var metaPersonalEl = overlay.querySelector('.modal-meta-personal');
           var descEl = overlay.querySelector('.modal-desc');
           var linkEl = overlay.querySelector('.modal-link');
           var typeLabelEl = overlay.querySelector('.modal-type-label');
           var indexEl = overlay.querySelector('.modal-index');
           var activeRow = null;
+          var prevBtn = overlay.querySelector('.modal-prev');
+          var nextBtn = overlay.querySelector('.modal-next');
+          var currentSiblings = [];
 
           var TYPE_LABELS = {
             book:    '[▓] BOOKS',
@@ -1520,13 +1582,15 @@ The Dunda…">
             box.dataset.modalType = type;
             typeLabelEl.textContent = TYPE_LABELS[type] || '';
 
-            // Item index within its panel (e.g. "02 / 05")
+            // Item index within its panel + store siblings for navigation
             var panelBody = row.closest('.panel-body');
-            var siblings = panelBody
+            currentSiblings = panelBody
               ? Array.from(panelBody.querySelectorAll('.panel-row[role="button"]'))
               : [row];
-            var idx = siblings.indexOf(row) + 1;
-            indexEl.textContent = idx + ' / ' + siblings.length;
+            var idx = currentSiblings.indexOf(row);
+            indexEl.textContent = (idx + 1) + ' / ' + currentSiblings.length;
+            prevBtn.disabled = idx <= 0;
+            nextBtn.disabled = idx >= currentSiblings.length - 1;
 
             // Title
             titleEl.textContent = title;
@@ -1550,32 +1614,42 @@ The Dunda…">
             }
 
             // Meta, description, link -- per content type
-            var meta = '', desc = '', linkText = '';
+            var metaSource = '', metaPersonal = '', desc = '', linkText = '';
 
             if (type === 'book') {
-              var bookParts = [row.dataset.author, row.dataset.stars, row.dataset.finished].filter(Boolean);
-              meta = bookParts.join(' · ');
+              metaSource = row.dataset.author || '';
+              var bookPersonalParts = [row.dataset.stars, row.dataset.finished].filter(Boolean);
+              metaPersonal = bookPersonalParts.join(' · ');
               desc = row.dataset.description || '';
               linkText = '→ View on Goodreads';
             } else if (type === 'film') {
               var director = row.dataset.director ? 'dir. ' + row.dataset.director : '';
-              var filmParts = [row.dataset.year, row.dataset.stars, director].filter(Boolean);
-              meta = filmParts.join(' · ');
+              var filmSourceParts = [row.dataset.year, director].filter(Boolean);
+              metaSource = filmSourceParts.join(' · ');
+              metaPersonal = row.dataset.stars || '';
               desc = row.dataset.synopsis || '';
               linkText = '→ View on Letterboxd';
             } else if (type === 'music') {
-              var plays = row.dataset.plays ? row.dataset.plays + ' plays' : '';
-              var musicParts = [row.dataset.artist, row.dataset.album, plays].filter(Boolean);
-              meta = musicParts.join(' · ');
+              var musicSourceParts = [row.dataset.artist, row.dataset.album].filter(Boolean);
+              metaSource = musicSourceParts.join(' · ');
+              metaPersonal = row.dataset.plays ? row.dataset.plays + ' plays' : '';
               desc = row.dataset.bio || '';
               linkText = '→ Listen on Last.fm';
             } else if (type === 'article') {
-              meta = row.dataset.source || '';
+              metaSource = row.dataset.source || '';
+              metaPersonal = '';
               desc = row.dataset.description || '';
-              linkText = meta ? '→ Read on ' + meta : '→ Read article';
+              linkText = metaSource ? '→ Read on ' + metaSource : '→ Read article';
             }
 
-            metaEl.textContent = meta;
+            metaSourceEl.textContent = metaSource;
+
+            if (metaPersonal) {
+              metaPersonalEl.textContent = metaPersonal;
+              metaPersonalEl.hidden = false;
+            } else {
+              metaPersonalEl.hidden = true;
+            }
 
             if (desc) {
               descEl.textContent = desc;
@@ -1619,8 +1693,22 @@ The Dunda…">
           overlay.addEventListener('click', function (e) {
             if (e.target === overlay) closeModal();
           });
+
+          prevBtn.addEventListener('click', function () {
+            var idx = currentSiblings.indexOf(activeRow);
+            if (idx > 0) openModal(currentSiblings[idx - 1]);
+          });
+
+          nextBtn.addEventListener('click', function () {
+            var idx = currentSiblings.indexOf(activeRow);
+            if (idx < currentSiblings.length - 1) openModal(currentSiblings[idx + 1]);
+          });
+
           document.addEventListener('keydown', function (e) {
-            if (!overlay.hidden && e.key === 'Escape') closeModal();
+            if (overlay.hidden) return;
+            if (e.key === 'Escape') { closeModal(); return; }
+            if (e.key === 'ArrowLeft')  { prevBtn.click(); return; }
+            if (e.key === 'ArrowRight') { nextBtn.click(); return; }
           });
 
           // Basic tab trap within modal
