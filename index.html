@@ -131,6 +131,21 @@ html {
   line-height: 1.8;
 }
 
+/* Warm-up animation: screen dialling in after boot */
+@keyframes warmup {
+  0%   { filter: blur(4px) brightness(0.4); }
+  60%  { filter: blur(1px) brightness(0.9); }
+  100% { filter: blur(0)   brightness(1);   }
+}
+
+.warming-up {
+  animation: warmup 3s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .warming-up { animation: none; }
+}
+
 
 /* Main content: hidden until JS reveals it.
    Fallback: becomes visible after 1s if JS never runs. */
@@ -1430,7 +1445,7 @@ The Dunda…">
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-05T10:22:58Z">5 Mar 2026 at 10:22 UTC</span><span class="next-update" data-next="2026-03-05T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-05T10:25:43Z">5 Mar 2026 at 10:25 UTC</span><span class="next-update" data-next="2026-03-05T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>

@@ -109,6 +109,21 @@ html {
   line-height: 1.8;
 }
 
+/* Warm-up animation: screen dialling in after boot */
+@keyframes warmup {
+  0%   { filter: blur(4px) brightness(0.4); }
+  60%  { filter: blur(1px) brightness(0.9); }
+  100% { filter: blur(0)   brightness(1);   }
+}
+
+.warming-up {
+  animation: warmup 3s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .warming-up { animation: none; }
+}
+
 
 /* Main content: hidden until JS reveals it.
    Fallback: becomes visible after 1s if JS never runs. */
