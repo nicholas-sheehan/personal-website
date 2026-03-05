@@ -133,7 +133,7 @@ html {
 
 /* Warm-up animation: screen dialling in after boot */
 @keyframes warmup {
-  0%   { filter: blur(4px) brightness(0.4); }
+  0%   { filter: blur(2px) brightness(0.4); }
   60%  { filter: blur(1px) brightness(0.9); }
   100% { filter: blur(0)   brightness(1);   }
 }
@@ -1075,10 +1075,10 @@ main {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  padding: 0 2px;
+  padding: var(--space-2) var(--space-3);
   line-height: 1;
   flex-shrink: 0;
 }
@@ -1088,7 +1088,7 @@ main {
 
 .modal-prev:disabled,
 .modal-next:disabled {
-  opacity: 0.3;
+  opacity: 0.45;
   cursor: default;
 }
 
@@ -1483,7 +1483,7 @@ The Dunda…">
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-05T10:42:08Z">5 Mar 2026 at 10:42 UTC</span><span class="next-update" data-next="2026-03-05T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-05T10:46:57Z">5 Mar 2026 at 10:46 UTC</span><span class="next-update" data-next="2026-03-05T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
