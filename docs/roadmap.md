@@ -103,15 +103,18 @@ Small data quality improvements to the book panel modals. Plan: `docs/plans/2026
 - [x] Finished date — extract `user_read_at`, render "Finished Month Year" in modal meta
 - [x] User review over synopsis — show own Goodreads review in modal if present, else synopsis
 
-## Iteration 11 — Visual polish & modal improvements ⬜ planned 2026-03-03
+## Iteration 11 — Visual polish & modal improvements ✅ shipped 2026-03-05
 Pure frontend — no new infrastructure. Quick wins that make the site feel more considered.
 
-- [ ] Heading distortion — replace with full-page "warm-up" animation: all content distorted/glitched on load, easing out over ~3s after boot sequence completes (screen dialling in effect)
-- [ ] Modal close button — move from top-right corner to top-left
-- [ ] Modal synopsis length — increase character cap (current truncation is too aggressive); increase modal max-width / overall size to avoid feeling crowded with longer text
-- [ ] Modal meta hierarchy — visually distinguish source data (author, title) from personal data (star rating, finished date); e.g. separate line, different colour, or divider
-- [ ] Modal navigation — left/right arrow buttons (and keyboard ← →) to move between items within the same panel; scoped to panel type (e.g. books only when in a book modal)
-- [ ] Bottom panel alignment — resolve height mismatch between music and articles panels; preferred fix: add a Last.fm profile footer link to the music panel (mirrors Goodreads / Letterboxd footer link pattern in books and films panels)
+- [x] Heading distortion — replaced with full-page warm-up animation: brightness ease-out (0.6s) on `<main>` after boot completes
+- [x] Modal close button — moved to top-right
+- [x] Modal synopsis length — max-width increased to 560px, line-clamp removed
+- [x] Modal meta hierarchy — source data (author/year/artist) in grey, personal data (stars/date/plays) in panel accent colour, two separate lines
+- [x] Modal navigation — ← → buttons flanking index counter, keyboard arrow support, scoped to panel
+- [x] Bottom panel alignment — added → Last.fm footer link to music panel
+
+**Extras landed with this iteration:**
+- Frontend designer review: reduced warm-up blur to 0 (brightness-only), improved arrow button padding/colour/disabled opacity
 
 ## Iteration 12 — Currently playing (live API) ⬜ planned 2026-02-22
 First live data source — small serverless layer alongside the static site.
