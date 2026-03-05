@@ -133,13 +133,12 @@ html {
 
 /* Warm-up animation: screen dialling in after boot */
 @keyframes warmup {
-  0%   { filter: blur(2px) brightness(0.4); }
-  60%  { filter: blur(1px) brightness(0.9); }
-  100% { filter: blur(0)   brightness(1);   }
+  0%   { filter: brightness(0.65); }
+  100% { filter: brightness(1);    }
 }
 
 .warming-up {
-  animation: warmup 1s ease-out forwards;
+  animation: warmup 0.6s ease-out forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1483,7 +1482,7 @@ The Dunda…">
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-05T10:58:37Z">5 Mar 2026 at 10:58 UTC</span><span class="next-update" data-next="2026-03-05T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-05T11:00:11Z">5 Mar 2026 at 11:00 UTC</span><span class="next-update" data-next="2026-03-05T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
