@@ -986,7 +986,7 @@ main {
 .modal-box {
   background: var(--panel);
   border-top: 4px solid var(--modal-accent, var(--accent));
-  max-width: 400px;
+  max-width: 560px;
   width: 100%;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
@@ -1091,10 +1091,6 @@ main {
   color: var(--text-tertiary);
   margin: 0;
   line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 /* Outbound link — matches .panel-footer-link style */
