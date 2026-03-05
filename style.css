@@ -1041,6 +1041,41 @@ main {
   flex-shrink: 0;
 }
 
+.modal-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.modal-prev,
+.modal-next {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.modal-prev:hover,
+.modal-next:hover { color: var(--text-primary); }
+
+.modal-prev:disabled,
+.modal-next:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.modal-prev:focus-visible,
+.modal-next:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* Content area */
 .modal-content {
   display: flex;

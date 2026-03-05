@@ -1063,6 +1063,41 @@ main {
   flex-shrink: 0;
 }
 
+.modal-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.modal-prev,
+.modal-next {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.modal-prev:hover,
+.modal-next:hover { color: var(--text-primary); }
+
+.modal-prev:disabled,
+.modal-next:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.modal-prev:focus-visible,
+.modal-next:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* Content area */
 .modal-content {
   display: flex;
@@ -1448,7 +1483,7 @@ The Dunda…">
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-05T10:38:28Z">5 Mar 2026 at 10:38 UTC</span><span class="next-update" data-next="2026-03-05T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-05T10:42:08Z">5 Mar 2026 at 10:42 UTC</span><span class="next-update" data-next="2026-03-05T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
@@ -1495,7 +1530,11 @@ The Dunda…">
         <div class="modal-box">
           <div class="modal-header">
             <span class="modal-type-label" aria-hidden="true"></span>
-            <span class="modal-index" aria-hidden="true"></span>
+            <div class="modal-nav">
+              <button class="modal-prev" aria-label="Previous item">←</button>
+              <span class="modal-index" aria-hidden="true"></span>
+              <button class="modal-next" aria-label="Next item">→</button>
+            </div>
             <button class="modal-close" aria-label="Close">[ X ]</button>
           </div>
           <div class="modal-content">
@@ -1524,6 +1563,9 @@ The Dunda…">
           var typeLabelEl = overlay.querySelector('.modal-type-label');
           var indexEl = overlay.querySelector('.modal-index');
           var activeRow = null;
+          var prevBtn = overlay.querySelector('.modal-prev');
+          var nextBtn = overlay.querySelector('.modal-next');
+          var currentSiblings = [];
 
           var TYPE_LABELS = {
             book:    '[▓] BOOKS',
@@ -1541,13 +1583,15 @@ The Dunda…">
             box.dataset.modalType = type;
             typeLabelEl.textContent = TYPE_LABELS[type] || '';
 
-            // Item index within its panel (e.g. "02 / 05")
+            // Item index within its panel + store siblings for navigation
             var panelBody = row.closest('.panel-body');
-            var siblings = panelBody
+            currentSiblings = panelBody
               ? Array.from(panelBody.querySelectorAll('.panel-row[role="button"]'))
               : [row];
-            var idx = siblings.indexOf(row) + 1;
-            indexEl.textContent = idx + ' / ' + siblings.length;
+            var idx = currentSiblings.indexOf(row);
+            indexEl.textContent = (idx + 1) + ' / ' + currentSiblings.length;
+            prevBtn.disabled = idx <= 0;
+            nextBtn.disabled = idx >= currentSiblings.length - 1;
 
             // Title
             titleEl.textContent = title;
@@ -1650,8 +1694,22 @@ The Dunda…">
           overlay.addEventListener('click', function (e) {
             if (e.target === overlay) closeModal();
           });
+
+          prevBtn.addEventListener('click', function () {
+            var idx = currentSiblings.indexOf(activeRow);
+            if (idx > 0) openModal(currentSiblings[idx - 1]);
+          });
+
+          nextBtn.addEventListener('click', function () {
+            var idx = currentSiblings.indexOf(activeRow);
+            if (idx < currentSiblings.length - 1) openModal(currentSiblings[idx + 1]);
+          });
+
           document.addEventListener('keydown', function (e) {
-            if (!overlay.hidden && e.key === 'Escape') closeModal();
+            if (overlay.hidden) return;
+            if (e.key === 'Escape') { closeModal(); return; }
+            if (e.key === 'ArrowLeft')  { prevBtn.click(); return; }
+            if (e.key === 'ArrowRight') { nextBtn.click(); return; }
           });
 
           // Basic tab trap within modal
