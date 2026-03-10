@@ -967,6 +967,7 @@ main {
 
   .status-strips .status-strip {
     flex: 1;
+    min-width: 0;
   }
 }
 
