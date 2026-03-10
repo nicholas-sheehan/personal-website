@@ -489,7 +489,6 @@ main {
 
 .waveform-bar {
   width: 2px;
-  height: 3px;
   background: var(--accent-music);
   border-radius: 1px;
   animation: waveform 0.5s ease-in-out infinite alternate;
@@ -506,6 +505,11 @@ main {
 /* Static state: last played (not currently live) */
 .status-strip--music.is-static .waveform {
   display: none;
+}
+
+/* Prevent long track names from overflowing on desktop */
+.status-strip-text {
+  min-width: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
