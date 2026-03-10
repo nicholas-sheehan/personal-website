@@ -141,7 +141,7 @@ Add immediately after `<!-- goodreads-now:end -->` and before the `<!-- Currentl
 
 ```html
           <!-- ── NOW PLAYING STATUS STRIP ── -->
-          <div id="now-playing-strip" class="status-strip status-strip--music" hidden>
+          <div id="now-playing-strip" class="status-strip status-strip--music" aria-live="polite" hidden>
             <span class="status-strip-label" id="now-playing-label">Now playing</span>
             <span class="waveform" aria-hidden="true">
               <span class="waveform-bar"></span>
@@ -215,7 +215,7 @@ Find the end of that section (the `.status-strip-text em` rule closes around lin
   width: 2px;
   background: var(--accent-music);
   border-radius: 1px;
-  animation: waveform 0.8s ease-in-out infinite alternate;
+  animation: waveform 0.5s ease-in-out infinite alternate;
 }
 
 .waveform-bar:nth-child(2) { animation-delay: 0.2s; }
@@ -229,6 +229,11 @@ Find the end of that section (the `.status-strip-text em` rule closes around lin
 /* Static state: last played (not currently live) */
 .status-strip--music.is-static .waveform {
   display: none;
+}
+
+/* Prevent long track names from overflowing on desktop */
+.status-strip-text {
+  min-width: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -286,7 +291,7 @@ Insert the new script between those two lines.
 
 **Step 3: Add the now-playing IIFE**
 
-Replace `WORKER_URL_HERE` with your actual Worker URL from the `wrangler deploy` output:
+Replace `WORKER_URL_HERE` with your actual Worker URL from the `wrangler deploy` output. The Worker URL is **not a secret** — it is a public HTTPS endpoint (the API key never leaves Cloudflare). It is safe to hardcode directly in `index.html`:
 
 ```html
 <script>(function(){var WORKER='WORKER_URL_HERE';var POLL=30000;var strip=document.getElementById('now-playing-strip');var label=document.getElementById('now-playing-label');var text=document.getElementById('now-playing-text');if(!strip)return;function update(){fetch(WORKER).then(function(r){return r.json();}).then(function(d){if(!d.track)return;text.textContent=d.track+' by '+d.artist;label.textContent=d.nowPlaying?'Now playing':'Last played';strip.classList.toggle('is-static',!d.nowPlaying);strip.removeAttribute('hidden');}).catch(function(){});}update();setInterval(update,POLL);})();</script>
