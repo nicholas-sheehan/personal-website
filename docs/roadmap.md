@@ -128,7 +128,15 @@ First live data source — small serverless layer alongside the static site.
 - Added `worker/.gitignore` to exclude `.wrangler/` cache from repo (caught during implementation)
 - Frontend designer review: `aria-live="polite"` on strip, animation speed 0.8s→0.5s, `min-width: 0` on `.status-strip-text`
 
-## Iteration 13 — Data Explorer Mode ⬜ planned 2026-02-22
+## Iteration 13 — Status strip polish ⬜ planned 2026-03-10
+Small CSS/template pass on the now-reading and now-playing strips.
+
+- [ ] Desktop: now-reading + now-playing strips side-by-side (flex row) on desktop, stacked on mobile — avoids two rows of chrome when both are visible
+- [ ] Remove "by" connector word from both strips — rely on colour contrast alone: title in `--text-primary`, author/artist name in `--text-secondary` via `.status-strip-name` span
+- [ ] Update `build_now_reading_html()` in `build.py` to output `<em>Title</em> <span class="status-strip-name">Author</span>`
+- [ ] Update now-playing JS IIFE to build separate spans for track and artist
+
+## Iteration 14 — Data Explorer Mode ⬜ planned 2026-02-22
 Theatrical data experience. The biggest lift — requires a dedicated design session before implementation.
 
 - [ ] Triggered by keyboard shortcut (`/` or `~`)
