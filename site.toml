@@ -29,3 +29,9 @@ limit = 5
 [sources.lastfm]
 username = "tonic-lastfm"
 limit = 5
+
+[sources.nowplaying]
+# Cloudflare Worker — proxies Last.fm user.getRecentTracks, protects API key
+# Deploy: cd worker && wrangler deploy
+# Secret: wrangler secret put LASTFM_API_KEY
+worker_url = "https://now-playing.b-tonic.workers.dev"
