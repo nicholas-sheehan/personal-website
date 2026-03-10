@@ -42,7 +42,7 @@ When `nowPlaying: false`, the strip shows "Last played" as the label (last scrob
 Static in `index.html`, placed directly below `<!-- goodreads-now:end -->`. No build-time injection — JS populates it at runtime.
 
 ```html
-<div id="now-playing-strip" class="status-strip status-strip--music" aria-live="polite" hidden>
+<div id="now-playing-strip" class="status-strip status-strip--music" hidden>
   <span class="status-strip-label" id="now-playing-label">Now playing</span>
   <span class="waveform" aria-hidden="true">
     <span class="waveform-bar"></span>
@@ -89,7 +89,7 @@ Added to `style.css`. Existing `.status-strip` (green, now-reading) is untouched
   width: 2px;
   background: var(--accent-music);
   border-radius: 1px;
-  animation: waveform 0.5s ease-in-out infinite alternate;
+  animation: waveform 0.8s ease-in-out infinite alternate;
 }
 
 .waveform-bar:nth-child(2) { animation-delay: 0.2s; }
