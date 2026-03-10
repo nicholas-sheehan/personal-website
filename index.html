@@ -1236,6 +1236,17 @@ main {
               <span class="status-strip-text"><em>Stinkbug</em> by Sinéad Stubbins</span>
             </div>
 <!-- goodreads-now:end -->
+          <!-- ── NOW PLAYING STATUS STRIP ── -->
+          <div id="now-playing-strip" class="status-strip status-strip--music" aria-live="polite" hidden>
+            <span class="status-strip-label" id="now-playing-label">Now playing</span>
+            <span class="waveform" aria-hidden="true">
+              <span class="waveform-bar"></span>
+              <span class="waveform-bar"></span>
+              <span class="waveform-bar"></span>
+            </span>
+            <span class="status-strip-sep">›</span>
+            <span class="status-strip-text" id="now-playing-text"></span>
+          </div>
           <!-- Currently reading data (hidden — used by status strip above) -->
           <div hidden aria-hidden="true">
 <!-- goodreads:start -->
