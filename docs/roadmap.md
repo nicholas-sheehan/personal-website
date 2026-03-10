@@ -139,7 +139,16 @@ Small CSS/template pass on the now-reading and now-playing strips.
 **Extras landed with this iteration:**
 - Added `min-width: 0` to `.status-strips .status-strip` desktop rule to prevent long titles overflowing flex container (caught in code quality review)
 
-## Iteration 14 — Data Explorer Mode ⬜ planned 2026-02-22
+## Iteration 14 — Visual & Data Polish ⬜ planned 2026-03-10
+Batch of small fixes from full design + technical review. No new infrastructure.
+
+- [ ] Typography: `.track-title` font-weight 500→400, `.article-title` 0.75rem→0.78rem
+- [ ] CSS: modal `100vh`→`100dvh`, `panel-footer-link` `:focus-visible`, Google Fonts weight restriction, `.status-strip-title` class
+- [ ] HTML: Music panel → second position, avatar dimensions 96→72, Articles `→ Instapaper` footer
+- [ ] Build: Goodreads UTM stripping, films watched date in modal, `article-source` span→div, section subtitles standardised to "on [Service]"
+- [ ] JS: now-playing track title italic removed, modal link hidden when no URL
+
+## Iteration 15 — Data Explorer Mode ⬜ planned 2026-02-22
 Theatrical data experience. The biggest lift — requires a dedicated design session before implementation.
 
 - [ ] Triggered by keyboard shortcut (`/` or `~`)
@@ -158,6 +167,14 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 - [ ] **Move DNS to Cloudflare nameservers** — prerequisite for CDN proxy and Pages. Unlocks DDoS protection, edge caching, and automatic HTTPS for `www.nicsheehan.com` at no cost. Done in the Cloudflare dashboard: add site → update nameservers at registrar → enable proxy (orange cloud) on DNS records.
 - [ ] **Migrate to Cloudflare Pages for proper staging environment** — GitHub Pages free tier only supports one deployment target. Cloudflare Pages gives automatic preview URLs per branch (e.g. `staging.<project>.pages.dev`), enabling proper staging review. Depends on DNS being on Cloudflare. Already using Workers so this is a natural fit.
 - [ ] **Worker KV caching for now-playing** — cache Last.fm response in Cloudflare KV for ~15 seconds so rapid page loads don't hammer the API. One extra step in the Worker fetch handler. Bundle with a future iteration rather than shipping alone.
+- [ ] **Pin `requirements.txt` versions** — `Pillow` and `tomli` are unpinned; a future Pillow major release could break OG image generation. Pin to `Pillow>=10,<12`.
+- [ ] **API keys as request headers** — TMDB and Last.fm keys are passed as URL query params (visible in server logs). Switch to `Authorization` header pattern already used for Gravatar.
+- [ ] **Wrangler deploy step in CI** — Worker code in `main` can drift from what's running on Cloudflare with no warning. Add a `wrangler deploy` step to the workflow so Worker deploys automatically on push.
+- [ ] **HTML validation in CI** — no check that the build produces valid HTML. Add `html5validator` on `_site/` output to catch malformed markup before deploy.
+- [ ] **OG image: skip regeneration if unchanged** — currently regenerated on every build even if Gravatar data hasn't changed. Add a hash/comparison guard to avoid the daily `og-image.png` git noise.
+- [ ] **Boot sequence: skip on returning visits** — add a `sessionStorage` flag so the boot overlay is skipped for returning visitors; reduces artificial LCP delay from ~2.4–3.2s to near-zero on repeat loads.
+- [ ] **CI deploy job: artifact handoff** — replace the second `git pull` in the `deploy` job with `actions/upload-artifact` / `actions/download-artifact` to pass `_site/` between jobs without a race-prone network pull.
+- [ ] **CI deploy job: concurrency control** — add `concurrency:` key to cancel in-progress deploys when a new push arrives.
 
 ## Discussed and decided against
 - Separate `twitter_title`/`twitter_description` in TOML — unnecessary, they always match `site.title`/`site.description`
