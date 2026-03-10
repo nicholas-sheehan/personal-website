@@ -144,7 +144,9 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 - [ ] Install `gh` CLI properly (Homebrew: `brew install gh`) so it doesn't need re-downloading each session
 - [x] Squash-only merges — unticked "Allow merge commits" and "Allow rebase merging"; squash is now the only option, eliminating timestamp conflicts on `staging → main` ✅ 2026-03-03
 - [ ] Process habit: commit any open docs/working-tree changes before starting worktree work — prevents `git checkout staging` failing mid-flow
-- [ ] **Migrate to Cloudflare Pages for proper staging environment** — GitHub Pages free tier only supports one deployment target. Cloudflare Pages gives automatic preview URLs per branch (e.g. `staging.<project>.pages.dev`), enabling proper staging review. Already using Cloudflare Workers so this is a natural fit.
+- [ ] **Move DNS to Cloudflare nameservers** — prerequisite for CDN proxy and Pages. Unlocks DDoS protection, edge caching, and automatic HTTPS for `www.nicsheehan.com` at no cost. Done in the Cloudflare dashboard: add site → update nameservers at registrar → enable proxy (orange cloud) on DNS records.
+- [ ] **Migrate to Cloudflare Pages for proper staging environment** — GitHub Pages free tier only supports one deployment target. Cloudflare Pages gives automatic preview URLs per branch (e.g. `staging.<project>.pages.dev`), enabling proper staging review. Depends on DNS being on Cloudflare. Already using Workers so this is a natural fit.
+- [ ] **Worker KV caching for now-playing** — cache Last.fm response in Cloudflare KV for ~15 seconds so rapid page loads don't hammer the API. One extra step in the Worker fetch handler. Bundle with a future iteration rather than shipping alone.
 
 ## Discussed and decided against
 - Separate `twitter_title`/`twitter_description` in TOML — unnecessary, they always match `site.title`/`site.description`
