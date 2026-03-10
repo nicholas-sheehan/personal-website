@@ -20,6 +20,7 @@ See [docs/architecture.md](docs/architecture.md) for a full diagram of the build
 | **Reads I recommend** | [Instapaper](https://www.instapaper.com) | Star articles in Instapaper. The 5 most recent starred articles are shown. |
 | **Listening to lately** | [Last.fm](https://www.last.fm) | Your top 5 tracks of the current month are pulled automatically via the Last.fm API. |
 | **Film enrichment** | [TMDB](https://www.themoviedb.org) | Poster, director, and synopsis are fetched automatically for each film. Gracefully skipped if key is unset. |
+| **Currently playing** | [Last.fm](https://www.last.fm) via Cloudflare Worker | Live now-playing / last-played track fetched at runtime by the browser. A Cloudflare Worker at `now-playing.b-tonic.workers.dev` proxies Last.fm `user.getRecentTracks`. Deployed separately — see [Worker deployment](#worker-deployment) below. |
 
 ## When does the site update?
 
@@ -38,7 +39,7 @@ These are configured in the repo under Settings → Secrets and variables → Ac
 | `INSTAPAPER_CONSUMER_SECRET` | Instapaper OAuth consumer secret |
 | `INSTAPAPER_OAUTH_TOKEN` | Instapaper user token (generated via `build.py auth`) |
 | `INSTAPAPER_OAUTH_TOKEN_SECRET` | Instapaper user token secret |
-| `LASTFM_API_KEY` | Last.fm API key (get one at last.fm/api/account/create) |
+| `LASTFM_API_KEY` | Last.fm API key for the static build (top-5 monthly tracks). A **separate copy** of this key is also stored as a Cloudflare secret for the now-playing Worker — see [Worker deployment](#worker-deployment). |
 | `TMDB_API_KEY` | TMDB API key for film posters/director/synopsis (get one at themoviedb.org/settings/api) |
 
 ## Running locally
@@ -56,6 +57,18 @@ python3 build.py
 ```
 
 Goodreads and Letterboxd use public RSS feeds and work without any credentials.
+
+## Worker deployment
+
+The now-playing strip is powered by a Cloudflare Worker deployed separately from the static site. It is not part of the GitHub Actions build.
+
+```bash
+cd worker
+wrangler secret put LASTFM_API_KEY   # store key in Cloudflare (not GitHub Secrets)
+wrangler deploy
+```
+
+The Worker URL (`now-playing.b-tonic.workers.dev`) is configured in `site.toml` under `[worker]` and is read by `build.py` to inject the correct endpoint into `index.html` at build time.
 
 ## Files
 

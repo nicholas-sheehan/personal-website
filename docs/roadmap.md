@@ -116,13 +116,17 @@ Pure frontend — no new infrastructure. Quick wins that make the site feel more
 **Extras landed with this iteration:**
 - Frontend designer review: reduced warm-up blur to 0 (brightness-only), improved arrow button padding/colour/disabled opacity
 
-## Iteration 12 — Currently playing (live API) ⬜ planned 2026-02-22
+## Iteration 12 — Currently playing (live API) ✅ shipped 2026-03-10
 First live data source — small serverless layer alongside the static site.
 
-- [ ] Cloudflare Worker proxying Last.fm `user.getRecentTracks` (`nowplaying` flag); `LASTFM_API_KEY` as Cloudflare secret
-- [ ] Static page `fetch()`es Worker on load; injects track if playing, otherwise section hidden
-- [ ] "Currently playing" strip with purple accent, matching currently-reading callout style
-- [ ] Animating CSS waveform icon (bars scaling up/down) to denote live data
+- [x] Cloudflare Worker proxying Last.fm `user.getRecentTracks` (`nowplaying` flag); `LASTFM_API_KEY` as Cloudflare secret
+- [x] Static page `fetch()`es Worker on load; injects track if playing, otherwise section hidden
+- [x] "Currently playing" strip with purple accent, matching currently-reading callout style
+- [x] Animating CSS waveform icon (bars scaling up/down) to denote live data
+
+**Extras landed with this iteration:**
+- Added `worker/.gitignore` to exclude `.wrangler/` cache from repo (caught during implementation)
+- Frontend designer review: `aria-live="polite"` on strip, animation speed 0.8s→0.5s, `min-width: 0` on `.status-strip-text`
 
 ## Iteration 13 — Data Explorer Mode ⬜ planned 2026-02-22
 Theatrical data experience. The biggest lift — requires a dedicated design session before implementation.
@@ -140,6 +144,7 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 - [ ] Install `gh` CLI properly (Homebrew: `brew install gh`) so it doesn't need re-downloading each session
 - [x] Squash-only merges — unticked "Allow merge commits" and "Allow rebase merging"; squash is now the only option, eliminating timestamp conflicts on `staging → main` ✅ 2026-03-03
 - [ ] Process habit: commit any open docs/working-tree changes before starting worktree work — prevents `git checkout staging` failing mid-flow
+- [ ] **Migrate to Cloudflare Pages for proper staging environment** — GitHub Pages free tier only supports one deployment target. Cloudflare Pages gives automatic preview URLs per branch (e.g. `staging.<project>.pages.dev`), enabling proper staging review. Already using Cloudflare Workers so this is a natural fit.
 
 ## Discussed and decided against
 - Separate `twitter_title`/`twitter_description` in TOML — unnecessary, they always match `site.title`/`site.description`
