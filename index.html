@@ -17,7 +17,7 @@
   <link rel="apple-touch-icon" href="/favicon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <!-- style:start -->
   <style>
 /* ──────────────────────────────────────────────
@@ -124,7 +124,7 @@ html {
 .boot-overlay-line {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--accent);
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -221,7 +221,7 @@ body::before {
   color: #fff;
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 400;
   text-decoration: none;
   z-index: 100;
   transition: top 0.1s ease;
@@ -407,7 +407,7 @@ main {
   display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--text-secondary);
   text-decoration: none;
   letter-spacing: 0.08em;
@@ -501,6 +501,18 @@ main {
   color: var(--text-secondary);
 }
 
+.status-strip-title {
+  color: var(--text-primary);
+}
+
+.status-strip-title[href] {
+  text-decoration: none;
+}
+
+.status-strip-title[href]:hover {
+  color: var(--accent);
+}
+
 /* ──────────────────────────────────────────────
    NOW PLAYING — Status strip (music / purple variant)
    ────────────────────────────────────────────── */
@@ -572,6 +584,8 @@ main {
   border: 1px solid var(--border);
   overflow: hidden;
   transition: box-shadow 0.18s ease, border-color 0.18s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 2px coloured top border — section identifier */
@@ -626,6 +640,7 @@ main {
 /* Panel body */
 .panel-body {
   padding: 0;
+  flex: 1;
 }
 
 /* Panel footer — contextual service link */
@@ -648,6 +663,11 @@ main {
 
 .panel-footer-link:hover {
   color: var(--text-secondary);
+}
+
+.panel-footer-link:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* ──────────────────────────────────────────────
@@ -820,7 +840,7 @@ main {
 .track-title {
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--text-primary);
   line-height: 1.4;
   text-shadow: 0 0 6px rgba(180, 210, 255, 0.12);
@@ -839,7 +859,7 @@ main {
   display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.6rem;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--accent-music);
   background: rgba(168, 85, 247, 0.08);
   border: 1px solid rgba(168, 85, 247, 0.2);
@@ -853,7 +873,7 @@ main {
 
 .article-title {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 400;
   color: var(--text-primary);
   line-height: 1.45;
@@ -862,7 +882,6 @@ main {
 
 /* Article source domain tag */
 .article-source {
-  display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.6rem;
   font-weight: 400;
@@ -964,12 +983,6 @@ main {
   /* Header row stays horizontal at all breakpoints */
   .system-header-row {
     flex-wrap: nowrap;
-  }
-
-  .article-source {
-    margin-top: 0;
-    flex-shrink: 0;
-    align-self: flex-start;
   }
 
   /* Panel title truncation — keep grid rows aligned on desktop */
@@ -1084,7 +1097,7 @@ main {
   border-top: 4px solid var(--modal-accent, var(--accent));
   max-width: 560px;
   width: 100%;
-  max-height: calc(100vh - 4rem);
+  max-height: calc(100dvh - 4rem);
   overflow-y: auto;
   font-family: var(--font-mono);
 }
@@ -1224,6 +1237,16 @@ main {
   line-height: 1.4;
 }
 
+.modal-desc-label {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
 .modal-desc {
   font-size: 0.7rem;
   color: var(--text-tertiary);
@@ -1270,7 +1293,7 @@ main {
 
               <div class="avatar-wrap">
 <!-- gravatar-avatar:start -->
-        <img class="avatar" src="https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e?s=192" alt="Nicholas Sheehan" width="96" height="96">
+        <img class="avatar" src="https://0.gravatar.com/avatar/5abcaf94cd2fa7becdaedd17a9fc6dbd3ef67254266190a210e73ceb5de3cc5e?s=192" alt="Nicholas Sheehan" width="72" height="72">
 <!-- gravatar-avatar:end -->
               </div>
 
@@ -1309,7 +1332,7 @@ main {
             <div class="status-strip">
               <span class="status-strip-label">Now reading</span>
               <span class="status-strip-sep">›</span>
-              <span class="status-strip-text"><em>Stinkbug</em> <span class="status-strip-name">Sinéad Stubbins</span></span>
+              <span class="status-strip-text"><a class="status-strip-title" href="https://www.goodreads.com/review/show/7915282502" target="_blank" rel="noopener noreferrer">Stinkbug</a> <span class="status-strip-name">Sinéad Stubbins</span></span>
             </div>
 <!-- goodreads-now:end -->
           <div id="now-playing-strip" class="status-strip status-strip--music" aria-live="polite" hidden>
@@ -1326,7 +1349,7 @@ main {
           <!-- Currently reading data (hidden — used by status strip above) -->
           <div hidden aria-hidden="true">
 <!-- goodreads:start -->
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="Stinkbug" data-author="Sinéad Stubbins" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1741801026l/228862539._SY475_.jpg" data-description="In this wildly original and deeply unhinged story, Sinéad Stubbins turns her keen but empathetic eye on the lies we tell about ourselves in order to belong. Part anxious millennial fever dream, part searing workplace satire, this corporate gothic novel is perfect for fans of Yellowface, Nightbitch and Such a Fun Age.You&#x27;re a stinkbug and they&#x27;re worried if they come near you, your stench will g…" data-url="https://www.goodreads.com/review/show/7915282502?utm_medium=api&amp;utm_source=rss">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="Stinkbug" data-author="Sinéad Stubbins" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1741801026l/228862539._SY475_.jpg" data-description="In this wildly original and deeply unhinged story, Sinéad Stubbins turns her keen but empathetic eye on the lies we tell about ourselves in order to belong. Part anxious millennial fever dream, part searing workplace satire, this corporate gothic novel is perfect for fans of Yellowface, Nightbitch and Such a Fun Age.You&#x27;re a stinkbug and they&#x27;re worried if they come near you, your stench will g…" data-url="https://www.goodreads.com/review/show/7915282502">
                   <span class="row-index">01</span>
                   <div class="row-content">
                     <div class="book-title">Stinkbug</div>
@@ -1344,13 +1367,13 @@ main {
               <div class="panel-header">
                 <div class="panel-heading">
                   <h2 class="panel-label" id="panel-books-label" data-icon="[▓]"><a href="https://www.goodreads.com/user/show/175639385" class="panel-label-link" target="_blank" rel="noopener noreferrer">Books<svg class="section-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 8L8 2M8 2H3M8 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></h2>
-                  <p class="section-source">via Goodreads</p>
+                  <p class="section-source">on Goodreads</p>
                 </div>
                 <span class="panel-count">recently read</span>
               </div>
               <div class="panel-body">
 <!-- goodreads-read:start -->
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="Zorba the Greek" data-author="Nikos Kazantzakis" data-stars="★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1391846500l/6163496.jpg" data-finished="Finished March 2026" data-description="The classic novel, international sensation, and inspiration for the film starring Anthony Quinn explores the struggle between the aesthetic and the rational, the inner life and the life of the mind.The classic novel Zorba the Greek is the story of two men, their incredible friendship, and the importance of living life to the fullest. Zorba, a Greek working man, is a larger-than-life character, …" data-url="https://www.goodreads.com/review/show/8331406273?utm_medium=api&amp;utm_source=rss">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="Zorba the Greek" data-author="Nikos Kazantzakis" data-stars="★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1391846500l/6163496.jpg" data-finished="Finished March 2026" data-description="The classic novel, international sensation, and inspiration for the film starring Anthony Quinn explores the struggle between the aesthetic and the rational, the inner life and the life of the mind.The classic novel Zorba the Greek is the story of two men, their incredible friendship, and the importance of living life to the fullest. Zorba, a Greek working man, is a larger-than-life character, …" data-url="https://www.goodreads.com/review/show/8331406273">
                   <span class="row-index">01</span>
                   <div class="row-content">
                     <div class="book-title">Zorba the Greek</div>
@@ -1358,7 +1381,7 @@ main {
                   </div>
                   <span class="row-meta book-stars" aria-label="Rated 2 out of 5">★★</span>
                 </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="The Fall" data-author="Albert Camus" data-stars="★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1606992083l/50742903._SY475_.jpg" data-finished="Finished February 2026" data-description="Jean-Baptiste Clamence, a successful Parisian barrister, has come to recognize the deep-seated hypocrisy of his existence. His epigrammatic and, above all, discomforting monologue gradually saps, then undermines, the reader&#x27;s own complacency." data-url="https://www.goodreads.com/review/show/7733808121?utm_medium=api&amp;utm_source=rss">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="The Fall" data-author="Albert Camus" data-stars="★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1606992083l/50742903._SY475_.jpg" data-finished="Finished February 2026" data-description="Jean-Baptiste Clamence, a successful Parisian barrister, has come to recognize the deep-seated hypocrisy of his existence. His epigrammatic and, above all, discomforting monologue gradually saps, then undermines, the reader&#x27;s own complacency." data-url="https://www.goodreads.com/review/show/7733808121">
                   <span class="row-index">02</span>
                   <div class="row-content">
                     <div class="book-title">The Fall</div>
@@ -1366,7 +1389,7 @@ main {
                   </div>
                   <span class="row-meta book-stars" aria-label="Rated 3 out of 5">★★★</span>
                 </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="EXCLUSIVE!: Dispatches from The Paris End" data-author="Cameron Hurst" data-stars="★★★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1761610426l/243266424._SX318_.jpg" data-finished="Finished January 2026" data-description="A few years ago, Cameron Hurst, Sally Olds, and Oscar Schwartz sat down for a beer at a Melbourne pub and decided to start a newsletter. It would be called The Paris End, after the aspirationally cosmopolitan (yet persistently grotty) hilltop at the eastern end of Melbourne’s city centre. It would seek to make much of a striving metropolis. It would publish hyperlocal, irreverent, long-form lit…" data-url="https://www.goodreads.com/review/show/8143798699?utm_medium=api&amp;utm_source=rss">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="EXCLUSIVE!: Dispatches from The Paris End" data-author="Cameron Hurst" data-stars="★★★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1761610426l/243266424._SX318_.jpg" data-finished="Finished January 2026" data-description="A few years ago, Cameron Hurst, Sally Olds, and Oscar Schwartz sat down for a beer at a Melbourne pub and decided to start a newsletter. It would be called The Paris End, after the aspirationally cosmopolitan (yet persistently grotty) hilltop at the eastern end of Melbourne’s city centre. It would seek to make much of a striving metropolis. It would publish hyperlocal, irreverent, long-form lit…" data-url="https://www.goodreads.com/review/show/8143798699">
                   <span class="row-index">03</span>
                   <div class="row-content">
                     <div class="book-title">EXCLUSIVE!: Dispatches from The Paris End</div>
@@ -1374,7 +1397,7 @@ main {
                   </div>
                   <span class="row-meta book-stars" aria-label="Rated 5 out of 5">★★★★★</span>
                 </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="When the Going Was Good: An Editor&#x27;s Adventures During the Last Golden Age of Magazines" data-author="Graydon Carter" data-stars="★★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1727232797l/218494525._SY475_.jpg" data-finished="Finished December 2025" data-description="From the pages of Vanity Fair to the red carpets of Hollywood, editor Graydon Carter’s memoir revives the glamorous heyday of print magazines when they were at the vanguard of American cultureWhen Graydon Carter was offered the editorship of Vanity Fair in 1992, he knew he faced an uphill battle—how to make the esteemed and long-established magazine his own. Not only was he confronted with a st…" data-url="https://www.goodreads.com/review/show/7733806182?utm_medium=api&amp;utm_source=rss">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="When the Going Was Good: An Editor&#x27;s Adventures During the Last Golden Age of Magazines" data-author="Graydon Carter" data-stars="★★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1727232797l/218494525._SY475_.jpg" data-finished="Finished December 2025" data-description="From the pages of Vanity Fair to the red carpets of Hollywood, editor Graydon Carter’s memoir revives the glamorous heyday of print magazines when they were at the vanguard of American cultureWhen Graydon Carter was offered the editorship of Vanity Fair in 1992, he knew he faced an uphill battle—how to make the esteemed and long-established magazine his own. Not only was he confronted with a st…" data-url="https://www.goodreads.com/review/show/7733806182">
                   <span class="row-index">04</span>
                   <div class="row-content">
                     <div class="book-title">When the Going Was Good: An Editor&#x27;s Adventures During the Last Golden Age of Magazines</div>
@@ -1382,7 +1405,7 @@ main {
                   </div>
                   <span class="row-meta book-stars" aria-label="Rated 4 out of 5">★★★★</span>
                 </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="Post Office" data-author="Charles Bukowski" data-stars="★★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1555887577l/40409718._SY475_.jpg" data-finished="Finished December 2025" data-description="查尔斯·布考斯基（Charles Bukowski，1920～1994），20世纪美国最有影响力的诗人、小说家之一。阿尔贝•加缪称他为美国当代最伟大的作家，《时代周刊》评论他是美国底层社会的桂冠诗人。他的创作继往开来，独树一帜，被誉为“地狱的海明威”。布考斯基年轻时做过洗碗工、卡车司机、邮差、门卫、仓库管理员、电梯操作员等多种底层工作，其写作的主题大多源自他的生活经历。《邮差》是布考斯基的长篇小说处女作，也是其代表作之一，至今已被翻译成十六种语言。书中的主人公，人到中年的亨利·切那斯基是美国社会典型的失败者，从事着勉强糊口的邮差工作，支撑他的是啤酒和威士忌、赌马和一夜之欢的女人。每天他从宿醉中挣扎着爬起床，或者徒步于暴晒，或者被雨水浸透，游荡在洛杉矶无数阴暗的角落，试图在混乱、艰难的底层生活的折磨中生存下来……布考斯基独立于美国文学的写作风格，便是从本书开始确立。" data-url="https://www.goodreads.com/review/show/8046872170?utm_medium=api&amp;utm_source=rss">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="Post Office" data-author="Charles Bukowski" data-stars="★★★★" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1555887577l/40409718._SY475_.jpg" data-finished="Finished December 2025" data-description="查尔斯·布考斯基（Charles Bukowski，1920～1994），20世纪美国最有影响力的诗人、小说家之一。阿尔贝•加缪称他为美国当代最伟大的作家，《时代周刊》评论他是美国底层社会的桂冠诗人。他的创作继往开来，独树一帜，被誉为“地狱的海明威”。布考斯基年轻时做过洗碗工、卡车司机、邮差、门卫、仓库管理员、电梯操作员等多种底层工作，其写作的主题大多源自他的生活经历。《邮差》是布考斯基的长篇小说处女作，也是其代表作之一，至今已被翻译成十六种语言。书中的主人公，人到中年的亨利·切那斯基是美国社会典型的失败者，从事着勉强糊口的邮差工作，支撑他的是啤酒和威士忌、赌马和一夜之欢的女人。每天他从宿醉中挣扎着爬起床，或者徒步于暴晒，或者被雨水浸透，游荡在洛杉矶无数阴暗的角落，试图在混乱、艰难的底层生活的折磨中生存下来……布考斯基独立于美国文学的写作风格，便是从本书开始确立。" data-url="https://www.goodreads.com/review/show/8046872170">
                   <span class="row-index">05</span>
                   <div class="row-content">
                     <div class="book-title">Post Office</div>
@@ -1397,70 +1420,12 @@ main {
               </footer>
             </section>
 
-            <!-- FILMS -->
-            <section class="panel panel--films" aria-labelledby="panel-films-label">
-              <div class="panel-header">
-                <div class="panel-heading">
-                  <h2 class="panel-label" id="panel-films-label" data-icon="[▶]"><a href="https://letterboxd.com/tonic2" class="panel-label-link" target="_blank" rel="noopener noreferrer">Films<svg class="section-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 8L8 2M8 2H3M8 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></h2>
-                  <p class="section-source">on Letterboxd</p>
-                </div>
-                <span class="panel-count">recently watched</span>
-              </div>
-              <div class="panel-body">
-<!-- letterboxd:start -->
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Terminator 2: Judgment Day" data-year="1991" data-stars="★★★★★" data-url="https://letterboxd.com/tonic2/film/terminator-2-judgment-day/1/" data-poster="https://image.tmdb.org/t/p/w300/jFTVD4XoWQTcg7wdyJKa8PEds5q.jpg" data-director="James Cameron" data-synopsis="Ten years after the events of the original, a reprogrammed T-800 is sent back in time to protect young John Connor from the shape-shifting T-1000. Together with his mother Sarah, he fights to stop Skynet from triggering a nuclear apocalypse.">
-                  <span class="row-index">01</span>
-                  <div class="row-content">
-                    <div class="film-title">Terminator 2: Judgment Day</div>
-                    <div class="film-year">1991</div>
-                  </div>
-                  <span class="row-meta film-stars" aria-label="Rated 5.0 out of 5">★★★★★</span>
-                </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Wuthering Heights" data-year="2026" data-stars="★★" data-url="https://letterboxd.com/tonic2/film/wuthering-heights-2026/" data-poster="https://image.tmdb.org/t/p/w300/3YBce6dTh1D5oCMITXk2S5QhPt.jpg" data-director="Emerald Fennell" data-synopsis="Tragedy strikes when Heathcliff falls in love with Catherine Earnshaw, a woman from a wealthy family in 18th-century England.">
-                  <span class="row-index">02</span>
-                  <div class="row-content">
-                    <div class="film-title">Wuthering Heights</div>
-                    <div class="film-year">2026</div>
-                  </div>
-                  <span class="row-meta film-stars" aria-label="Rated 2.0 out of 5">★★</span>
-                </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Marty Supreme" data-year="2025" data-stars="★★★★" data-url="https://letterboxd.com/tonic2/film/marty-supreme/" data-poster="https://image.tmdb.org/t/p/w300/lYWEXbQgRTR4ZQleSXAgRbxAjvq.jpg" data-director="Josh Safdie" data-synopsis="Marty Mauser, a young man with a dream no one respects, goes to hell and back in pursuit of greatness.">
-                  <span class="row-index">03</span>
-                  <div class="row-content">
-                    <div class="film-title">Marty Supreme</div>
-                    <div class="film-year">2025</div>
-                  </div>
-                  <span class="row-meta film-stars" aria-label="Rated 4.0 out of 5">★★★★</span>
-                </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Avatar: Fire and Ash" data-year="2025" data-stars="★★★½" data-url="https://letterboxd.com/tonic2/film/avatar-fire-and-ash/" data-poster="https://image.tmdb.org/t/p/w300/bRBeSHfGHwkEpImlhxPmOcUsaeg.jpg" data-director="James Cameron" data-synopsis="In the wake of the devastating war against the RDA and the loss of their eldest son, Jake Sully and Neytiri face a new threat on Pandora: the Ash People, a violent and power-hungry Na&#x27;vi tribe led by the ruthless Varang. Jake&#x27;s family must fight for their survival and the future of Pandora in a conflict that pushes them to their emotional and physical limits.">
-                  <span class="row-index">04</span>
-                  <div class="row-content">
-                    <div class="film-title">Avatar: Fire and Ash</div>
-                    <div class="film-year">2025</div>
-                  </div>
-                  <span class="row-meta film-stars" aria-label="Rated 3.5 out of 5">★★★½</span>
-                </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="28 Years Later: The Bone Temple" data-year="2026" data-stars="★★★★" data-url="https://letterboxd.com/tonic2/film/28-years-later-the-bone-temple/" data-poster="https://image.tmdb.org/t/p/w300/kK1BGkG3KAvWB0WMV1DfOx9yTMZ.jpg" data-director="Nia DaCosta" data-synopsis="Dr. Kelson finds himself in a shocking new relationship - with consequences that could change the world as they know it - and Spike&#x27;s encounter with Jimmy Crystal becomes a nightmare he can&#x27;t escape.">
-                  <span class="row-index">05</span>
-                  <div class="row-content">
-                    <div class="film-title">28 Years Later: The Bone Temple</div>
-                    <div class="film-year">2026</div>
-                  </div>
-                  <span class="row-meta film-stars" aria-label="Rated 4.0 out of 5">★★★★</span>
-                </div>
-<!-- letterboxd:end -->
-              </div>
-              <footer class="panel-footer">
-                <a href="https://letterboxd.com/tonic2" class="panel-footer-link" target="_blank" rel="noopener noreferrer">→ Letterboxd</a>
-              </footer>
-            </section>
-
             <!-- MUSIC -->
             <section class="panel panel--music" aria-labelledby="panel-music-label">
               <div class="panel-header">
                 <div class="panel-heading">
                   <h2 class="panel-label" id="panel-music-label" data-icon="[♫]">Music</h2>
-                  <p class="section-source">via Last.fm</p>
+                  <p class="section-source">on Last.fm</p>
                 </div>
                 <span class="panel-count">top tracks this month</span>
               </div>
@@ -1483,8 +1448,16 @@ The Dunda…">
                   </div>
                   <span class="row-meta"><span class="play-count">8 plays</span></span>
                 </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="music" data-title="All I Am" data-artist="Ninajirachi" data-plays="5" data-url="https://www.last.fm/music/Ninajirachi/_/All+I+Am" data-album="All I Am" data-bio="Ninajirachi is the moniker of Australian DJ Nina Wilson, who is based near Sydney, New South Wales. She creates an eclectic palette of snappy and inspired electronic musings to deliver what Triple J has described as &#x27;dance music made in an ice cave&#x27; and Indie Shuffle has described as &#x27;Lush and et…">
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="music" data-title="Another Kind of Blues" data-artist="Fluke" data-plays="7" data-url="https://www.last.fm/music/Fluke/_/Another+Kind+of+Blues" data-album="Puppy" data-bio="A three-piece combo who managed to make inspired music during the 1990s while blazing a path through most of the popular electronic styles of the decade, Fluke was formed by occasional vocalist Jon Fugler, Mike Tournier and Mike Bryant after the three had spent several years living in the same co…">
                   <span class="row-index">03</span>
+                  <div class="row-content">
+                    <div class="track-title">Another Kind of Blues</div>
+                    <div class="track-artist">Fluke</div>
+                  </div>
+                  <span class="row-meta"><span class="play-count">7 plays</span></span>
+                </div>
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="music" data-title="All I Am" data-artist="Ninajirachi" data-plays="5" data-url="https://www.last.fm/music/Ninajirachi/_/All+I+Am" data-album="All I Am" data-bio="Ninajirachi is the moniker of Australian DJ Nina Wilson, who is based near Sydney, New South Wales. She creates an eclectic palette of snappy and inspired electronic musings to deliver what Triple J has described as &#x27;dance music made in an ice cave&#x27; and Indie Shuffle has described as &#x27;Lush and et…">
+                  <span class="row-index">04</span>
                   <div class="row-content">
                     <div class="track-title">All I Am</div>
                     <div class="track-artist">Ninajirachi</div>
@@ -1492,18 +1465,10 @@ The Dunda…">
                   <span class="row-meta"><span class="play-count">5 plays</span></span>
                 </div>
                 <div class="panel-row" role="button" tabindex="0" data-modal-type="music" data-title="Rockin&#x27; The Suburbs" data-artist="Ben Folds" data-plays="4" data-url="https://www.last.fm/music/Ben+Folds/_/Rockin%27+The+Suburbs" data-album="Rockin&#x27; The Suburbs" data-bio="Benjamin Scott Folds (born September 12, 1966, in Winston-Salem, North Carolina) is an American singer-songwriter. He is widely known for his prowess as a pianist. Ben Folds&#x27; musical career started to get off the ground in the late &#x27;80s, as bassist for band Majosha, after playing bass and piano a…">
-                  <span class="row-index">04</span>
+                  <span class="row-index">05</span>
                   <div class="row-content">
                     <div class="track-title">Rockin&#x27; The Suburbs</div>
                     <div class="track-artist">Ben Folds</div>
-                  </div>
-                  <span class="row-meta"><span class="play-count">4 plays</span></span>
-                </div>
-                <div class="panel-row" role="button" tabindex="0" data-modal-type="music" data-title="No Broke Boys" data-artist="Disco Lines, Tinashe" data-plays="4" data-url="https://www.last.fm/music/Disco+Lines,+Tinashe/_/No+Broke+Boys" data-album="Bravo: The Hits 2025">
-                  <span class="row-index">05</span>
-                  <div class="row-content">
-                    <div class="track-title">No Broke Boys</div>
-                    <div class="track-artist">Disco Lines, Tinashe</div>
                   </div>
                   <span class="row-meta"><span class="play-count">4 plays</span></span>
                 </div>
@@ -1514,12 +1479,70 @@ The Dunda…">
               </footer>
             </section>
 
+            <!-- FILMS -->
+            <section class="panel panel--films" aria-labelledby="panel-films-label">
+              <div class="panel-header">
+                <div class="panel-heading">
+                  <h2 class="panel-label" id="panel-films-label" data-icon="[▶]"><a href="https://letterboxd.com/tonic2" class="panel-label-link" target="_blank" rel="noopener noreferrer">Films<svg class="section-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 8L8 2M8 2H3M8 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></h2>
+                  <p class="section-source">on Letterboxd</p>
+                </div>
+                <span class="panel-count">recently watched</span>
+              </div>
+              <div class="panel-body">
+<!-- letterboxd:start -->
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Terminator 2: Judgment Day" data-year="1991" data-stars="★★★★★" data-url="https://letterboxd.com/tonic2/film/terminator-2-judgment-day/1/" data-poster="https://image.tmdb.org/t/p/w300/jFTVD4XoWQTcg7wdyJKa8PEds5q.jpg" data-director="James Cameron" data-synopsis="Ten years after the events of the original, a reprogrammed T-800 is sent back in time to protect young John Connor from the shape-shifting T-1000. Together with his mother Sarah, he fights to stop Skynet from triggering a nuclear apocalypse." data-watched="Watched February 2026">
+                  <span class="row-index">01</span>
+                  <div class="row-content">
+                    <div class="film-title">Terminator 2: Judgment Day</div>
+                    <div class="film-year">1991</div>
+                  </div>
+                  <span class="row-meta film-stars" aria-label="Rated 5.0 out of 5">★★★★★</span>
+                </div>
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Wuthering Heights" data-year="2026" data-stars="★★" data-url="https://letterboxd.com/tonic2/film/wuthering-heights-2026/" data-poster="https://image.tmdb.org/t/p/w300/3YBce6dTh1D5oCMITXk2S5QhPt.jpg" data-director="Emerald Fennell" data-synopsis="Tragedy strikes when Heathcliff falls in love with Catherine Earnshaw, a woman from a wealthy family in 18th-century England." data-watched="Watched February 2026">
+                  <span class="row-index">02</span>
+                  <div class="row-content">
+                    <div class="film-title">Wuthering Heights</div>
+                    <div class="film-year">2026</div>
+                  </div>
+                  <span class="row-meta film-stars" aria-label="Rated 2.0 out of 5">★★</span>
+                </div>
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Marty Supreme" data-year="2025" data-stars="★★★★" data-url="https://letterboxd.com/tonic2/film/marty-supreme/" data-poster="https://image.tmdb.org/t/p/w300/lYWEXbQgRTR4ZQleSXAgRbxAjvq.jpg" data-director="Josh Safdie" data-synopsis="Marty Mauser, a young man with a dream no one respects, goes to hell and back in pursuit of greatness." data-watched="Watched January 2026">
+                  <span class="row-index">03</span>
+                  <div class="row-content">
+                    <div class="film-title">Marty Supreme</div>
+                    <div class="film-year">2025</div>
+                  </div>
+                  <span class="row-meta film-stars" aria-label="Rated 4.0 out of 5">★★★★</span>
+                </div>
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="Avatar: Fire and Ash" data-year="2025" data-stars="★★★½" data-url="https://letterboxd.com/tonic2/film/avatar-fire-and-ash/" data-poster="https://image.tmdb.org/t/p/w300/bRBeSHfGHwkEpImlhxPmOcUsaeg.jpg" data-director="James Cameron" data-synopsis="In the wake of the devastating war against the RDA and the loss of their eldest son, Jake Sully and Neytiri face a new threat on Pandora: the Ash People, a violent and power-hungry Na&#x27;vi tribe led by the ruthless Varang. Jake&#x27;s family must fight for their survival and the future of Pandora in a conflict that pushes them to their emotional and physical limits." data-watched="Watched January 2026">
+                  <span class="row-index">04</span>
+                  <div class="row-content">
+                    <div class="film-title">Avatar: Fire and Ash</div>
+                    <div class="film-year">2025</div>
+                  </div>
+                  <span class="row-meta film-stars" aria-label="Rated 3.5 out of 5">★★★½</span>
+                </div>
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="film" data-title="28 Years Later: The Bone Temple" data-year="2026" data-stars="★★★★" data-url="https://letterboxd.com/tonic2/film/28-years-later-the-bone-temple/" data-poster="https://image.tmdb.org/t/p/w300/kK1BGkG3KAvWB0WMV1DfOx9yTMZ.jpg" data-director="Nia DaCosta" data-synopsis="Dr. Kelson finds himself in a shocking new relationship - with consequences that could change the world as they know it - and Spike&#x27;s encounter with Jimmy Crystal becomes a nightmare he can&#x27;t escape." data-watched="Watched January 2026">
+                  <span class="row-index">05</span>
+                  <div class="row-content">
+                    <div class="film-title">28 Years Later: The Bone Temple</div>
+                    <div class="film-year">2026</div>
+                  </div>
+                  <span class="row-meta film-stars" aria-label="Rated 4.0 out of 5">★★★★</span>
+                </div>
+<!-- letterboxd:end -->
+              </div>
+              <footer class="panel-footer">
+                <a href="https://letterboxd.com/tonic2" class="panel-footer-link" target="_blank" rel="noopener noreferrer">→ Letterboxd</a>
+              </footer>
+            </section>
+
             <!-- ARTICLES -->
             <section class="panel panel--articles" aria-labelledby="panel-articles-label">
               <div class="panel-header">
                 <div class="panel-heading">
                   <h2 class="panel-label" id="panel-articles-label" data-icon="[//]">Articles</h2>
-                  <p class="section-source">saved in Instapaper</p>
+                  <p class="section-source">on Instapaper</p>
                 </div>
                 <span class="panel-count">reads I recommend</span>
               </div>
@@ -1529,35 +1552,35 @@ The Dunda…">
                   <span class="row-index">01</span>
                   <div class="row-content">
                     <div class="article-title">Quitting | The Point Magazine</div>
-                    <span class="article-source">thepointmag.com</span>
+                    <div class="article-source">thepointmag.com</div>
                   </div>
                 </div>
                 <div class="panel-row" role="button" tabindex="0" data-modal-type="article" data-title="The biggest explosions in the universe, ranked" data-url="https://www.scientificamerican.com/article/whats-the-biggest-explosion-in-the-universe/" data-source="scientificamerican.com">
                   <span class="row-index">02</span>
                   <div class="row-content">
                     <div class="article-title">The biggest explosions in the universe, ranked</div>
-                    <span class="article-source">scientificamerican.com</span>
+                    <div class="article-source">scientificamerican.com</div>
                   </div>
                 </div>
                 <div class="panel-row" role="button" tabindex="0" data-modal-type="article" data-title="An Infamous Australian Prison Held the Unexpected: A Record Collection" data-url="https://www.nytimes.com/2025/12/18/arts/music/pentridge-prison-radio-station-albums.html?unlocked_article_code=1.908.YPPF.lCmTI-POhF4y&amp;smid=url-share" data-source="nytimes.com">
                   <span class="row-index">03</span>
                   <div class="row-content">
                     <div class="article-title">An Infamous Australian Prison Held the Unexpected: A Record Collection</div>
-                    <span class="article-source">nytimes.com</span>
+                    <div class="article-source">nytimes.com</div>
                   </div>
                 </div>
                 <div class="panel-row" role="button" tabindex="0" data-modal-type="article" data-title="The Runaway Monkeys Upending the Animal-Rights Movement" data-url="https://www.newyorker.com/magazine/2025/11/10/the-runaway-monkeys-upending-the-animal-rights-movement" data-source="newyorker.com" data-description="A Reporter at Large A troop of macaques escaped one of the largest primate-breeding facilities in America. Now a strange coalition of uncompromising activists…">
                   <span class="row-index">04</span>
                   <div class="row-content">
                     <div class="article-title">The Runaway Monkeys Upending the Animal-Rights Movement</div>
-                    <span class="article-source">newyorker.com</span>
+                    <div class="article-source">newyorker.com</div>
                   </div>
                 </div>
                 <div class="panel-row" role="button" tabindex="0" data-modal-type="article" data-title="Inside Detroit’s Notorious “Psychedelic Healing Shack”" data-url="https://doubleblindmag.com/detroit-psychedelic-healing-shack/" data-source="doubleblindmag.com">
                   <span class="row-index">05</span>
                   <div class="row-content">
                     <div class="article-title">Inside Detroit’s Notorious “Psychedelic Healing Shack”</div>
-                    <span class="article-source">doubleblindmag.com</span>
+                    <div class="article-source">doubleblindmag.com</div>
                   </div>
                 </div>
 <!-- instapaper:end -->
@@ -1569,7 +1592,7 @@ The Dunda…">
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-10T22:30:11Z">10 Mar 2026 at 22:30 UTC</span><span class="next-update" data-next="2026-03-11T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-11T10:03:40Z">11 Mar 2026 at 10:03 UTC</span><span class="next-update" data-next="2026-03-11T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
@@ -1609,7 +1632,7 @@ The Dunda…">
 <script>(function(){var b=document.querySelector('.colophon-buildtime');if(b&&b.dataset.built){try{b.textContent=new Date(b.dataset.built).toLocaleString(undefined,{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(x){}}var e=document.querySelector('.next-update');if(!e)return;function t(){var n=new Date(e.dataset.next),d=n-new Date();if(d<=0){e.textContent=' \xb7 updating soon';return;}var h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000);e.textContent=' \xb7 next in '+h+'h '+m+'m';}t();setInterval(t,60000);})();</script>
 <script>(function(){var M=["INIT BIOS REV 3.11.0...............[ OK ]","CHECKING MEMORY (8192 MB)..........[ OK ]","LOADING KERNEL v6.6.0..............[ OK ]","MOUNTING /dev/sda1.................[ OK ]","MOUNTING /dev/shm..................[ OK ]","FSCK: NO ERRORS FOUND..............[ OK ]","SYNCING HARDWARE CLOCK.............[ OK ]","CHECKING ENTROPY POOL..............[ OK ]","LOADING MODULE: display............[ OK ]","LOADING MODULE: network............[ OK ]","LOADING MODULE: input..............[ OK ]","LOADING MODULE: audio..............[ OK ]","ALLOCATING FRAMEBUFFER (1920x1080).[ OK ]","CALIBRATING CRT SCANLINES..........[ OK ]","STARTING NETWORK MANAGER...........[ OK ]","ESTABLISHING UPLINK................[DONE]","WARMING PHOSPHOR TUBES.............[ OK ]","VERIFYING CHECKSUMS: PASS..........[ OK ]","FLUSHING WRITE BUFFER..............[DONE]","AUTHENTICATING SESSION.............[ OK ]","QUEUEING UP DATABANK...............[ OK ]"];var o=document.querySelector(".boot-overlay");var mn=document.querySelector("main");if(!o||!mn)return;mn.style.animation="none";var reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;var pool=M.slice();for(var i=pool.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=pool[i];pool[i]=pool[j];pool[j]=t;}var count=5+Math.round(Math.random());var chosen=pool.slice(0,count);function addLine(txt){var p=document.createElement("p");p.className="boot-overlay-line";p.textContent=txt;o.appendChild(p);}function fadeOut(){o.style.opacity="0";setTimeout(function(){o.style.display="none";mn.style.animation="";mn.style.visibility="visible";mn.classList.add("warming-up");},300);}if(reduced){chosen.forEach(addLine);o.style.opacity="1";setTimeout(function(){o.style.display="none";mn.style.visibility="visible";},200);return;}requestAnimationFrame(function(){requestAnimationFrame(function(){o.style.opacity="1";});});var d=300;chosen.forEach(function(msg){setTimeout(function(){addLine(msg);},d);d+=400;});setTimeout(fadeOut,d+400);})();</script>
 <script>(function(){if(window.matchMedia('(pointer: coarse)').matches)return;var TRIGGER='SNAKE',buf='',overlay=null,canvas=null,ctx=null,COLS=20,ROWS=20,snake,dir,nextDir,food,score,gameOver,loop,active=false;document.addEventListener('keydown',function(e){if(active){handleGameKey(e);return;}var tag=document.activeElement&&document.activeElement.tagName;if(tag==='INPUT'||tag==='TEXTAREA')return;var ch=e.key.length===1?e.key.toUpperCase():'';if(!ch)return;buf=(buf+ch).slice(-TRIGGER.length);if(buf===TRIGGER){buf='';openGame();}});function openGame(){if(!overlay){overlay=document.createElement('div');overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:#050a14;display:flex;align-items:center;justify-content:center;';canvas=document.createElement('canvas');overlay.appendChild(canvas);document.body.appendChild(overlay);}overlay.style.display='flex';active=true;initGame();}function closeGame(){clearInterval(loop);overlay.style.display='none';active=false;buf='';}function cs(){return Math.floor(Math.min(window.innerWidth,window.innerHeight)*0.9/COLS);}function initGame(){var c=cs();canvas.width=COLS*c;canvas.height=ROWS*c;ctx=canvas.getContext('2d');snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];dir={x:1,y:0};nextDir={x:1,y:0};score=0;gameOver=false;placeFood();clearInterval(loop);loop=setInterval(tick,150);draw();}function placeFood(){var empties=[];for(var x=0;x<COLS;x++)for(var y=0;y<ROWS;y++)if(!snake.some(function(s){return s.x===x&&s.y===y;}))empties.push({x:x,y:y});food=empties[Math.floor(Math.random()*empties.length)];}function tick(){dir=nextDir;var h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};if(h.x<0||h.x>=COLS||h.y<0||h.y>=ROWS||snake.some(function(s){return s.x===h.x&&s.y===h.y;})){endGame();return;}snake.unshift(h);if(h.x===food.x&&h.y===food.y){score++;placeFood();clearInterval(loop);loop=setInterval(tick,Math.max(80,150-score*7));}else{snake.pop();}draw();}function draw(){var c=cs();ctx.fillStyle='#050a14';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#22c55e';ctx.fillRect(food.x*c+1,food.y*c+1,c-2,c-2);ctx.fillStyle='#3b82f6';snake.forEach(function(s){ctx.fillRect(s.x*c+1,s.y*c+1,c-2,c-2);});ctx.fillStyle='#94a3b8';ctx.font='bold 14px "JetBrains Mono",monospace';ctx.textAlign='left';ctx.fillText('SCORE: '+score,8,20);}function endGame(){clearInterval(loop);gameOver=true;var cx=canvas.width/2,cy=canvas.height/2;ctx.fillStyle='rgba(5,10,20,0.8)';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.textAlign='center';ctx.fillStyle='#f59e0b';ctx.font='bold 24px "JetBrains Mono",monospace';ctx.fillText('GAME OVER',cx,cy-28);ctx.fillStyle='#e2e8f0';ctx.font='16px "JetBrains Mono",monospace';ctx.fillText('SCORE: '+score,cx,cy+2);ctx.fillStyle='#64748b';ctx.font='13px "JetBrains Mono",monospace';ctx.fillText('[ ESC ] EXIT   [ ENTER ] RESTART',cx,cy+32);}function handleGameKey(e){if(e.key==='Escape'){closeGame();return;}if(gameOver&&e.key==='Enter'){initGame();return;}if(!gameOver){var map={ArrowUp:{x:0,y:-1},ArrowDown:{x:0,y:1},ArrowLeft:{x:-1,y:0},ArrowRight:{x:1,y:0}};var nd=map[e.key];if(nd){e.preventDefault();if(nd.x!==-dir.x||nd.y!==-dir.y)nextDir=nd;}}}})();</script>
-<script>(function(){var WORKER='https://now-playing.b-tonic.workers.dev';var POLL=30000;var strip=document.getElementById('now-playing-strip');var label=document.getElementById('now-playing-label');var text=document.getElementById('now-playing-text');if(!strip)return;function update(){fetch(WORKER).then(function(r){return r.json();}).then(function(d){if(!d.track)return;text.innerHTML='';var em=document.createElement('em');em.textContent=d.track;text.appendChild(em);text.appendChild(document.createTextNode(' '));var sp=document.createElement('span');sp.className='status-strip-name';sp.textContent=d.artist;text.appendChild(sp);label.textContent=d.nowPlaying?'Now playing':'Last played';strip.classList.toggle('is-static',!d.nowPlaying);strip.removeAttribute('hidden');}).catch(function(){});}update();setInterval(update,POLL);})();</script>
+<script>(function(){var WORKER='https://now-playing.b-tonic.workers.dev';var POLL=30000;var strip=document.getElementById('now-playing-strip');var label=document.getElementById('now-playing-label');var text=document.getElementById('now-playing-text');if(!strip)return;function update(){fetch(WORKER).then(function(r){return r.json();}).then(function(d){if(!d.track)return;text.innerHTML='';var tk=d.url?document.createElement('a'):document.createElement('span');tk.className='status-strip-title';tk.textContent=d.track;if(d.url){tk.href=d.url;tk.target='_blank';tk.rel='noopener noreferrer';}text.appendChild(tk);text.appendChild(document.createTextNode(' '));var sp=document.createElement('span');sp.className='status-strip-name';sp.textContent=d.artist;text.appendChild(sp);label.textContent=d.nowPlaying?'Now playing':'Last played';strip.classList.toggle('is-static',!d.nowPlaying);strip.removeAttribute('hidden');}).catch(function(){});}update();setInterval(update,POLL);})();</script>
 <!-- analytics:start -->
   <script data-goatcounter="https://nicsheehan.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <!-- analytics:end -->
@@ -1716,7 +1739,8 @@ The Dunda…">
               var director = row.dataset.director ? 'dir. ' + row.dataset.director : '';
               var filmSourceParts = [row.dataset.year, director].filter(Boolean);
               metaSource = filmSourceParts.join(' · ');
-              metaPersonal = row.dataset.stars || '';
+              var filmPersonalParts = [row.dataset.stars, row.dataset.watched].filter(Boolean);
+              metaPersonal = filmPersonalParts.join(' · ');
               desc = row.dataset.synopsis || '';
               linkText = '→ View on Letterboxd';
             } else if (type === 'music') {
@@ -1732,6 +1756,12 @@ The Dunda…">
               linkText = metaSource ? '→ Read on ' + metaSource : '→ Read article';
             }
 
+            var descLabel = '';
+            if (type === 'book')    descLabel = row.dataset.hasReview === 'true' ? 'Review' : 'About';
+            if (type === 'film')    descLabel = 'Synopsis';
+            if (type === 'music')   descLabel = 'Artist bio';
+            if (type === 'article') descLabel = 'Excerpt';
+
             metaSourceEl.textContent = metaSource;
 
             if (metaPersonal) {
@@ -1742,14 +1772,26 @@ The Dunda…">
             }
 
             if (desc) {
-              descEl.textContent = desc;
+              descEl.textContent = '';
+              if (descLabel) {
+                var lbl = document.createElement('span');
+                lbl.className = 'modal-desc-label';
+                lbl.textContent = descLabel;
+                descEl.appendChild(lbl);
+              }
+              descEl.appendChild(document.createTextNode(desc));
               descEl.hidden = false;
             } else {
               descEl.hidden = true;
             }
 
-            linkEl.textContent = linkText;
-            linkEl.href = url;
+            if (url === '#') {
+              linkEl.hidden = true;
+            } else {
+              linkEl.textContent = linkText;
+              linkEl.href = url;
+              linkEl.hidden = false;
+            }
 
             // Show modal
             overlay.hidden = false;

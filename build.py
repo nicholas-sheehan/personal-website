@@ -151,6 +151,7 @@ def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
         synopsis_raw = _strip_html(desc_el.text.strip()) if desc_el is not None and desc_el.text else ""
         if len(synopsis_raw) > 400:
             synopsis_raw = synopsis_raw[:397] + "…"
+        has_review = bool(review_raw)
         description = review_raw if review_raw else synopsis_raw
 
         # Finished date (read shelf only — currently-reading items have empty user_read_at)
@@ -163,12 +164,12 @@ def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
                 except Exception:
                     pass
 
-        url = link_el.text.strip() if link_el is not None and link_el.text else ""
+        url = _strip_tracking_params(link_el.text.strip()) if link_el is not None and link_el.text else ""
 
         books.append({
             "title": title, "author": author, "rating": rating,
             "cover": cover, "large_cover": large_cover,
-            "description": description, "finished": finished, "url": url,
+            "description": description, "has_review": has_review, "finished": finished, "url": url,
         })
 
         if limit and len(books) >= limit:
@@ -206,6 +207,8 @@ def build_book_html(books: list[dict]) -> str:
             data += f' data-finished="{html.escape(book["finished"], quote=True)}"'
         if book.get("description"):
             data += f' data-description="{html.escape(book["description"], quote=True)}"'
+        if book.get("has_review"):
+            data += ' data-has-review="true"'
         if book.get("url"):
             data += f' data-url="{html.escape(book["url"], quote=True)}"'
 
@@ -230,18 +233,24 @@ def build_now_reading_html(books: list[dict]) -> str:
     """Generate status strip HTML for currently-reading shelf.
 
     0 books  → placeholder comment (section invisible)
-    1 book   → "<em>Title</em> <span class="status-strip-name">Author</span>"
-    2+ books → "<em>Title 1</em>, <em>Title 2</em>" (titles only)
+    1 book   → "<a class="status-strip-title">Title</a> <span class="status-strip-name">Author</span>"
+    2+ books → "<a class="status-strip-title">Title 1</a>, ..." (titles only)
     """
     if not books:
         return "            <!-- no books currently reading -->"
+
+    def _title_link(b: dict) -> str:
+        t = html.escape(b["title"])
+        u = html.escape(b.get("url", ""), quote=True)
+        if u:
+            return f'<a class="status-strip-title" href="{u}" target="_blank" rel="noopener noreferrer">{t}</a>'
+        return f'<span class="status-strip-title">{t}</span>'
+
     if len(books) == 1:
-        t = html.escape(books[0]["title"])
         a = html.escape(books[0]["author"])
-        text = f'<em>{t}</em> <span class="status-strip-name">{a}</span>'
+        text = f'{_title_link(books[0])} <span class="status-strip-name">{a}</span>'
     else:
-        titles = ", ".join(f"<em>{html.escape(b['title'])}</em>" for b in books)
-        text = titles
+        text = ", ".join(_title_link(b) for b in books)
     return (
         '            <div class="status-strip">\n'
         '              <span class="status-strip-label">Now reading</span>\n'
@@ -259,7 +268,7 @@ LETTERBOXD_NS = {"letterboxd": "https://letterboxd.com"}
 
 
 def fetch_letterboxd(rss_url: str, limit: int) -> list[dict]:
-    """Return a list of {title, year, rating, url} dicts from the RSS feed."""
+    """Return a list of {title, year, rating, url, watched} dicts from the RSS feed."""
     req = urllib.request.Request(rss_url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=15) as resp:
         tree = ET.parse(resp)
@@ -282,7 +291,18 @@ def fetch_letterboxd(rss_url: str, limit: int) -> list[dict]:
         link_el = item.find("link")
         url = link_el.text.strip() if link_el is not None and link_el.text else "#"
 
-        films.append({"title": title, "year": year, "rating": rating, "url": url})
+        # Watched date from pubDate (RFC 2822)
+        watched = ""
+        pub_el = item.find("pubDate")
+        if pub_el is not None and pub_el.text:
+            parsed = parsedate(pub_el.text.strip())
+            if parsed:
+                try:
+                    watched = datetime(parsed[0], parsed[1], parsed[2]).strftime("Watched %B %Y")
+                except Exception:
+                    pass
+
+        films.append({"title": title, "year": year, "rating": rating, "url": url, "watched": watched})
 
         if len(films) >= limit:
             break
@@ -393,6 +413,8 @@ def build_film_html(films: list[dict]) -> str:
             data += f' data-director="{html.escape(film["director"], quote=True)}"'
         if film.get("synopsis"):
             data += f' data-synopsis="{html.escape(film["synopsis"], quote=True)}"'
+        if film.get("watched"):
+            data += f' data-watched="{html.escape(film["watched"], quote=True)}"'
 
         if stars:
             aria = f' aria-label="Rated {film["rating"]} out of 5"'
@@ -755,7 +777,7 @@ def build_article_html(articles: list[dict]) -> str:
         u = html.escape(article["url"], quote=True)
         domain = urllib.parse.urlparse(article["url"]).hostname or ""
         domain = domain.removeprefix("www.")
-        source_html = f'\n                    <span class="article-source">{html.escape(domain)}</span>' if domain else ""
+        source_html = f'\n                    <div class="article-source">{html.escape(domain)}</div>' if domain else ""
         idx = f"{i + 1:02d}"
 
         # Data attrs for modal
@@ -1061,7 +1083,7 @@ def cmd_build():
         bio = profile.get("description", "")
         avatar_url = profile.get("avatar_url", "")
         if avatar_url:
-            avatar_html = f'        <img class="avatar" src="{html.escape(avatar_url)}?s=192" alt="{name}" width="96" height="96">'
+            avatar_html = f'        <img class="avatar" src="{html.escape(avatar_url)}?s=192" alt="{name}" width="72" height="72">'
             src = inject(src, GRAVATAR_AVATAR_PATTERN, avatar_html, "gravatar-avatar")
         if name:
             src = inject(src, GRAVATAR_NAME_PATTERN, f"        {name}", "gravatar-name")
