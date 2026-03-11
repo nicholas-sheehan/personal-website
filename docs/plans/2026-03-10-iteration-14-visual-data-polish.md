@@ -111,9 +111,9 @@ Find `.panel-footer-link:hover` (around line 627). Add a `:focus-visible` rule i
 }
 ```
 
-**Step 6: Add `.status-strip-title` CSS class**
+**Step 6: Add `.status-strip-title` CSS class (with link states)**
 
-Find `.status-strip-name` (around line 478). Add `.status-strip-title` immediately after it:
+Find `.status-strip-name` (around line 478). Add `.status-strip-title` immediately after it, including link hover state for when the strip is clickable:
 
 ```css
 .status-strip-name {
@@ -123,13 +123,37 @@ Find `.status-strip-name` (around line 478). Add `.status-strip-title` immediate
 .status-strip-title {
   color: var(--text-primary);
 }
+
+.status-strip-title[href] {
+  text-decoration: none;
+}
+
+.status-strip-title[href]:hover {
+  color: var(--accent);
+}
 ```
 
-**Step 7: Commit**
+**Step 7: Add `.modal-desc-label` CSS class**
+
+Find `.modal-desc` (around line 1090). Add `.modal-desc-label` immediately before it:
+
+```css
+.modal-desc-label {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+```
+
+**Step 8: Commit**
 
 ```bash
 git add style.css
-git commit -m "fix(css): track-title weight, article-title size, article-source block, modal dvh, focus-visible, status-strip-title"
+git commit -m "fix(css): track-title weight, article-title size, article-source block, modal dvh, focus-visible, status-strip-title, modal-desc-label"
 ```
 
 ---
@@ -218,11 +242,44 @@ Change `span` to `div`:
         source_html = f'\n                    <div class="article-source">{html.escape(domain)}</div>' if domain else ""
 ```
 
-**Step 5: Commit**
+**Step 5: Make now-reading strip clickable**
+
+In `build_now_reading_html()`, update the title HTML to wrap in `<a>` when a URL is available. Replace the current single-book and multi-book text assembly:
+
+Find:
+```python
+    if len(books) == 1:
+        t = html.escape(books[0]["title"])
+        a = html.escape(books[0]["author"])
+        text = f'<em>{t}</em> <span class="status-strip-name">{a}</span>'
+    else:
+        titles = ", ".join(f"<em>{html.escape(b['title'])}</em>" for b in books)
+        text = titles
+```
+
+Change to:
+```python
+    def _title_link(b: dict) -> str:
+        t = html.escape(b["title"])
+        u = html.escape(b.get("url", ""), quote=True)
+        if u:
+            return f'<a class="status-strip-title" href="{u}" target="_blank" rel="noopener noreferrer">{t}</a>'
+        return f'<span class="status-strip-title">{t}</span>'
+
+    if len(books) == 1:
+        a = html.escape(books[0]["author"])
+        text = f'{_title_link(books[0])} <span class="status-strip-name">{a}</span>'
+    else:
+        text = ", ".join(_title_link(b) for b in books)
+```
+
+Also remove the `<em>` wrapping from any existing fallback text — titles now use `.status-strip-title` class rather than `<em>`.
+
+**Step 6: Commit**
 
 ```bash
 git add build.py
-git commit -m "feat(build): strip Goodreads UTM params, film watched date, article-source div"
+git commit -m "feat(build): strip Goodreads UTM params, film watched date, article-source div, now-reading clickable"
 ```
 
 ---
@@ -396,11 +453,87 @@ Change to hide the link when there's no real URL:
             }
 ```
 
-**Step 4: Commit**
+**Step 4: Add modal description labels**
+
+Still in the modal IIFE, find where `desc` is assigned per type (the `if/else if` block computing `metaSource`, `metaPersonal`, `desc`). After the block, add a `descLabel` variable:
+
+```js
+            var descLabel = '';
+            if (type === 'book')    descLabel = desc ? 'Review' : '';
+            if (type === 'film')    descLabel = desc ? 'Synopsis' : '';
+            if (type === 'music')   descLabel = desc ? 'Artist bio' : '';
+            if (type === 'article') descLabel = desc ? 'Excerpt' : '';
+```
+
+Then find where the modal description element is populated (search for `modal-desc` or where `desc` text is set). Change it to prepend the label when present:
+
+```js
+            var descEl = modal.querySelector('.modal-desc');
+            if (descLabel) {
+              descEl.innerHTML = '<span class="modal-desc-label">' + descLabel + '</span>' + desc;
+            } else {
+              descEl.textContent = desc;
+            }
+```
+
+Note: `descLabel` is safe to use as a literal string (hardcoded per type — no user input). `desc` comes from `data-*` attributes which are HTML-escaped by `build.py` via `html.escape(..., quote=True)`. Setting `.innerHTML` here is safe.
+
+**Step 5: Make now-playing strip clickable**
+
+Find the now-playing IIFE (the `tk` span created in Step 1). Change the track node to an `<a>` when a URL is available:
+
+Old (after Step 1):
+```js
+text.innerHTML='';var tk=document.createElement('span');tk.className='status-strip-title';tk.textContent=d.track;text.appendChild(tk);
+```
+
+New:
+```js
+text.innerHTML='';var tk=d.url?document.createElement('a'):document.createElement('span');tk.className='status-strip-title';tk.textContent=d.track;if(d.url){tk.href=d.url;tk.target='_blank';tk.rel='noopener noreferrer';}text.appendChild(tk);
+```
+
+Note: `d.url` will be `null` until the worker is updated (Task 4b below) — the fallback to `<span>` ensures this is safe to deploy now.
+
+**Step 6: Commit**
 
 ```bash
 git add index.html
-git commit -m "fix(js): now-playing track not italic, film watched date in modal, hide modal link when no url"
+git commit -m "fix(js): now-playing track not italic, film watched date in modal, hide modal link when no url, modal desc labels, now-playing clickable"
+```
+
+---
+
+## Task 4b: Worker update — expose track URL
+
+**Files:**
+- Modify: `worker/index.js`
+
+**Step 1: Add `url` to worker response**
+
+Find the `return cors(Response.json({...}))` block (line 17). Add `url`:
+
+```js
+    return cors(Response.json({
+      nowPlaying: track["@attr"]?.nowplaying === "true",
+      track:  track.name,
+      artist: track.artist["#text"],
+      url:    track.url || null,
+    }));
+```
+
+**Step 2: Deploy worker**
+
+```bash
+cd worker && wrangler deploy
+```
+
+Expected output: `Deployed now-playing ... (X sec)`.
+
+**Step 3: Commit**
+
+```bash
+git add worker/index.js
+git commit -m "feat(worker): expose Last.fm track URL for clickable now-playing strip"
 ```
 
 ---
@@ -426,8 +559,10 @@ Open `file:///Users/nicholassheehan/Documents/Claude%20Files/Personal%20website/
 - Articles panel has `→ Instapaper` footer link
 - Section subtitles all say "on [Service]" (not "via" or "saved in")
 - Now-playing strip: if visible, track title is NOT italic
+- Now-reading strip: book title is a clickable link (hover → accent colour)
 - Click a film row → modal shows `data-watched` value (will be populated after real build on staging)
 - Click an article row → modal link is hidden if row has no URL (all current rows have URLs so test by temporarily removing `data-url` from one in DevTools)
+- Click any panel row with a description → modal shows a small uppercase label above the description text ("Review", "Synopsis", "Artist bio", "Excerpt")
 
 **Step 3: Confirm with user before pushing to staging**
 
@@ -453,6 +588,8 @@ Open local file and verify:
 - Films modal shows "Watched Month Year" in the personal meta line
 - Article-source domains are `<div>` elements (inspect in DevTools — should render as block, not inline)
 - Now-playing track title is not italic (visible when scrobbling — CORS means this only works in production)
+- Now-playing track title is a clickable link when scrobbling (worker URL now included)
+- Modal description labels appear ("Synopsis", "Review", etc.) when a description exists
 
 ---
 
