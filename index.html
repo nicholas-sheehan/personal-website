@@ -1737,10 +1737,10 @@ The Dunda…">
             }
 
             var descLabel = '';
-            if (type === 'book')    descLabel = desc ? 'Review' : '';
-            if (type === 'film')    descLabel = desc ? 'Synopsis' : '';
-            if (type === 'music')   descLabel = desc ? 'Artist bio' : '';
-            if (type === 'article') descLabel = desc ? 'Excerpt' : '';
+            if (type === 'book')    descLabel = 'Review';
+            if (type === 'film')    descLabel = 'Synopsis';
+            if (type === 'music')   descLabel = 'Artist bio';
+            if (type === 'article') descLabel = 'Excerpt';
 
             metaSourceEl.textContent = metaSource;
 
@@ -1752,11 +1752,14 @@ The Dunda…">
             }
 
             if (desc) {
+              descEl.textContent = '';
               if (descLabel) {
-                descEl.innerHTML = '<span class="modal-desc-label">' + descLabel + '</span>' + desc;
-              } else {
-                descEl.textContent = desc;
+                var lbl = document.createElement('span');
+                lbl.className = 'modal-desc-label';
+                lbl.textContent = descLabel;
+                descEl.appendChild(lbl);
               }
+              descEl.appendChild(document.createTextNode(desc));
               descEl.hidden = false;
             } else {
               descEl.hidden = true;
