@@ -479,6 +479,18 @@ main {
   color: var(--text-secondary);
 }
 
+.status-strip-title {
+  color: var(--text-primary);
+}
+
+.status-strip-title[href] {
+  text-decoration: none;
+}
+
+.status-strip-title[href]:hover {
+  color: var(--accent);
+}
+
 /* ──────────────────────────────────────────────
    NOW PLAYING — Status strip (music / purple variant)
    ────────────────────────────────────────────── */
@@ -626,6 +638,11 @@ main {
 
 .panel-footer-link:hover {
   color: var(--text-secondary);
+}
+
+.panel-footer-link:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* ──────────────────────────────────────────────
@@ -798,7 +815,7 @@ main {
 .track-title {
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--text-primary);
   line-height: 1.4;
   text-shadow: 0 0 6px rgba(180, 210, 255, 0.12);
@@ -831,7 +848,7 @@ main {
 
 .article-title {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 400;
   color: var(--text-primary);
   line-height: 1.45;
@@ -840,7 +857,6 @@ main {
 
 /* Article source domain tag */
 .article-source {
-  display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.6rem;
   font-weight: 400;
@@ -942,12 +958,6 @@ main {
   /* Header row stays horizontal at all breakpoints */
   .system-header-row {
     flex-wrap: nowrap;
-  }
-
-  .article-source {
-    margin-top: 0;
-    flex-shrink: 0;
-    align-self: flex-start;
   }
 
   /* Panel title truncation — keep grid rows aligned on desktop */
@@ -1062,7 +1072,7 @@ main {
   border-top: 4px solid var(--modal-accent, var(--accent));
   max-width: 560px;
   width: 100%;
-  max-height: calc(100vh - 4rem);
+  max-height: calc(100dvh - 4rem);
   overflow-y: auto;
   font-family: var(--font-mono);
 }
@@ -1200,6 +1210,16 @@ main {
   color: var(--modal-accent, var(--accent));
   margin: 0;
   line-height: 1.4;
+}
+
+.modal-desc-label {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
 }
 
 .modal-desc {
