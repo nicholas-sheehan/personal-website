@@ -151,6 +151,7 @@ def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
         synopsis_raw = _strip_html(desc_el.text.strip()) if desc_el is not None and desc_el.text else ""
         if len(synopsis_raw) > 400:
             synopsis_raw = synopsis_raw[:397] + "…"
+        has_review = bool(review_raw)
         description = review_raw if review_raw else synopsis_raw
 
         # Finished date (read shelf only — currently-reading items have empty user_read_at)
@@ -168,7 +169,7 @@ def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
         books.append({
             "title": title, "author": author, "rating": rating,
             "cover": cover, "large_cover": large_cover,
-            "description": description, "finished": finished, "url": url,
+            "description": description, "has_review": has_review, "finished": finished, "url": url,
         })
 
         if limit and len(books) >= limit:
@@ -206,6 +207,8 @@ def build_book_html(books: list[dict]) -> str:
             data += f' data-finished="{html.escape(book["finished"], quote=True)}"'
         if book.get("description"):
             data += f' data-description="{html.escape(book["description"], quote=True)}"'
+        if book.get("has_review"):
+            data += ' data-has-review="true"'
         if book.get("url"):
             data += f' data-url="{html.escape(book["url"], quote=True)}"'
 

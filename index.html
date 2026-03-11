@@ -1755,7 +1755,7 @@ The Dunda…">
             }
 
             var descLabel = '';
-            if (type === 'book')    descLabel = 'About';
+            if (type === 'book')    descLabel = row.dataset.hasReview === 'true' ? 'Review' : 'About';
             if (type === 'film')    descLabel = 'Synopsis';
             if (type === 'music')   descLabel = 'Artist bio';
             if (type === 'article') descLabel = 'Excerpt';
