@@ -18,6 +18,7 @@ export default {
       nowPlaying: track["@attr"]?.nowplaying === "true",
       track:  track.name,
       artist: track.artist["#text"],
+      url:    track.url || null,
     }));
   }
 };
