@@ -562,6 +562,8 @@ main {
   border: 1px solid var(--border);
   overflow: hidden;
   transition: box-shadow 0.18s ease, border-color 0.18s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 2px coloured top border — section identifier */
@@ -616,6 +618,7 @@ main {
 /* Panel body */
 .panel-body {
   padding: 0;
+  flex: 1;
 }
 
 /* Panel footer — contextual service link */
