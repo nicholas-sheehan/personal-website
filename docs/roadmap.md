@@ -139,14 +139,19 @@ Small CSS/template pass on the now-reading and now-playing strips.
 **Extras landed with this iteration:**
 - Added `min-width: 0` to `.status-strips .status-strip` desktop rule to prevent long titles overflowing flex container (caught in code quality review)
 
-## Iteration 14 — Visual & Data Polish ⬜ planned 2026-03-10
+## Iteration 14 — Visual & Data Polish ✅ shipped 2026-03-11
 Batch of small fixes from full design + technical review. No new infrastructure.
 
-- [ ] Typography: `.track-title` font-weight 500→400, `.article-title` 0.75rem→0.78rem
-- [ ] CSS: modal `100vh`→`100dvh`, `panel-footer-link` `:focus-visible`, Google Fonts weight restriction, `.status-strip-title` class
-- [ ] HTML: Music panel → second position, avatar dimensions 96→72, Articles `→ Instapaper` footer
-- [ ] Build: Goodreads UTM stripping, films watched date in modal, `article-source` span→div, section subtitles standardised to "on [Service]"
-- [ ] JS: now-playing track title italic removed, modal link hidden when no URL
+- [x] Typography: `.track-title` font-weight 500→400, `.article-title` 0.75rem→0.78rem, all remaining `font-weight: 500` → 400
+- [x] CSS: modal `100vh`→`100dvh`, `panel-footer-link` `:focus-visible`, Google Fonts weight restriction (400/700 only), `.status-strip-title` class with link hover, `.modal-desc-label` class, panel flex column for footer alignment
+- [x] HTML: Music panel → second position (Books→Music→Films→Articles), avatar dimensions 96→72 (via build.py), section subtitles standardised to "on [Service]"
+- [x] Build: Goodreads UTM stripping, films watched date in modal, `article-source` span→div, now-reading strip clickable (linked title), `data-has-review` attr for books
+- [x] JS: now-playing track not italic + clickable when URL available, film watched date in modal, modal link hidden when no URL, modal description labels (About/Review/Synopsis/Artist bio/Excerpt)
+- [x] Worker: expose Last.fm track URL for clickable now-playing strip
+
+**Extras landed with this iteration:**
+- Removed Instapaper footer link from articles panel (would link to Instapaper login, not a public list)
+- Book modal label switches between "About" (publisher synopsis) and "Review" (user's own Goodreads review) based on `data-has-review`
 
 ## Iteration 15 — Data Explorer Mode ⬜ planned 2026-02-22
 Theatrical data experience. The biggest lift — requires a dedicated design session before implementation.
