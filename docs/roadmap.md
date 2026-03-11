@@ -164,13 +164,17 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 ---
 
 ## Dev environment improvements
+
+**Priority — blocks proper release workflow:**
+- [ ] **Move DNS to Cloudflare nameservers** — prerequisite for Cloudflare Pages. Done in Cloudflare dashboard: add site → update nameservers at registrar → enable proxy (orange cloud) on DNS records.
+- [ ] **Migrate to Cloudflare Pages** ← fixes staging review — GitHub Pages only supports one deploy target so staging has no real URL; reviewing staging requires pulling the branch locally which clobbers the working directory. This is not best practice — releases should always progress forward, never require pulling back. Cloudflare Pages gives a real deployed URL per branch (e.g. `staging.<project>.pages.dev`) so staging review is a proper browser check. Depends on DNS item above. Already using Workers so this is a natural fit.
+
+**Other improvements:**
 - [ ] **Restore `main` branch protection via GitHub Ruleset with deploy key bypass** — branch protection was removed 2026-03-02 because it blocked the build bot. Proper fix: create a Deploy Key for the bot and add it as a bypass actor in a Ruleset, then re-enable "Require a pull request before merging" on `main`. Without this, convention is the only guard and it will be violated (proven 2026-03-05).
 - [ ] Switch git remote from HTTPS to SSH (`git remote set-url origin git@github.com:nicholas-sheehan/personal-website.git`) — requires SSH key set up with GitHub; prerequisite for the deploy key fix above
 - [ ] Install `gh` CLI properly (Homebrew: `brew install gh`) so it doesn't need re-downloading each session
 - [x] Squash-only merges — unticked "Allow merge commits" and "Allow rebase merging"; squash is now the only option, eliminating timestamp conflicts on `staging → main` ✅ 2026-03-03
 - [ ] Process habit: commit any open docs/working-tree changes before starting worktree work — prevents `git checkout staging` failing mid-flow
-- [ ] **Move DNS to Cloudflare nameservers** — prerequisite for CDN proxy and Pages. Unlocks DDoS protection, edge caching, and automatic HTTPS for `www.nicsheehan.com` at no cost. Done in the Cloudflare dashboard: add site → update nameservers at registrar → enable proxy (orange cloud) on DNS records.
-- [ ] **Migrate to Cloudflare Pages for proper staging environment** — GitHub Pages free tier only supports one deployment target. Cloudflare Pages gives automatic preview URLs per branch (e.g. `staging.<project>.pages.dev`), enabling proper staging review. Depends on DNS being on Cloudflare. Already using Workers so this is a natural fit.
 - [ ] **Worker KV caching for now-playing** — cache Last.fm response in Cloudflare KV for ~15 seconds so rapid page loads don't hammer the API. One extra step in the Worker fetch handler. Bundle with a future iteration rather than shipping alone.
 - [ ] **Pin `requirements.txt` versions** — `Pillow` and `tomli` are unpinned; a future Pillow major release could break OG image generation. Pin to `Pillow>=10,<12`.
 - [ ] **API keys as request headers** — TMDB and Last.fm keys are passed as URL query params (visible in server logs). Switch to `Authorization` header pattern already used for Gravatar.
