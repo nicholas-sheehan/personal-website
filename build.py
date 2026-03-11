@@ -132,6 +132,7 @@ def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
         desc_el       = item.find("book_description")
         review_el     = item.find("user_review")
         read_at_el    = item.find("user_read_at")
+        book_id_el    = item.find("book_id")
         link_el       = item.find("link")
 
         if title_el is None or title_el.text is None:
@@ -164,7 +165,11 @@ def fetch_goodreads(rss_url: str, limit: int = 0) -> list[dict]:
                 except Exception:
                     pass
 
-        url = _strip_tracking_params(link_el.text.strip()) if link_el is not None and link_el.text else ""
+        # Prefer book page URL over review URL (review page is empty for unreviewed books)
+        if book_id_el is not None and book_id_el.text and book_id_el.text.strip().isdigit():
+            url = f"https://www.goodreads.com/book/show/{book_id_el.text.strip()}"
+        else:
+            url = _strip_tracking_params(link_el.text.strip()) if link_el is not None and link_el.text else ""
 
         books.append({
             "title": title, "author": author, "rating": rating,
