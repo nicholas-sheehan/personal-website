@@ -4,7 +4,7 @@ on:
   # Run daily at 9am AEDT / 8am AEST (10pm UTC)
   schedule:
     - cron: "0 22 * * *"
-  # Run on push to main (e.g. when you edit index.html or style.css directly)
+  # Run on push to main or staging
   push:
     branches: [main, staging]
   # Allow manual trigger from the Actions tab
@@ -12,8 +12,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   build:
@@ -50,29 +48,24 @@ jobs:
 
   deploy:
     needs: build
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.ref_name }}
 
       - name: Pull latest (includes build commit)
-        run: git pull origin main
+        run: git pull origin ${{ github.ref_name }}
 
       - name: Assemble site files
         run: |
           mkdir _site
-          cp index.html og-image.png sitemap.xml CNAME favicon.png favicon-192.png favicon.ico robots.txt _site/
+          cp index.html og-image.png sitemap.xml favicon.png favicon-192.png favicon.ico robots.txt _site/
 
-      - uses: actions/configure-pages@v4
-
-      - uses: actions/upload-pages-artifact@v3
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
         with:
-          path: "_site"
-
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy _site --project-name=nicsheehan --branch=${{ github.ref_name }}
