@@ -31,7 +31,7 @@ flowchart TD
     end
 
     subgraph hosting["Hosting"]
-        GHP[GitHub Pages\nwww.nicsheehan.com]
+        CFP[Cloudflare Pages\nwww.nicsheehan.com]
     end
 
     subgraph browser["Browser — runtime"]
@@ -56,7 +56,7 @@ flowchart TD
 
 ## Key decisions
 
-- **No runtime server** — GitHub Pages serves static files only. Zero infrastructure to maintain.
+- **No runtime server** — Cloudflare Pages serves static files only. Zero infrastructure to maintain.
 - **Build-time content** — all external data is fetched by `build.py` and baked into `index.html`. The browser calls no external data APIs directly, with one exception below.
 - **Cloudflare Worker (now-playing)** — a small Cloudflare Worker at `now-playing.b-tonic.workers.dev` proxies Last.fm `user.getRecentTracks` at runtime. The browser polls it every 30 seconds to show a live "currently playing" strip. Deployed separately from the static site (`cd worker && wrangler deploy`); `LASTFM_API_KEY` is stored as a Cloudflare secret, not a GitHub Secret.
 - **Inline CSS** — `style.css` is inlined into `index.html` at build time, eliminating a render-blocking request.

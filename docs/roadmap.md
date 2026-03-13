@@ -166,8 +166,8 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 ## Dev environment improvements
 
 **Priority — blocks proper release workflow:**
-- [ ] **Move DNS to Cloudflare nameservers** — prerequisite for Cloudflare Pages. Done in Cloudflare dashboard: add site → update nameservers at registrar → enable proxy (orange cloud) on DNS records.
-- [ ] **Migrate to Cloudflare Pages** ← fixes staging review — GitHub Pages only supports one deploy target so staging has no real URL; reviewing staging requires pulling the branch locally which clobbers the working directory. This is not best practice — releases should always progress forward, never require pulling back. Cloudflare Pages gives a real deployed URL per branch (e.g. `staging.<project>.pages.dev`) so staging review is a proper browser check. Depends on DNS item above. Already using Workers so this is a natural fit.
+- [x] **Move DNS to Cloudflare nameservers** — done 2026-03-13. Added site in Cloudflare dashboard, updated nameservers at registrar, proxy enabled. ✅
+- [x] **Migrate to Cloudflare Pages** — done 2026-03-13. `staging` now deploys to `staging.nicsheehan.pages.dev`; production at `www.nicsheehan.com`. Replaced GitHub Pages actions with `wrangler pages deploy` in CI. GitHub Pages disabled. ✅
 
 **Other improvements:**
 - [ ] **Restore `main` branch protection via GitHub Ruleset with deploy key bypass** — branch protection was removed 2026-03-02 because it blocked the build bot. Proper fix: create a Deploy Key for the bot and add it as a bypass actor in a Ruleset, then re-enable "Require a pull request before merging" on `main`. Without this, convention is the only guard and it will be violated (proven 2026-03-05).
