@@ -181,9 +181,12 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 - [ ] **Wrangler deploy step in CI** — Worker code in `main` can drift from what's running on Cloudflare with no warning. Add a `wrangler deploy` step to the workflow so Worker deploys automatically on push.
 - [ ] **HTML validation in CI** — no check that the build produces valid HTML. Add `html5validator` on `_site/` output to catch malformed markup before deploy.
 - [ ] **OG image: skip regeneration if unchanged** — currently regenerated on every build even if Gravatar data hasn't changed. Add a hash/comparison guard to avoid the daily `og-image.png` git noise.
+- [ ] **Bot commit: skip if only timestamp changed** — the build always commits because the `<!-- updated:start/end -->` timestamp always changes, even when no feed content changed. Only commit when actual feed content differs, so manual pushes don't trigger a bot commit and cause local/remote divergence.
 - [ ] **Boot sequence: skip on returning visits** — add a `sessionStorage` flag so the boot overlay is skipped for returning visitors; reduces artificial LCP delay from ~2.4–3.2s to near-zero on repeat loads.
 - [ ] **CI deploy job: artifact handoff** — replace the second `git pull` in the `deploy` job with `actions/upload-artifact` / `actions/download-artifact` to pass `_site/` between jobs without a race-prone network pull.
 - [ ] **CI deploy job: concurrency control** — add `concurrency:` key to cancel in-progress deploys when a new push arrives.
+- [ ] **Cloudflare Bot Fight Mode** — one-toggle in Cloudflare Security settings (free tier). Filters known bot traffic at the edge before it hits analytics, reducing noise in Cloudflare Analytics.
+- [ ] **Security headers via Cloudflare Transform Rules** — add `Content-Security-Policy`, `X-Content-Type-Options`, and `X-Frame-Options` response headers. Free tier supports this; no code changes needed, configured in the Cloudflare dashboard.
 
 ## Discussed and decided against
 - Separate `twitter_title`/`twitter_description` in TOML — unnecessary, they always match `site.title`/`site.description`
