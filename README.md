@@ -4,7 +4,7 @@ Personal website for Nicholas Sheehan. A static site that pulls all its content 
 
 ## How it works
 
-`build.py` fetches data from external services, injects it into `index.html`, and GitHub Pages serves the result. A GitHub Actions workflow runs this daily at 9am AEDT / 8am AEST, commits any changes, and deploys.
+`build.py` fetches data from external services, injects it into `index.html`, and Cloudflare Pages serves the result. A GitHub Actions workflow runs this daily at 9am AEDT / 8am AEST, commits any changes, and deploys.
 
 See [docs/architecture.md](docs/architecture.md) for a full diagram of the build and hosting stack, and [docs/pipeline.md](docs/pipeline.md) for the development workflow and branch strategy.
 
@@ -25,7 +25,7 @@ See [docs/architecture.md](docs/architecture.md) for a full diagram of the build
 ## When does the site update?
 
 - **Automatically** every day at 9am AEDT / 8am AEST via GitHub Actions
-- **On every push** to `main` or `staging` (staging builds but does not deploy)
+- **On every push** to `main` or `staging` (staging deploys to `staging.nicsheehan.pages.dev`)
 - **Manually** from the [Actions tab](https://github.com/nicholas-sheehan/personal-website/actions/workflows/build.yml) → "Run workflow"
 
 ## GitHub secrets
@@ -41,6 +41,8 @@ These are configured in the repo under Settings → Secrets and variables → Ac
 | `INSTAPAPER_OAUTH_TOKEN_SECRET` | Instapaper user token secret |
 | `LASTFM_API_KEY` | Last.fm API key for the static build (top-5 monthly tracks). A **separate copy** of this key is also stored as a Cloudflare secret for the now-playing Worker — see [Worker deployment](#worker-deployment). |
 | `TMDB_API_KEY` | TMDB API key for film posters/director/synopsis (get one at themoviedb.org/settings/api) |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare API token with "Cloudflare Pages: Edit" permission — used by CI to deploy via wrangler |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID — used alongside the API token for Pages deployment |
 
 ## Running locally
 
@@ -78,5 +80,5 @@ The Worker URL (`now-playing.b-tonic.workers.dev`) is configured in `site.toml` 
 | `index.html` | The site. Contains comment markers (`<!-- tag:start/end -->`) where build.py injects content. |
 | `style.css` | Styling. |
 | `build.py` | Build script that fetches all data and updates index.html. |
-| `CNAME` | Custom domain config for GitHub Pages. |
+| `CNAME` | Custom domain record (kept for reference; domain is configured in Cloudflare Pages dashboard). |
 | `.github/workflows/build.yml` | GitHub Actions workflow for scheduled builds and deployment. |
