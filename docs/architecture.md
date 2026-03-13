@@ -15,23 +15,15 @@ flowchart TD
         TM[TMDB API]
     end
 
-    subgraph local["Local Config"]
-        ST[site.toml]
-        CSS[style.css]
+    subgraph repo["GitHub — nicholas-sheehan/personal-website"]
+        CFG[site.toml · style.css · index.html]
+        GA[GitHub Actions\nScheduled daily · on push to main/staging]
+        OUT[index.html · og-image.png · sitemap.xml\ncommitted back to repo]
     end
 
-    subgraph build["build.py"]
-        BP[Fetch · Inject · Inline CSS\nGenerate OG image · Sitemap]
-    end
-
-    subgraph output["Output — committed to repo"]
-        IH[index.html]
-        OG[og-image.png]
-        SM[sitemap.xml]
-    end
-
-    subgraph hosting["Hosting"]
-        CFP[Cloudflare Pages\nwww.nicsheehan.com]
+    subgraph hosting["Cloudflare Pages"]
+        PROD[www.nicsheehan.com\nmain branch]
+        STG[staging.nicsheehan.pages.dev\nstaging branch]
     end
 
     subgraph browser["Browser — runtime"]
@@ -45,11 +37,11 @@ flowchart TD
         CW[Proxy: Last.fm\nuser.getRecentTracks]
     end
 
-    sources --> build
-    local --> build
-    build --> output
-    output --> hosting
-    hosting --> browser
+    sources --> GA
+    CFG --> GA
+    GA -->|"build.py: fetch · inject · inline CSS\ngenerate OG image · sitemap"| OUT
+    OUT -->|"wrangler pages deploy"| hosting
+    PROD --> browser
     NP -->|"fetch on load + poll 30s"| CW
     CW -->|"user.getRecentTracks"| LF
 ```
