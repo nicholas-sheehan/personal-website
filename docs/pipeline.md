@@ -8,7 +8,7 @@
 | `staging` | Pre-production — full build with real data | staging.nicsheehan.pages.dev (Cloudflare Pages preview) |
 | Feature branches | Active development — one per iteration | Local preview only |
 
-**Never push directly to `main`.** All changes flow through a pull request. The build bot pushes feed updates directly as part of CI — this is the only exception.
+**Never push directly to `main`.** All changes flow through a pull request. The build bot pushes feed updates directly as part of CI via a dedicated deploy key (`BOT_DEPLOY_KEY`) — this is the only exception. Bot commits use `[skip ci]` to prevent retriggering the workflow.
 
 ## How changes move to production
 
@@ -37,6 +37,8 @@ Run `python3 build.py` without API keys. The build re-inlines CSS and updates ti
 Push to the `staging` branch. GitHub Actions runs a full build using real API secrets, commits the result back to `staging`, and deploys to Cloudflare Pages. Open the staging preview URL in your browser.
 
 **Use for:** data pipeline changes, new API fields, new content sources.
+
+Push to the `staging` branch and open `staging.nicsheehan.pages.dev` in your browser once CI completes.
 
 ## Stage 3 — Production
 
