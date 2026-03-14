@@ -42,7 +42,7 @@ These are configured in the repo under Settings → Secrets and variables → Ac
 | `LASTFM_API_KEY` | Last.fm API key for the static build (top-5 monthly tracks). A **separate copy** of this key is also stored as a Cloudflare secret for the now-playing Worker — see [Worker deployment](#worker-deployment). |
 | `TMDB_READ_ACCESS_TOKEN` | TMDB API Read Access Token (v4) for film posters/director/synopsis — preferred over `TMDB_API_KEY`. Get from themoviedb.org/settings/api under "API Read Access Token". |
 | `TMDB_API_KEY` | Legacy TMDB v3 API key — kept as fallback if `TMDB_READ_ACCESS_TOKEN` is unset |
-| `CLOUDFLARE_API_TOKEN` | Cloudflare API token with "Cloudflare Pages: Edit" permission — used by CI to deploy via wrangler |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare API token with "Cloudflare Pages: Edit" + "Workers Scripts: Edit" permissions — used by CI to deploy Pages and the now-playing Worker via wrangler |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID — used alongside the API token for Pages deployment |
 
 ## Running locally
