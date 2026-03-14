@@ -1,2 +1,3 @@
-Pillow
-tomli; python_version < "3.11"
+Pillow>=10,<12
+tomli>=2,<3; python_version < "3.11"
+html5validator>=0.4,<1

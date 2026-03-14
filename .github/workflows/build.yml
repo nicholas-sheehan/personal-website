@@ -65,6 +65,12 @@ jobs:
           mkdir _site
           cp index.html og-image.png sitemap.xml favicon.png favicon-192.png favicon.ico robots.txt _site/
 
+      - name: Install html5validator
+        run: pip install html5validator
+
+      - name: Validate HTML
+        run: html5validator --root _site/ --also-check-css --log INFO
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
