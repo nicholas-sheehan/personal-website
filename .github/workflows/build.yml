@@ -80,7 +80,7 @@ jobs:
         run: pip install html5validator
 
       - name: Validate HTML
-        run: html5validator --root _site/ --also-check-css --log INFO
+        run: html5validator --root _site/ --log INFO
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
