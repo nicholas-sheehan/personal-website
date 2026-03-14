@@ -1003,6 +1003,21 @@ def build_analytics_html(config: dict) -> str:
 #  HTML injection
 # ══════════════════════════════════════════════════════════════════
 
+def _strip_updated_block(src: str) -> str:
+    """Remove <!-- updated:start/end --> block for content-change comparison."""
+    return re.sub(
+        r'<!-- updated:start -->.*?<!-- updated:end -->',
+        '',
+        src,
+        flags=re.DOTALL,
+    )
+
+
+def _content_changed(old_src: str, new_src: str) -> bool:
+    """Return True if src changed beyond the updated timestamp block."""
+    return _strip_updated_block(old_src) != _strip_updated_block(new_src)
+
+
 def _make_pattern(tag: str) -> re.Pattern:
     return re.compile(
         rf"(<!-- {tag}:start -->)\n.*?\n(\s*<!-- {tag}:end -->)",
@@ -1232,10 +1247,18 @@ def cmd_build():
     update_sitemap(SITEMAP_PATH, now)
 
     # ── Write ──
-    with open(INDEX_PATH, "w", encoding="utf-8") as f:
-        f.write(src)
+    try:
+        with open(INDEX_PATH, "r", encoding="utf-8") as f:
+            old_src = f.read()
+    except FileNotFoundError:
+        old_src = ""
 
-    print(f"Updated {INDEX_PATH} ✓")
+    if _content_changed(old_src, src):
+        with open(INDEX_PATH, "w", encoding="utf-8") as f:
+            f.write(src)
+        print(f"Updated {INDEX_PATH} ✓")
+    else:
+        print(f"No feed content changed — skipping {INDEX_PATH} write (timestamp preserved).")
 
 
 def _draw_favicon(size: int) -> "Image.Image":

@@ -7,7 +7,10 @@ import unittest
 # build.py lives one directory up from tests/
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import re as _re
+
 from build import _og_fingerprint, _og_inputs_changed  # noqa: E402
+from build import _strip_updated_block, _content_changed  # noqa: E402
 
 
 class TestOgImageSkip(unittest.TestCase):
@@ -31,6 +34,23 @@ class TestOgImageSkip(unittest.TestCase):
             with open(hash_path, "w") as f:
                 f.write(fp)
             self.assertTrue(_og_inputs_changed("Nicholas", "Dev", "https://example.com", hash_path))
+
+
+class TestBotCommitSkip(unittest.TestCase):
+    def test_timestamp_only_change_not_detected(self):
+        old = "<!-- updated:start -->\nOld timestamp\n<!-- updated:end -->\n<p>Content</p>"
+        new = "<!-- updated:start -->\nNew timestamp\n<!-- updated:end -->\n<p>Content</p>"
+        self.assertFalse(_content_changed(old, new))
+
+    def test_content_change_detected(self):
+        old = "<!-- updated:start -->\nOld\n<!-- updated:end -->\n<p>Old content</p>"
+        new = "<!-- updated:start -->\nNew\n<!-- updated:end -->\n<p>New content</p>"
+        self.assertTrue(_content_changed(old, new))
+
+    def test_no_updated_block_compares_full(self):
+        old = "<p>Content</p>"
+        new = "<p>Different</p>"
+        self.assertTrue(_content_changed(old, new))
 
 
 if __name__ == "__main__":
