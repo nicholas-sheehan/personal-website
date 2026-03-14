@@ -105,6 +105,7 @@ TMDB_IMG = "https://image.tmdb.org/t/p/w300"
 INDEX_PATH = "index.html"
 STYLE_PATH = "style.css"
 OG_IMAGE_PATH = "og-image.png"
+OG_HASH_PATH = ".og-image-hash"
 SITEMAP_PATH = "sitemap.xml"
 FAVICON_ICO_PATH = "favicon.ico"
 FAVICON_PNG_PATH = "favicon.png"
@@ -608,6 +609,29 @@ def generate_og_image(profile: dict, output_path: str):
     return True
 
 
+def _og_fingerprint(name: str, tagline: str, avatar_url: str) -> str:
+    """Compute SHA-256 fingerprint of OG image inputs."""
+    content = f"{name}|{tagline}|{avatar_url}"
+    return hashlib.sha256(content.encode()).hexdigest()
+
+
+def _og_inputs_changed(name: str, tagline: str, avatar_url: str, hash_path: str) -> bool:
+    """Return True if OG image inputs differ from the stored hash."""
+    new_hash = _og_fingerprint(name, tagline, avatar_url)
+    try:
+        with open(hash_path, "r") as f:
+            old_hash = f.read().strip()
+    except FileNotFoundError:
+        return True
+    return new_hash != old_hash
+
+
+def _save_og_hash(name: str, tagline: str, avatar_url: str, hash_path: str) -> None:
+    """Write current OG fingerprint to disk."""
+    with open(hash_path, "w") as f:
+        f.write(_og_fingerprint(name, tagline, avatar_url))
+
+
 _NAV_EXCLUDED_DOMAINS = frozenset({"goodreads.com", "letterboxd.com"})
 
 
@@ -1106,9 +1130,16 @@ def cmd_build():
         print(f"  Name: {name}, tagline: {tagline}, links: {len(profile.get('links', []))}")
 
         # ── OG image ──
-        print("Generating OG image…")
-        if generate_og_image(profile, OG_IMAGE_PATH):
-            print(f"  Saved {OG_IMAGE_PATH}")
+        _name = profile.get("display_name", "")
+        _tagline = build_gravatar_tagline(profile)
+        _avatar = profile.get("avatar_url", "")
+        if _og_inputs_changed(_name, _tagline, _avatar, OG_HASH_PATH):
+            print("Generating OG image…")
+            if generate_og_image(profile, OG_IMAGE_PATH):
+                _save_og_hash(_name, _tagline, _avatar, OG_HASH_PATH)
+                print(f"  Saved {OG_IMAGE_PATH}")
+        else:
+            print("OG image inputs unchanged — skipping regeneration.")
     except Exception as e:
         print(f"  ⚠  Gravatar fetch failed: {e} — keeping existing content")
 
