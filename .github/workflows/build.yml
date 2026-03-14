@@ -87,3 +87,16 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy _site --project-name=nicsheehan --branch=${{ github.ref_name }}
+
+      - name: Check out repo (for Worker source)
+        if: github.ref == 'refs/heads/main'
+        uses: actions/checkout@v4
+
+      - name: Deploy Cloudflare Worker
+        if: github.ref == 'refs/heads/main'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          command: deploy
