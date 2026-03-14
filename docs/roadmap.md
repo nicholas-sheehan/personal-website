@@ -11,7 +11,7 @@ Pure fixes, no visual changes. Safe to batch and ship.
 - [x] Timestamp format: "Last built 18 Feb 2026 at 10:00 UTC"
 
 **Extras landed with this iteration:**
-- Cleaned stale `twitter:` inline comments from `site.toml` (caught in code review)
+- [x] Cleaned stale `twitter:` inline comments from `site.toml` (caught in code review)
 
 ## Iteration 2 — Build resilience & CI ✅ shipped 2026-02-19
 Makes the build pipeline more robust before changing output.
@@ -22,7 +22,7 @@ Makes the build pipeline more robust before changing output.
 - [x] Strip URL tracking params from Instapaper links
 
 **Extras landed with this iteration:**
-- Fixed `_strip_tracking_params("#")` edge case — non-HTTP fallback URLs now returned as-is (caught in final review)
+- [x] Fixed `_strip_tracking_params("#")` edge case — non-HTTP fallback URLs now returned as-is (caught in final review)
 
 ## Iteration 3 — Accessibility & contrast ✅ shipped 2026-02-19
 Fixes that land before the design overhaul so we start from a compliant baseline.
@@ -32,7 +32,7 @@ Fixes that land before the design overhaul so we start from a compliant baseline
 - [ ] Avatar border — soften to `var(--border)` _(reverted — keeping accent blue)_
 
 **Extras landed with this iteration:**
-- Tokenised `.colophon .credits` dark mode base rule (was hardcoded `#525252`, now `var(--text-tertiary)`) — caught in final review
+- [x] Tokenised `.colophon .credits` dark mode base rule (was hardcoded `#525252`, now `var(--text-tertiary)`) — caught in final review
 
 ## Iteration 4 — Y2K Visual Redesign ✅ shipped 2026-02-21
 Full aesthetic overhaul. Y2K / PS2 Memory Card direction — dark only, full mono (JetBrains Mono), colour-coded panels per content type, 2×2 content grid. Collapses old iterations 4, 5 (visual items), and 6.
@@ -45,8 +45,8 @@ Full aesthetic overhaul. Y2K / PS2 Memory Card direction — dark only, full mon
 - [x] Remove light mode
 
 **Extras landed with this iteration:**
-- Updated all 4 `build_*_html()` functions to output `.panel-row` div structure matching the prototype (caught by visual comparison post-ship)
-- Removed dead `.panel-list` CSS block (80 lines) from `style.css`
+- [x] Updated all 4 `build_*_html()` functions to output `.panel-row` div structure matching the prototype (caught by visual comparison post-ship)
+- [x] Removed dead `.panel-list` CSS block (80 lines) from `style.css`
 
 ## Iteration 5 — Content features ✅ shipped 2026-02-22
 
@@ -56,8 +56,8 @@ Full aesthetic overhaul. Y2K / PS2 Memory Card direction — dark only, full mon
 - [x] Colophon copy: "Powered by" → "Built daily from" _(pre-completed in iteration 4)_
 
 **Extras landed with this iteration:**
-- Fixed `panel-count` vertical alignment (`align-self: flex-start`) — needed once panel headers gained two-line `.panel-heading` structure
-- Added `prefers-reduced-motion` override for `.pulse-dot` (caught in final code review)
+- [x] Fixed `panel-count` vertical alignment (`align-self: flex-start`) — needed once panel headers gained two-line `.panel-heading` structure
+- [x] Added `prefers-reduced-motion` override for `.pulse-dot` (caught in final code review)
 
 ## Iteration 6 — Polish & Nav ✅ shipped 2026-02-22
 Concrete feedback pass — sharpens the baseline before building new features.
@@ -92,9 +92,9 @@ Makes content interactive and connected to source services.
 - [x] TMDB integration for films — poster, director, synopsis via TMDB API (TMDB_API_KEY secret)
 
 **Extras landed with this iteration:**
-- Frontend-designer review: `[ X ]` close button, OS window chrome header, 400px max-width, cover image left-aligned 80px wide, backdrop-filter blur, modal link styled as panel-footer-link
-- Fixed Last.fm bio suffix regex (`Read more on Last.fm` not `Read more about`)
-- Consistent `html.escape(quote=True)` on all data attribute values
+- [x] Frontend-designer review: `[ X ]` close button, OS window chrome header, 400px max-width, cover image left-aligned 80px wide, backdrop-filter blur, modal link styled as panel-footer-link
+- [x] Fixed Last.fm bio suffix regex (`Read more on Last.fm` not `Read more about`)
+- [x] Consistent `html.escape(quote=True)` on all data attribute values
 
 ## Iteration 10 — Book modal enhancements ✅ shipped 2026-03-03
 Small data quality improvements to the book panel modals. Plan: `docs/plans/2026-03-02-book-modal-enhancements.md`.
@@ -114,7 +114,7 @@ Pure frontend — no new infrastructure. Quick wins that make the site feel more
 - [x] Bottom panel alignment — added → Last.fm footer link to music panel
 
 **Extras landed with this iteration:**
-- Frontend designer review: reduced warm-up blur to 0 (brightness-only), improved arrow button padding/colour/disabled opacity
+- [x] Frontend designer review: reduced warm-up blur to 0 (brightness-only), improved arrow button padding/colour/disabled opacity
 
 ## Iteration 12 — Currently playing (live API) ✅ shipped 2026-03-10
 First live data source — small serverless layer alongside the static site.
@@ -125,8 +125,8 @@ First live data source — small serverless layer alongside the static site.
 - [x] Animating CSS waveform icon (bars scaling up/down) to denote live data
 
 **Extras landed with this iteration:**
-- Added `worker/.gitignore` to exclude `.wrangler/` cache from repo (caught during implementation)
-- Frontend designer review: `aria-live="polite"` on strip, animation speed 0.8s→0.5s, `min-width: 0` on `.status-strip-text`
+- [x] Added `worker/.gitignore` to exclude `.wrangler/` cache from repo (caught during implementation)
+- [x] Frontend designer review: `aria-live="polite"` on strip, animation speed 0.8s→0.5s, `min-width: 0` on `.status-strip-text`
 
 ## Iteration 13 — Status strip polish ✅ shipped 2026-03-10
 Small CSS/template pass on the now-reading and now-playing strips.
@@ -137,7 +137,7 @@ Small CSS/template pass on the now-reading and now-playing strips.
 - [x] Update now-playing JS IIFE to build separate spans for track and artist
 
 **Extras landed with this iteration:**
-- Added `min-width: 0` to `.status-strips .status-strip` desktop rule to prevent long titles overflowing flex container (caught in code quality review)
+- [x] Added `min-width: 0` to `.status-strips .status-strip` desktop rule to prevent long titles overflowing flex container (caught in code quality review)
 
 ## Iteration 14 — Visual & Data Polish ✅ shipped 2026-03-11
 Batch of small fixes from full design + technical review. No new infrastructure.
@@ -150,8 +150,8 @@ Batch of small fixes from full design + technical review. No new infrastructure.
 - [x] Worker: expose Last.fm track URL for clickable now-playing strip
 
 **Extras landed with this iteration:**
-- Removed Instapaper footer link from articles panel (would link to Instapaper login, not a public list)
-- Book modal label switches between "About" (publisher synopsis) and "Review" (user's own Goodreads review) based on `data-has-review`
+- [x] Removed Instapaper footer link from articles panel (would link to Instapaper login, not a public list)
+- [x] Book modal label switches between "About" (publisher synopsis) and "Review" (user's own Goodreads review) based on `data-has-review`
 
 ## Iteration 15 — Data Explorer Mode ⬜ planned 2026-02-22
 Theatrical data experience. The biggest lift — requires a dedicated design session before implementation.
@@ -185,17 +185,17 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 - [x] **TMDB API key as request header** — switched from `?api_key=` query param to `Authorization: Bearer` header using TMDB Read Access Token (`TMDB_READ_ACCESS_TOKEN`). Last.fm unchanged (API doesn't support header auth). ✅
 
 **Extras landed with Batch A:**
-- Bootstrapped `tests/test_build.py` — 8 unit tests covering OG hash logic, bot commit skip, and TMDB header auth
-- Fixed Worker CORS policy — `now-playing.b-tonic.workers.dev` now allows `staging.nicsheehan.pages.dev` in addition to production origin; adds `Vary: Origin` header
+- [x] Bootstrapped `tests/test_build.py` — 8 unit tests covering OG hash logic, bot commit skip, and TMDB header auth
+- [x] Fixed Worker CORS policy — `now-playing.b-tonic.workers.dev` now allows `staging.nicsheehan.pages.dev` in addition to production origin; adds `Vary: Origin` header
 
 **Extras landed post-Batch A:**
-- Skip CI on doc-only pushes — `paths-ignore: docs/**, README.md` added to workflow push trigger. Avoids wasting CI minutes when only documentation changes.
+- [x] Skip CI on doc-only pushes — `paths-ignore: docs/**, README.md` added to workflow push trigger. Avoids wasting CI minutes when only documentation changes.
 
-**Batch B — Cloudflare & monitoring** (dashboard config only, no code changes):
-- [ ] **Cloudflare Bot Fight Mode** — one-toggle in Cloudflare Security settings (free tier). Filters known bot traffic at the edge before it hits analytics, reducing noise in Cloudflare Analytics.
-- [ ] **Security headers via Cloudflare Transform Rules** — add `Content-Security-Policy`, `X-Content-Type-Options`, and `X-Frame-Options` response headers. Free tier supports this; no code changes needed, configured in the Cloudflare dashboard.
-- [ ] **Cloudflare Analytics alerts** — set up alerts for unusual traffic spikes in Cloudflare dashboard.
-- [ ] **Uptime monitoring** — add UptimeRobot (free tier) to ping the site every 5 minutes and email on downtime.
+**Batch B — Cloudflare & monitoring** ✅ done 2026-03-14 (dashboard config only, no code changes):
+- [x] **Cloudflare Bot Fight Mode** — enabled in Cloudflare Security settings (free tier). Filters known bot traffic at the edge. ✅
+- [x] **Security headers via Cloudflare Transform Rules** — "Security headers" rule on `www.nicsheehan.com` sets `Content-Security-Policy` and `X-Frame-Options: SAMEORIGIN`. `X-Content-Type-Options` intentionally omitted — Cloudflare Pages already sets it. CSP verified via HAR analysis; GoatCounter and Cloudflare Analytics origins confirmed whitelisted. ✅
+- [x] **Cloudflare Notifications** — HTTP DDoS Attack Alert and Cloudflare Status Incident Alerts enabled (free tier). Security Events Alert requires Pro. ✅
+- [x] **Uptime monitoring** — UptimeRobot (free tier) monitors `https://www.nicsheehan.com` and `https://now-playing.b-tonic.workers.dev` every 5 minutes. ✅
 
 **Batch C — CSS linting:**
 - [ ] **Add Stylelint to CI** — `stylelint` v16+ with `declaration-property-value-no-unknown` rule is the industry-standard CSS quality gate. Unlike vnu, it handles modern CSS (`inset`, `dvh`, `@layer`, `backdrop-filter`) without false positives. Runs as a separate CI step. Config in `.stylelintrc`. Requires Node in the build environment (or a separate job).
