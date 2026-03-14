@@ -33,7 +33,7 @@ flowchart TD
         NP[Now-playing fetch\npoll every 30s]
     end
 
-    subgraph worker["Cloudflare Worker — runtime\nnow-playing.b-tonic.workers.dev\ndeployed separately via wrangler"]
+    subgraph worker["Cloudflare Worker — runtime\nnow-playing.b-tonic.workers.dev\nauto-deployed via CI on main push"]
         CW[Proxy: Last.fm\nuser.getRecentTracks]
     end
 
@@ -50,7 +50,7 @@ flowchart TD
 
 - **No runtime server** — Cloudflare Pages serves static files only. Zero infrastructure to maintain.
 - **Build-time content** — all external data is fetched by `build.py` and baked into `index.html`. The browser calls no external data APIs directly, with one exception below.
-- **Cloudflare Worker (now-playing)** — a small Cloudflare Worker at `now-playing.b-tonic.workers.dev` proxies Last.fm `user.getRecentTracks` at runtime. The browser polls it every 30 seconds to show a live "currently playing" strip. Deployed separately from the static site (`cd worker && wrangler deploy`); `LASTFM_API_KEY` is stored as a Cloudflare secret, not a GitHub Secret.
+- **Cloudflare Worker (now-playing)** — a small Cloudflare Worker at `now-playing.b-tonic.workers.dev` proxies Last.fm `user.getRecentTracks` at runtime. The browser polls it every 30 seconds to show a live "currently playing" strip. Auto-deployed by CI on push to `main` (`wrangler deploy` in the deploy job); `LASTFM_API_KEY` is stored as a Cloudflare secret, not a GitHub Secret. CORS allows `www.nicsheehan.com` and `staging.nicsheehan.pages.dev`.
 - **Inline CSS** — `style.css` is inlined into `index.html` at build time, eliminating a render-blocking request.
 - **Minimal JS** — no framework. Inline scripts only: boot sequence, item detail modal, countdown timer, Snake easter egg, now-playing fetch.
 - **Graceful degradation** — all external fetches are wrapped in try/except. If a source fails, existing content is preserved and the build continues.

@@ -10,6 +10,10 @@ on:
   # Allow manual trigger from the Actions tab
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -33,7 +37,8 @@ jobs:
         env:
           GRAVATAR_API_KEY: ${{ secrets.GRAVATAR_API_KEY }}
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
-          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          TMDB_READ_ACCESS_TOKEN: ${{ secrets.TMDB_READ_ACCESS_TOKEN }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}  # fallback for v3 api_key; prefer TMDB_READ_ACCESS_TOKEN above
           INSTAPAPER_CONSUMER_KEY: ${{ secrets.INSTAPAPER_CONSUMER_KEY }}
           INSTAPAPER_CONSUMER_SECRET: ${{ secrets.INSTAPAPER_CONSUMER_SECRET }}
           INSTAPAPER_OAUTH_TOKEN: ${{ secrets.INSTAPAPER_OAUTH_TOKEN }}
@@ -44,26 +49,38 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html og-image.png
+          git add index.html og-image.png .og-image-hash
           git diff --cached --quiet || git commit -m "Update feeds [skip ci]"
           git push
+
+      - name: Assemble site files
+        run: |
+          mkdir _site
+          cp index.html og-image.png sitemap.xml favicon.png favicon-192.png favicon.ico robots.txt _site/
+
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-${{ github.run_id }}
+          path: _site/
+          retention-days: 1
 
   deploy:
     needs: build
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Download site artifact
+        uses: actions/download-artifact@v4
         with:
-          ref: ${{ github.ref_name }}
+          name: site-${{ github.run_id }}
+          path: _site/
 
-      - name: Pull latest (includes build commit)
-        run: git pull origin ${{ github.ref_name }}
+      - name: Install html5validator
+        run: pip install html5validator
 
-      - name: Assemble site files
-        run: |
-          mkdir _site
-          cp index.html og-image.png sitemap.xml favicon.png favicon-192.png favicon.ico robots.txt _site/
+      - name: Validate HTML
+        run: html5validator --root _site/ --also-check-css --log INFO
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
@@ -71,3 +88,16 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy _site --project-name=nicsheehan --branch=${{ github.ref_name }}
+
+      - name: Check out repo (for Worker source)
+        if: github.ref == 'refs/heads/main'
+        uses: actions/checkout@v4
+
+      - name: Deploy Cloudflare Worker
+        if: github.ref == 'refs/heads/main'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          command: deploy

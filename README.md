@@ -40,7 +40,8 @@ These are configured in the repo under Settings → Secrets and variables → Ac
 | `INSTAPAPER_OAUTH_TOKEN` | Instapaper user token (generated via `build.py auth`) |
 | `INSTAPAPER_OAUTH_TOKEN_SECRET` | Instapaper user token secret |
 | `LASTFM_API_KEY` | Last.fm API key for the static build (top-5 monthly tracks). A **separate copy** of this key is also stored as a Cloudflare secret for the now-playing Worker — see [Worker deployment](#worker-deployment). |
-| `TMDB_API_KEY` | TMDB API key for film posters/director/synopsis (get one at themoviedb.org/settings/api) |
+| `TMDB_READ_ACCESS_TOKEN` | TMDB API Read Access Token (v4) for film posters/director/synopsis — preferred over `TMDB_API_KEY`. Get from themoviedb.org/settings/api under "API Read Access Token". |
+| `TMDB_API_KEY` | Legacy TMDB v3 API key — kept as fallback if `TMDB_READ_ACCESS_TOKEN` is unset |
 | `CLOUDFLARE_API_TOKEN` | Cloudflare API token with "Cloudflare Pages: Edit" permission — used by CI to deploy via wrangler |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID — used alongside the API token for Pages deployment |
 
@@ -54,7 +55,7 @@ INSTAPAPER_CONSUMER_SECRET="your-secret" \
 INSTAPAPER_OAUTH_TOKEN="your-token" \
 INSTAPAPER_OAUTH_TOKEN_SECRET="your-secret" \
 LASTFM_API_KEY="your-key" \
-TMDB_API_KEY="your-key" \
+TMDB_READ_ACCESS_TOKEN="your-token" \
 python3 build.py
 ```
 
@@ -62,7 +63,7 @@ Goodreads and Letterboxd use public RSS feeds and work without any credentials.
 
 ## Worker deployment
 
-The now-playing strip is powered by a Cloudflare Worker deployed separately from the static site. It is not part of the GitHub Actions build.
+The now-playing strip is powered by a Cloudflare Worker. It auto-deploys via CI on every push to `main`. For first-time setup or manual redeploy:
 
 ```bash
 cd worker
