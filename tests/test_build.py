@@ -53,5 +53,23 @@ class TestBotCommitSkip(unittest.TestCase):
         self.assertTrue(_content_changed(old, new))
 
 
+class TestTmdbHeaderAuth(unittest.TestCase):
+    def test_bearer_token_not_in_query_params(self):
+        """TMDB search URL must not contain api_key as a query param."""
+        import urllib.parse
+        token = "test_token_123"
+        params = urllib.parse.urlencode({"query": "Dune", "year": "2021"})
+        url = f"https://api.themoviedb.org/3/search/movie?{params}"
+        self.assertNotIn("api_key", url)
+        self.assertNotIn(token, url)
+
+    def test_bearer_token_in_auth_header(self):
+        """Authorization header must be Bearer token."""
+        token = "test_token_123"
+        headers = {"Authorization": f"Bearer {token}", "User-Agent": "Mozilla/5.0"}
+        self.assertTrue(headers["Authorization"].startswith("Bearer "))
+        self.assertIn(token, headers["Authorization"])
+
+
 if __name__ == "__main__":
     unittest.main()

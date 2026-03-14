@@ -9,7 +9,7 @@ Fetches data from seven sources and writes them into index.html:
   4. Letterboxd recently watched films (via RSS — no auth needed)
   5. Instapaper starred/liked articles (via API — OAuth 1.0a)
   6. Last.fm top tracks this month (via REST API — LASTFM_API_KEY env var)
-  7. TMDB (via REST API — TMDB_API_KEY env var, for film poster/director data; graceful fallback if unset)
+  7. TMDB (via REST API — TMDB_READ_ACCESS_TOKEN env var preferred, TMDB_API_KEY as fallback; for film poster/director data; graceful fallback if unset)
 
 Usage:
     python build.py              # full build
@@ -98,7 +98,7 @@ LASTFM_USERNAME = CONFIG["sources"]["lastfm"]["username"]
 LASTFM_API_KEY = os.environ.get("LASTFM_API_KEY", "")
 LASTFM_LIMIT = CONFIG["sources"]["lastfm"]["limit"]
 
-TMDB_API_KEY = os.environ.get("TMDB_API_KEY", "")
+TMDB_API_KEY = os.environ.get("TMDB_READ_ACCESS_TOKEN", "") or os.environ.get("TMDB_API_KEY", "")  # prefer v4 Read Access Token; fallback to v3 api_key
 TMDB_API = "https://api.themoviedb.org/3"
 TMDB_IMG = "https://image.tmdb.org/t/p/w300"
 
@@ -335,10 +335,10 @@ def fetch_tmdb_data(title: str, year: str, api_key: str) -> dict:
     """Fetch poster, director, and synopsis from TMDB. Returns {} on failure or missing key."""
     if not api_key:
         return {}
-    params = urllib.parse.urlencode({"query": title, "year": year, "api_key": api_key})
+    params = urllib.parse.urlencode({"query": title, "year": year})
     req = urllib.request.Request(
         f"{TMDB_API}/search/movie?{params}",
-        headers={"User-Agent": "Mozilla/5.0"},
+        headers={"Authorization": f"Bearer {api_key}", "User-Agent": "Mozilla/5.0"},
     )
     with urllib.request.urlopen(req, timeout=10) as resp:
         data = json.loads(resp.read().decode())
@@ -354,10 +354,9 @@ def fetch_tmdb_data(title: str, year: str, api_key: str) -> dict:
 
     director = ""
     if movie_id:
-        credits_params = urllib.parse.urlencode({"api_key": api_key})
         req2 = urllib.request.Request(
-            f"{TMDB_API}/movie/{movie_id}/credits?{credits_params}",
-            headers={"User-Agent": "Mozilla/5.0"},
+            f"{TMDB_API}/movie/{movie_id}/credits",
+            headers={"Authorization": f"Bearer {api_key}", "User-Agent": "Mozilla/5.0"},
         )
         with urllib.request.urlopen(req2, timeout=10) as resp2:
             credits = json.loads(resp2.read().decode())
@@ -376,7 +375,7 @@ def fetch_tmdb_data(title: str, year: str, api_key: str) -> dict:
 def enrich_films_with_tmdb(films: list[dict], api_key: str) -> list[dict]:
     """Add poster/director/synopsis to each film dict via TMDB. Failures are skipped."""
     if not api_key:
-        print("  ⚠  TMDB_API_KEY not set — film modals will show Letterboxd data only.")
+        print("  ⚠  TMDB_READ_ACCESS_TOKEN not set — film modals will show Letterboxd data only.")
         return films
     for film in films:
         try:

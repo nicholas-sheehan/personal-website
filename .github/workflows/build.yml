@@ -37,7 +37,8 @@ jobs:
         env:
           GRAVATAR_API_KEY: ${{ secrets.GRAVATAR_API_KEY }}
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
-          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          TMDB_READ_ACCESS_TOKEN: ${{ secrets.TMDB_READ_ACCESS_TOKEN }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}  # fallback for v3 api_key; prefer TMDB_READ_ACCESS_TOKEN above
           INSTAPAPER_CONSUMER_KEY: ${{ secrets.INSTAPAPER_CONSUMER_KEY }}
           INSTAPAPER_CONSUMER_SECRET: ${{ secrets.INSTAPAPER_CONSUMER_SECRET }}
           INSTAPAPER_OAUTH_TOKEN: ${{ secrets.INSTAPAPER_OAUTH_TOKEN }}
