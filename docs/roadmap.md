@@ -197,6 +197,13 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 **Batch C — CSS linting:**
 - [ ] **Add Stylelint to CI** — `stylelint` v16+ with `declaration-property-value-no-unknown` rule is the industry-standard CSS quality gate. Unlike vnu, it handles modern CSS (`inset`, `dvh`, `@layer`, `backdrop-filter`) without false positives. Runs as a separate CI step. Config in `.stylelintrc`. Requires Node in the build environment (or a separate job).
 
+**Batch D — Governance & audit controls** (treat repo as production-grade; banking-standard controls):
+- [ ] **SSH commit signing** — configure local git to sign all commits with the existing `id_ed25519_github` key via 1Password SSH agent. Register the same key in GitHub as a signing key (Settings → SSH and GPG keys → New signing key). Unsigned commits on main become a visible red flag. Required before the alerting items below are meaningful.
+- [ ] **Direct push detector** — GitHub Actions workflow triggered on every push to `main`; checks whether the triggering commit has an associated merged PR. If not, sends an email alert. Catches human pushes that bypass the branch protection ruleset (bot commits are excluded by author check).
+- [ ] **Ruleset bypass alerting** — GitHub emits a `bypass` webhook event when a ruleset is bypassed. A lightweight GitHub Actions workflow (triggered on `repository_ruleset_bypass`) forwards the event payload to email. Complements the direct push detector — catches bypasses that don't result in a commit (e.g. a force-push attempt that was blocked but logged).
+- [ ] **Require two approvers on PRs** — currently PRs require 0 approvers (branch protection only enforces that a PR exists). Add a required reviewer to enforce four-eyes principle. For a solo project, a trusted second account or a designated reviewer works. Revisit when collaborators are added.
+- [ ] **Bot commit signing** — configure `github-actions[bot]` commits to be signed. GitHub Actions supports this via `actions/github-script` with a GPG key stored as a secret, or by using a GitHub App (which signs commits automatically). Prevents impersonation of the bot in commit history.
+
 **Deferred — bundle with future iterations:**
 - [ ] **Worker KV caching for now-playing** — cache Last.fm response in Cloudflare KV for ~15 seconds so rapid page loads don't hammer the API. One extra step in the Worker fetch handler. Bundle with a future iteration rather than shipping alone.
 - [ ] **Boot sequence: skip on returning visits** — add a `sessionStorage` flag so the boot overlay is skipped for returning visitors; reduces artificial LCP delay from ~2.4–3.2s to near-zero on repeat loads. Bundle with iteration 15.
