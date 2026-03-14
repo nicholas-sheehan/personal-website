@@ -4,9 +4,12 @@ on:
   # Run daily at 9am AEDT / 8am AEST (10pm UTC)
   schedule:
     - cron: "0 22 * * *"
-  # Run on push to main or staging
+  # Run on push to main or staging (skip for doc-only changes)
   push:
     branches: [main, staging]
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
   # Allow manual trigger from the Actions tab
   workflow_dispatch:
 

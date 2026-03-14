@@ -188,6 +188,9 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 - Bootstrapped `tests/test_build.py` — 8 unit tests covering OG hash logic, bot commit skip, and TMDB header auth
 - Fixed Worker CORS policy — `now-playing.b-tonic.workers.dev` now allows `staging.nicsheehan.pages.dev` in addition to production origin; adds `Vary: Origin` header
 
+**Extras landed post-Batch A:**
+- Skip CI on doc-only pushes — `paths-ignore: docs/**, README.md` added to workflow push trigger. Avoids wasting CI minutes when only documentation changes.
+
 **Batch B — Cloudflare & monitoring** (dashboard config only, no code changes):
 - [ ] **Cloudflare Bot Fight Mode** — one-toggle in Cloudflare Security settings (free tier). Filters known bot traffic at the edge before it hits analytics, reducing noise in Cloudflare Analytics.
 - [ ] **Security headers via Cloudflare Transform Rules** — add `Content-Security-Policy`, `X-Content-Type-Options`, and `X-Frame-Options` response headers. Free tier supports this; no code changes needed, configured in the Cloudflare dashboard.
