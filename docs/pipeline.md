@@ -8,7 +8,7 @@
 | `staging` | Pre-production — full build with real data | staging.nicsheehan.pages.dev (Cloudflare Pages preview) |
 | Feature branches | Active development — one per iteration | Local preview only |
 
-**Never push directly to `main`.** All changes flow through a pull request. The build bot pushes feed updates directly as part of CI — this is the only exception.
+**Never push directly to `main`.** All changes flow through a pull request. The build bot pushes feed updates directly as part of CI via a dedicated deploy key (`BOT_DEPLOY_KEY`) — this is the only exception. Bot commits use `[skip ci]` to prevent retriggering the workflow.
 
 ## How changes move to production
 
@@ -38,13 +38,7 @@ Push to the `staging` branch. GitHub Actions runs a full build using real API se
 
 **Use for:** data pipeline changes, new API fields, new content sources.
 
-⚠️ **Known limitation:** GitHub Pages only supports one deploy target, so staging has no real URL — review requires pulling the branch locally, which clobbers your working directory. This is not best practice. The fix is migrating to **Cloudflare Pages**, which provides a deployed preview URL per branch. Until then, use a git worktree to avoid clobbering your working state:
-
-```bash
-git worktree add .worktrees/staging-review origin/staging
-# open file:///.../.worktrees/staging-review/index.html
-git worktree remove .worktrees/staging-review
-```
+Push to the `staging` branch and open `staging.nicsheehan.pages.dev` in your browser once CI completes.
 
 ## Stage 3 — Production
 

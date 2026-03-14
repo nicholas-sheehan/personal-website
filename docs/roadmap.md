@@ -170,9 +170,9 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 - [x] **Migrate to Cloudflare Pages** — done 2026-03-13. `staging` now deploys to `staging.nicsheehan.pages.dev`; production at `www.nicsheehan.com`. Replaced GitHub Pages actions with `wrangler pages deploy` in CI. GitHub Pages disabled. ✅
 
 **Other improvements:**
-- [ ] **Restore `main` branch protection via GitHub Ruleset with deploy key bypass** — branch protection was removed 2026-03-02 because it blocked the build bot. Proper fix: create a Deploy Key for the bot and add it as a bypass actor in a Ruleset, then re-enable "Require a pull request before merging" on `main`. Without this, convention is the only guard and it will be violated (proven 2026-03-05).
-- [ ] Switch git remote from HTTPS to SSH (`git remote set-url origin git@github.com:nicholas-sheehan/personal-website.git`) — requires SSH key set up with GitHub; prerequisite for the deploy key fix above
-- [ ] Install `gh` CLI properly (Homebrew: `brew install gh`) so it doesn't need re-downloading each session
+- [x] **Restore `main` branch protection via GitHub Ruleset with deploy key bypass** — done 2026-03-14. Deploy key (`BOT_DEPLOY_KEY`) added as bypass actor alongside repo admin. Ruleset enforces PR-before-merge with admin bypass visible in commit history. ✅
+- [x] Switch git remote from HTTPS to SSH — done 2026-03-14. Personal ED25519 key (`id_ed25519_github`) stored in 1Password SSH agent; `~/.ssh/config` routes github.com through it. ✅
+- [x] Install `gh` CLI properly (Homebrew: `brew install gh`) — done 2026-03-14. Authenticated via `gh auth login`. ✅
 - [x] Squash-only merges — unticked "Allow merge commits" and "Allow rebase merging"; squash is now the only option, eliminating timestamp conflicts on `staging → main` ✅ 2026-03-03
 - [ ] Process habit: commit any open docs/working-tree changes before starting worktree work — prevents `git checkout staging` failing mid-flow
 - [ ] **Worker KV caching for now-playing** — cache Last.fm response in Cloudflare KV for ~15 seconds so rapid page loads don't hammer the API. One extra step in the Worker fetch handler. Bundle with a future iteration rather than shipping alone.
@@ -181,12 +181,15 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 - [ ] **Wrangler deploy step in CI** — Worker code in `main` can drift from what's running on Cloudflare with no warning. Add a `wrangler deploy` step to the workflow so Worker deploys automatically on push.
 - [ ] **HTML validation in CI** — no check that the build produces valid HTML. Add `html5validator` on `_site/` output to catch malformed markup before deploy.
 - [ ] **OG image: skip regeneration if unchanged** — currently regenerated on every build even if Gravatar data hasn't changed. Add a hash/comparison guard to avoid the daily `og-image.png` git noise.
+- [x] **Bot commit: add `[skip ci]` to prevent workflow loop** — done 2026-03-14. Deploy key pushes retrigger CI (unlike `GITHUB_TOKEN`), causing infinite loop. Fixed by adding `[skip ci]` to the bot's commit message. ✅
 - [ ] **Bot commit: skip if only timestamp changed** — the build always commits because the `<!-- updated:start/end -->` timestamp always changes, even when no feed content changed. Only commit when actual feed content differs, so manual pushes don't trigger a bot commit and cause local/remote divergence.
 - [ ] **Boot sequence: skip on returning visits** — add a `sessionStorage` flag so the boot overlay is skipped for returning visitors; reduces artificial LCP delay from ~2.4–3.2s to near-zero on repeat loads.
 - [ ] **CI deploy job: artifact handoff** — replace the second `git pull` in the `deploy` job with `actions/upload-artifact` / `actions/download-artifact` to pass `_site/` between jobs without a race-prone network pull.
 - [ ] **CI deploy job: concurrency control** — add `concurrency:` key to cancel in-progress deploys when a new push arrives.
 - [ ] **Cloudflare Bot Fight Mode** — one-toggle in Cloudflare Security settings (free tier). Filters known bot traffic at the edge before it hits analytics, reducing noise in Cloudflare Analytics.
 - [ ] **Security headers via Cloudflare Transform Rules** — add `Content-Security-Policy`, `X-Content-Type-Options`, and `X-Frame-Options` response headers. Free tier supports this; no code changes needed, configured in the Cloudflare dashboard.
+- [ ] **Cloudflare Analytics alerts** — set up alerts for unusual traffic spikes in Cloudflare dashboard.
+- [ ] **Uptime monitoring** — add UptimeRobot (free tier) to ping the site every 5 minutes and email on downtime.
 
 ## Discussed and decided against
 - Separate `twitter_title`/`twitter_description` in TOML — unnecessary, they always match `site.title`/`site.description`
