@@ -28,7 +28,13 @@ flowchart TD
 
 ## Stage 1 — Local preview
 
-Run `python3 build.py` without API keys. The build re-inlines CSS and updates timestamps but preserves existing feed content between markers. Open `index.html` in your browser.
+Run `python3 build.py` without API keys. The build re-inlines CSS and updates timestamps but preserves existing feed content between markers. Open `index.html` in your browser. Then validate the HTML:
+
+```bash
+mkdir -p _site && cp index.html _site/ && html5validator --root _site/ --log INFO --ignore-re "CSS:"
+```
+
+**Nothing should break in the staging → main PR.** Every check that runs in CI must pass locally before pushing to staging. Staging is for verifying real API data — not for discovering broken HTML or build errors.
 
 **Use for:** CSS changes, HTML structure, JavaScript behaviour, design work.
 
@@ -42,7 +48,9 @@ Push to the `staging` branch and open `staging.nicsheehan.pages.dev` in your bro
 
 ## Stage 3 — Production
 
-Open a pull request from `staging` to `main`. Review the diff. Merge. GitHub Actions builds and deploys to Cloudflare Pages automatically.
+Open a pull request from `staging` to `main`. Review the diff. **Merge using a merge commit (not squash).** GitHub Actions builds and deploys to Cloudflare Pages automatically.
+
+**Why merge commit, not squash:** `staging` is a long-lived branch. Squash merge creates a new SHA on `main` that git has never seen on `staging`, so the next `git pull --rebase origin main` tries to replay all staging commits as if they were new — causing conflicts with themselves. Merge commit preserves the exact SHAs, so the next sync is a no-op.
 
 ## CI behaviour by branch
 
