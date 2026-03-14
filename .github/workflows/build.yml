@@ -52,22 +52,28 @@ jobs:
           git diff --cached --quiet || git commit -m "Update feeds [skip ci]"
           git push
 
+      - name: Assemble site files
+        run: |
+          mkdir _site
+          cp index.html og-image.png sitemap.xml favicon.png favicon-192.png favicon.ico robots.txt _site/
+
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-${{ github.run_id }}
+          path: _site/
+          retention-days: 1
+
   deploy:
     needs: build
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Download site artifact
+        uses: actions/download-artifact@v4
         with:
-          ref: ${{ github.ref_name }}
-
-      - name: Pull latest (includes build commit)
-        run: git pull origin ${{ github.ref_name }}
-
-      - name: Assemble site files
-        run: |
-          mkdir _site
-          cp index.html og-image.png sitemap.xml favicon.png favicon-192.png favicon.ico robots.txt _site/
+          name: site-${{ github.run_id }}
+          path: _site/
 
       - name: Install html5validator
         run: pip install html5validator
