@@ -165,31 +165,39 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 
 ## Dev environment improvements
 
-**Priority — blocks proper release workflow:**
+**Completed — release workflow foundations:**
 - [x] **Move DNS to Cloudflare nameservers** — done 2026-03-13. Added site in Cloudflare dashboard, updated nameservers at registrar, proxy enabled. ✅
 - [x] **Migrate to Cloudflare Pages** — done 2026-03-13. `staging` now deploys to `staging.nicsheehan.pages.dev`; production at `www.nicsheehan.com`. Replaced GitHub Pages actions with `wrangler pages deploy` in CI. GitHub Pages disabled. ✅
-
-**Other improvements:**
 - [x] **Restore `main` branch protection via GitHub Ruleset with deploy key bypass** — done 2026-03-14. Deploy key (`BOT_DEPLOY_KEY`) added as bypass actor alongside repo admin. Ruleset enforces PR-before-merge with admin bypass visible in commit history. ✅
 - [x] Switch git remote from HTTPS to SSH — done 2026-03-14. Personal ED25519 key (`id_ed25519_github`) stored in 1Password SSH agent; `~/.ssh/config` routes github.com through it. ✅
 - [x] Install `gh` CLI properly (Homebrew: `brew install gh`) — done 2026-03-14. Authenticated via `gh auth login`. ✅
 - [x] Squash-only merges — unticked "Allow merge commits" and "Allow rebase merging"; squash is now the only option, eliminating timestamp conflicts on `staging → main` ✅ 2026-03-03
-- [ ] Process habit: commit any open docs/working-tree changes before starting worktree work — prevents `git checkout staging` failing mid-flow
-- [ ] **Worker KV caching for now-playing** — cache Last.fm response in Cloudflare KV for ~15 seconds so rapid page loads don't hammer the API. One extra step in the Worker fetch handler. Bundle with a future iteration rather than shipping alone.
-- [ ] **Pin `requirements.txt` versions** — `Pillow` and `tomli` are unpinned; a future Pillow major release could break OG image generation. Pin to `Pillow>=10,<12`.
-- [ ] **API keys as request headers** — TMDB and Last.fm keys are passed as URL query params (visible in server logs). Switch to `Authorization` header pattern already used for Gravatar.
-- [ ] **Wrangler deploy step in CI** — Worker code in `main` can drift from what's running on Cloudflare with no warning. Add a `wrangler deploy` step to the workflow so Worker deploys automatically on push.
-- [ ] **HTML validation in CI** — no check that the build produces valid HTML. Add `html5validator` on `_site/` output to catch malformed markup before deploy.
-- [ ] **OG image: skip regeneration if unchanged** — currently regenerated on every build even if Gravatar data hasn't changed. Add a hash/comparison guard to avoid the daily `og-image.png` git noise.
 - [x] **Bot commit: add `[skip ci]` to prevent workflow loop** — done 2026-03-14. Deploy key pushes retrigger CI (unlike `GITHUB_TOKEN`), causing infinite loop. Fixed by adding `[skip ci]` to the bot's commit message. ✅
-- [ ] **Bot commit: skip if only timestamp changed** — the build always commits because the `<!-- updated:start/end -->` timestamp always changes, even when no feed content changed. Only commit when actual feed content differs, so manual pushes don't trigger a bot commit and cause local/remote divergence.
-- [ ] **Boot sequence: skip on returning visits** — add a `sessionStorage` flag so the boot overlay is skipped for returning visitors; reduces artificial LCP delay from ~2.4–3.2s to near-zero on repeat loads.
-- [ ] **CI deploy job: artifact handoff** — replace the second `git pull` in the `deploy` job with `actions/upload-artifact` / `actions/download-artifact` to pass `_site/` between jobs without a race-prone network pull.
-- [ ] **CI deploy job: concurrency control** — add `concurrency:` key to cancel in-progress deploys when a new push arrives.
+
+**Batch A — CI & build pipeline** ✅ done 2026-03-14:
+- [x] **Pin `requirements.txt` versions** — `Pillow>=10,<12`, `tomli>=2,<3`, `html5validator>=0.4,<1`. ✅
+- [x] **CI deploy job: concurrency control** — `concurrency:` key on `github.ref` cancels stale in-progress runs. ✅
+- [x] **CI deploy job: artifact handoff** — build job assembles and uploads `_site/` artifact; deploy job downloads it. Eliminates race-prone `git pull`. ✅
+- [x] **Wrangler deploy step in CI** — Worker auto-deploys on push to `main` via `wrangler-action`. ✅
+- [x] **HTML validation in CI** — `html5validator --root _site/ --also-check-css` runs in deploy job before Pages deploy. ✅
+- [x] **Bot commit: skip if only timestamp changed** — `_content_changed()` in `build.py` strips `<!-- updated:start/end -->` before comparing; skips write when feeds are unchanged. ✅
+- [x] **OG image: skip regeneration if unchanged** — SHA-256 hash of name/tagline/avatar_url stored in `.og-image-hash`; regenerates only on mismatch. ✅
+- [x] **TMDB API key as request header** — switched from `?api_key=` query param to `Authorization: Bearer` header using TMDB Read Access Token (`TMDB_READ_ACCESS_TOKEN`). Last.fm unchanged (API doesn't support header auth). ✅
+
+**Extras landed with Batch A:**
+- Bootstrapped `tests/test_build.py` — 8 unit tests covering OG hash logic, bot commit skip, and TMDB header auth
+- Fixed Worker CORS policy — `now-playing.b-tonic.workers.dev` now allows `staging.nicsheehan.pages.dev` in addition to production origin; adds `Vary: Origin` header
+
+**Batch B — Cloudflare & monitoring** (dashboard config only, no code changes):
 - [ ] **Cloudflare Bot Fight Mode** — one-toggle in Cloudflare Security settings (free tier). Filters known bot traffic at the edge before it hits analytics, reducing noise in Cloudflare Analytics.
 - [ ] **Security headers via Cloudflare Transform Rules** — add `Content-Security-Policy`, `X-Content-Type-Options`, and `X-Frame-Options` response headers. Free tier supports this; no code changes needed, configured in the Cloudflare dashboard.
 - [ ] **Cloudflare Analytics alerts** — set up alerts for unusual traffic spikes in Cloudflare dashboard.
 - [ ] **Uptime monitoring** — add UptimeRobot (free tier) to ping the site every 5 minutes and email on downtime.
+
+**Deferred — bundle with future iterations:**
+- [ ] **Worker KV caching for now-playing** — cache Last.fm response in Cloudflare KV for ~15 seconds so rapid page loads don't hammer the API. One extra step in the Worker fetch handler. Bundle with a future iteration rather than shipping alone.
+- [ ] **Boot sequence: skip on returning visits** — add a `sessionStorage` flag so the boot overlay is skipped for returning visitors; reduces artificial LCP delay from ~2.4–3.2s to near-zero on repeat loads. Bundle with iteration 15.
+- [ ] Process habit: commit any open docs/working-tree changes before starting worktree work — prevents `git checkout staging` failing mid-flow.
 
 ## Discussed and decided against
 - Separate `twitter_title`/`twitter_description` in TOML — unnecessary, they always match `site.title`/`site.description`

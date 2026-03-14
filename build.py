@@ -45,8 +45,9 @@ Setup — Last.fm:
     Set LASTFM_API_KEY env var (get one at last.fm/api/account/create).
 
 Setup — TMDB:
-    Create a free account at themoviedb.org and generate an API key (v3 auth).
-    Set TMDB_API_KEY env var (get one at themoviedb.org/settings/api).
+    Create a free account at themoviedb.org and get credentials at themoviedb.org/settings/api.
+    Set TMDB_READ_ACCESS_TOKEN env var (API Read Access Token, v4) — preferred.
+    TMDB_API_KEY (v3 api_key) is accepted as a fallback.
     Falls back gracefully if unset — film modals show Letterboxd data only.
 """
 

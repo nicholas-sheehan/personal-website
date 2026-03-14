@@ -48,6 +48,8 @@ Open a pull request from `staging` to `main`. Review the diff. Merge. GitHub Act
 
 | Branch | Build job | Deploy job |
 |--------|-----------|------------|
-| `main` | ✅ runs | ✅ runs → www.nicsheehan.com |
+| `main` | ✅ runs | ✅ runs → www.nicsheehan.com + Worker auto-deploy |
 | `staging` | ✅ runs | ✅ runs → staging.nicsheehan.pages.dev |
 | Feature branches | ❌ not triggered | ❌ not triggered |
+
+**CI internals:** Concurrent runs on the same branch are cancelled (concurrency key on `github.ref`). Built `_site/` is passed from the build job to the deploy job via GitHub artifact (no `git pull` race). HTML is validated with `html5validator` before deploy. Bot commit is skipped when only the `<!-- updated -->` timestamp changed.
