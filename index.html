@@ -1330,7 +1330,11 @@ main {
           <!-- ── STATUS STRIPS ── -->
           <div class="status-strips">
 <!-- goodreads-now:start -->
-            <!-- no books currently reading -->
+            <div class="status-strip">
+              <span class="status-strip-label">Now reading</span>
+              <span class="status-strip-sep">›</span>
+              <span class="status-strip-text"><a class="status-strip-title" href="https://www.goodreads.com/book/show/209355985" target="_blank" rel="noopener noreferrer">Cherrywood</a> <span class="status-strip-name">Jock Serong</span></span>
+            </div>
 <!-- goodreads-now:end -->
           <div id="now-playing-strip" class="status-strip status-strip--music" aria-live="polite" hidden>
             <span class="status-strip-label" id="now-playing-label">Now playing</span>
@@ -1346,7 +1350,13 @@ main {
           <!-- Currently reading data (hidden — used by status strip above) -->
           <div hidden aria-hidden="true">
 <!-- goodreads:start -->
-                <div class="panel-row"><div class="row-content">Nothing at the moment — check back soon.</div></div>
+                <div class="panel-row" role="button" tabindex="0" data-modal-type="book" data-title="Cherrywood" data-author="Jock Serong" data-cover="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1710734966l/209355985.jpg" data-description="From multiple award-winning author, Jock Serong, comes Cherrywood, an imaginative, darkly playful and deeply meaningful delight, a novel about legacy, community, wonder, love and reinvention.&#x27;One rainy Friday evening in the winter of 1993, a taxi swept through the streets of East Melbourne, on its way from the city to Richmond. That year was one of the few remaining when a great deal was known …" data-url="https://www.goodreads.com/book/show/209355985">
+                  <span class="row-index">01</span>
+                  <div class="row-content">
+                    <div class="book-title">Cherrywood</div>
+                    <div class="book-author">Jock Serong</div>
+                  </div>
+                </div>
 <!-- goodreads:end -->
           </div>
 
@@ -1583,7 +1593,7 @@ The Dunda…">
           <!-- ── FOOTER ─────────────────────────────────── -->
           <footer class="colophon">
 <!-- updated:start -->
-            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-14T22:28:11Z">14 Mar 2026 at 22:28 UTC</span><span class="next-update" data-next="2026-03-15T22:00:00Z"></span></p>
+            <p class="colophon-timestamp"><span class="pulse-dot" aria-hidden="true"></span> Last build: <span class="colophon-buildtime" data-built="2026-03-15T22:29:54Z">15 Mar 2026 at 22:29 UTC</span><span class="next-update" data-next="2026-03-16T22:00:00Z"></span></p>
 <!-- updated:end -->
             <p class="colophon-credits">Built daily from Gravatar, Goodreads, Letterboxd, Instapaper &amp; Last.fm.</p>
           </footer>
