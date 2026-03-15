@@ -66,6 +66,7 @@ jobs:
         with:
           name: site-${{ github.run_id }}
           path: _site/
+          include-hidden-files: true
           retention-days: 1
 
   deploy:
