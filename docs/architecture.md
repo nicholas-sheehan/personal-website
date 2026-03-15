@@ -37,13 +37,20 @@ flowchart TD
         CW[Proxy: Last.fm\nuser.getRecentTracks]
     end
 
+    subgraph monitoring["Monitoring"]
+        UR[UptimeRobot\nevery 5 min]
+        CFN[Cloudflare Notifications\nDDoS · platform status]
+    end
+
     sources --> GA
     CFG --> GA
     GA -->|"build.py: fetch · inject · inline CSS\ngenerate OG image · sitemap"| OUT
-    OUT -->|"wrangler pages deploy"| hosting
+    OUT -->|"html5validator + Stylelint · wrangler pages deploy"| hosting
     PROD --> browser
     NP -->|"fetch on load + poll 30s"| CW
     CW -->|"user.getRecentTracks"| LF
+    UR -->|"HTTP check"| PROD
+    UR -->|"HTTP check"| CW
 ```
 
 ## Key decisions
@@ -54,6 +61,14 @@ flowchart TD
 - **Inline CSS** — `style.css` is inlined into `index.html` at build time, eliminating a render-blocking request.
 - **Minimal JS** — no framework. Inline scripts only: boot sequence, item detail modal, countdown timer, Snake easter egg, now-playing fetch.
 - **Graceful degradation** — all external fetches are wrapped in try/except. If a source fails, existing content is preserved and the build continues.
+
+## Monitoring & alerts
+
+| Tool | What it watches | How |
+|------|----------------|-----|
+| **UptimeRobot** (free tier) | `https://www.nicsheehan.com` + `https://now-playing.b-tonic.workers.dev` | HTTP check every 5 minutes. Alerts on downtime. No Cloudflare IP allowlisting needed — UptimeRobot IPs are not blocked by Bot Fight Mode. |
+| **Cloudflare Notifications** | HTTP DDoS Attack Alert · Cloudflare Status Incident Alert | Free-tier alerts configured in Cloudflare dashboard. Security Events Alert requires Pro plan. |
+| **Cloudflare Bot Fight Mode** | All requests to `www.nicsheehan.com` | Enabled in Cloudflare Security settings (free tier). Filters known bot traffic at the edge before it reaches Pages. |
 
 ## Content Security Policy
 

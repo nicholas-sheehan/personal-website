@@ -60,4 +60,4 @@ Open a pull request from `staging` to `main`. Review the diff. **Merge using a m
 | `staging` | ✅ runs | ✅ runs → staging.nicsheehan.pages.dev |
 | Feature branches | ❌ not triggered | ❌ not triggered |
 
-**CI internals:** Concurrent runs on the same branch are cancelled (concurrency key on `github.ref`). Built `_site/` is passed from the build job to the deploy job via GitHub artifact (no `git pull` race). HTML is validated with `html5validator` before deploy. Bot commit is skipped when only the `<!-- updated -->` timestamp changed.
+**CI internals:** Concurrent runs on the same branch are cancelled (concurrency key on `github.ref`). Built `_site/` is passed from the build job to the deploy job via GitHub artifact (no `git pull` race). HTML is validated with `html5validator` and CSS is linted with Stylelint (`declaration-property-value-no-unknown`) before deploy — both steps are blocking. Bot commit is skipped when only the `<!-- updated -->` timestamp changed.

@@ -197,8 +197,13 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 - [x] **Cloudflare Notifications** — HTTP DDoS Attack Alert and Cloudflare Status Incident Alerts enabled (free tier). Security Events Alert requires Pro. ✅
 - [x] **Uptime monitoring** — UptimeRobot (free tier) monitors `https://www.nicsheehan.com` and `https://now-playing.b-tonic.workers.dev` every 5 minutes. ✅
 
-**Batch C — CSS linting:**
-- [ ] **Add Stylelint to CI** — `stylelint` v16+ with `declaration-property-value-no-unknown` rule is the industry-standard CSS quality gate. Unlike vnu, it handles modern CSS (`inset`, `dvh`, `@layer`, `backdrop-filter`) without false positives. Runs as a separate CI step. Config in `.stylelintrc`. Requires Node in the build environment (or a separate job).
+**Batch C — CSS linting** ✅ done 2026-03-15:
+- [x] **Add Stylelint to CI** — `stylelint` v16+ with `declaration-property-value-no-unknown` rule added as a blocking CI step in the deploy job. Config in `.stylelintrc.json` (repo root), copied into `_site/` artifact so the deploy job can find it. `./node_modules/.bin/stylelint` used (not npx) to fail explicitly if install is absent. ✅
+- [x] **Cache pip and npm in deploy job** — `html5validator` moved from `requirements.txt` to `requirements-ci.txt` (was installed in build job unused + deploy job uncached). Deploy job now caches pip via `actions/cache@v4` keyed on `requirements-ci.txt` hash; npm tarball cache via `actions/cache@v4` with `${{ runner.os }}-stylelint-v16` key. ✅
+- [x] **Split build/CI requirements** — `requirements.txt` now contains only build dependencies (Pillow, tomli); `requirements-ci.txt` contains CI-only tools (html5validator). ✅
+
+**Extras landed with Batch C:**
+- [x] `node_modules/` added to `.gitignore` (Stylelint install creates it locally)
 
 **Batch D — Governance & audit controls** (treat repo as production-grade; banking-standard controls):
 - [ ] **SSH commit signing** — configure local git to sign all commits with the existing `id_ed25519_github` key via 1Password SSH agent. Register the same key in GitHub as a signing key (Settings → SSH and GPG keys → New signing key). Unsigned commits on main become a visible red flag. Required before the alerting items below are meaningful.
