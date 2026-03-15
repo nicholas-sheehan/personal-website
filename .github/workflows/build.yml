@@ -59,13 +59,14 @@ jobs:
       - name: Assemble site files
         run: |
           mkdir _site
-          cp index.html og-image.png sitemap.xml favicon.png favicon-192.png favicon.ico robots.txt _site/
+          cp index.html og-image.png sitemap.xml favicon.png favicon-192.png favicon.ico robots.txt style.css .stylelintrc.json requirements-ci.txt _site/
 
       - name: Upload site artifact
         uses: actions/upload-artifact@v4
         with:
           name: site-${{ github.run_id }}
           path: _site/
+          include-hidden-files: true
           retention-days: 1
 
   deploy:
@@ -79,14 +80,32 @@ jobs:
           name: site-${{ github.run_id }}
           path: _site/
 
+      - name: Cache pip (CI tools)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ hashFiles('_site/requirements-ci.txt') }}
+
       - name: Install html5validator
-        run: pip install html5validator
+        run: pip install -r _site/requirements-ci.txt
+
+      - name: Cache npm (Stylelint)
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-stylelint-v16
+
+      - name: Install Stylelint
+        run: npm install --no-save stylelint@^16
 
       - name: Validate HTML
         # --ignore-re filters vnu's false positives on modern CSS in inline <style> blocks:
         # inset, backdrop-filter, and dvh are valid but unknown to the outdated vnu CSS checker.
         # Removing --also-check-css only skips external .css files; inline styles are always checked.
         run: html5validator --root _site/ --log INFO --ignore-re "CSS:"
+
+      - name: Lint CSS
+        run: ./node_modules/.bin/stylelint --config _site/.stylelintrc.json _site/style.css
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
