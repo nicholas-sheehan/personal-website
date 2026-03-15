@@ -104,7 +104,7 @@ jobs:
         run: html5validator --root _site/ --log INFO --ignore-re "CSS:"
 
       - name: Lint CSS
-        run: ./node_modules/.bin/stylelint _site/style.css
+        run: ./node_modules/.bin/stylelint --config _site/.stylelintrc.json _site/style.css
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3

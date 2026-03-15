@@ -89,10 +89,12 @@ cp index.html og-image.png sitemap.xml favicon.png favicon-192.png favicon.ico r
   run: html5validator --root _site/ --log INFO --ignore-re "CSS:"
 
 - name: Lint CSS                      # NEW — uses local install, not npx fallback
-  run: ./node_modules/.bin/stylelint _site/style.css
+  run: ./node_modules/.bin/stylelint --config _site/.stylelintrc.json _site/style.css
 ```
 
 `./node_modules/.bin/stylelint` is used instead of `npx stylelint` to ensure the step fails explicitly if `npm install` did not produce a local install. `npx` would fall back to a fresh download, masking install failures.
+
+`--config _site/.stylelintrc.json` is passed explicitly because `actions/upload-artifact@v4` excludes dotfiles by default. Without this flag, Stylelint's config discovery (cosmiconfig, walking upward from the linted file's directory) cannot find `.stylelintrc.json` in the deploy job since the file is never present in `_site/`. The explicit `--config` flag bypasses discovery entirely.
 
 Both the `npm install` step and the lint step run in the default GitHub Actions working directory (the runner workspace root, e.g. `/home/runner/work/personal-website/personal-website`). No `working-directory:` override is needed or applied. `npm install --no-save` installs into `./node_modules/` at that root, and `./node_modules/.bin/stylelint` resolves from the same location.
 

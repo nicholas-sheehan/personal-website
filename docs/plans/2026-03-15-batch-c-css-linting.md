@@ -223,7 +223,7 @@ After the existing `Validate HTML` step, add:
 
 ```yaml
       - name: Lint CSS
-        run: ./node_modules/.bin/stylelint _site/style.css
+        run: ./node_modules/.bin/stylelint --config _site/.stylelintrc.json _site/style.css
 ```
 
 The full deploy job step order should now be:
