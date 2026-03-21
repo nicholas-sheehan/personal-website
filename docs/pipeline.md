@@ -61,3 +61,5 @@ Open a pull request from `staging` to `main`. Review the diff. **Merge using a m
 | Feature branches | ❌ not triggered | ❌ not triggered |
 
 **CI internals:** Concurrent runs on the same branch are cancelled (concurrency key on `github.ref`). Built `_site/` is passed from the build job to the deploy job via GitHub artifact (no `git pull` race). HTML is validated with `html5validator` and CSS is linted with Stylelint (`declaration-property-value-no-unknown`) before deploy — both steps are blocking. Bot commit is skipped when only the `<!-- updated -->` timestamp changed.
+
+**Commit signing:** All personal commits (via 1Password SSH agent, `id_ed25519_github` key) and bot commits (GPG key via `BOT_GPG_KEY` secret) are signed. Signed commits show "Verified" on GitHub. **Push detector:** `.github/workflows/push-detector.yml` triggers on every push to `main`; opens a GitHub Issue if the commit's git author is not `github-actions[bot]` and the message doesn't start with "Merge pull request" — catching any direct human push that bypasses the PR requirement.
