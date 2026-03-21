@@ -24,11 +24,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
         with:
           ssh-key: ${{ secrets.BOT_DEPLOY_KEY }}
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.12"
           cache: 'pip'
@@ -62,7 +62,7 @@ jobs:
           cp index.html og-image.png sitemap.xml favicon.png favicon-192.png favicon.ico robots.txt style.css .stylelintrc.json requirements-ci.txt _site/
 
       - name: Upload site artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.0
         with:
           name: site-${{ github.run_id }}
           path: _site/
@@ -75,13 +75,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download site artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8.0.1
         with:
           name: site-${{ github.run_id }}
           path: _site/
 
       - name: Cache pip (CI tools)
-        uses: actions/cache@v4
+        uses: actions/cache@v5.0.4
         with:
           path: ~/.cache/pip
           key: pip-${{ hashFiles('_site/requirements-ci.txt') }}
@@ -90,7 +90,7 @@ jobs:
         run: pip install -r _site/requirements-ci.txt
 
       - name: Cache npm (Stylelint)
-        uses: actions/cache@v4
+        uses: actions/cache@v5.0.4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-stylelint-v16
@@ -116,7 +116,7 @@ jobs:
 
       - name: Check out repo (for Worker source)
         if: github.ref == 'refs/heads/main'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
 
       - name: Deploy Cloudflare Worker
         if: github.ref == 'refs/heads/main'
