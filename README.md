@@ -44,6 +44,7 @@ These are configured in the repo under Settings → Secrets and variables → Ac
 | `TMDB_API_KEY` | Legacy TMDB v3 API key — kept as fallback if `TMDB_READ_ACCESS_TOKEN` is unset |
 | `CLOUDFLARE_API_TOKEN` | Cloudflare API token with "Cloudflare Pages: Edit" + "Workers Scripts: Edit" permissions — used by CI to deploy Pages and the now-playing Worker via wrangler |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID — used alongside the API token for Pages deployment |
+| `BOT_GPG_KEY` | Armored GPG private key used by CI to sign bot commits (`github-actions[bot]`). Generated locally, registered public key on GitHub account for "Verified" badge. |
 
 ## Running locally
 
@@ -82,4 +83,5 @@ The Worker URL (`now-playing.b-tonic.workers.dev`) is configured in `site.toml` 
 | `style.css` | Styling. |
 | `build.py` | Build script that fetches all data and updates index.html. |
 | `CNAME` | Custom domain record (kept for reference; domain is configured in Cloudflare Pages dashboard). |
-| `.github/workflows/build.yml` | GitHub Actions workflow for scheduled builds and deployment. |
+| `.github/workflows/build.yml` | GitHub Actions workflow for scheduled builds and deployment. Bot commits are GPG-signed. |
+| `.github/workflows/push-detector.yml` | Workflow that opens a GitHub Issue on any direct push to `main` that isn't a bot commit or PR merge. |

@@ -205,12 +205,13 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 **Extras landed with Batch C:**
 - [x] `node_modules/` added to `.gitignore` (Stylelint install creates it locally)
 
-**Batch D — Governance & audit controls** (treat repo as production-grade; banking-standard controls):
-- [ ] **SSH commit signing** — configure local git to sign all commits with the existing `id_ed25519_github` key via 1Password SSH agent. Register the same key in GitHub as a signing key (Settings → SSH and GPG keys → New signing key). Unsigned commits on main become a visible red flag. Required before the alerting items below are meaningful.
-- [ ] **Direct push detector** — GitHub Actions workflow triggered on every push to `main`; checks whether the triggering commit has an associated merged PR. If not, sends an email alert. Catches human pushes that bypass the branch protection ruleset (bot commits are excluded by author check).
-- [ ] **Ruleset bypass alerting** — GitHub emits a `bypass` webhook event when a ruleset is bypassed. A lightweight GitHub Actions workflow (triggered on `repository_ruleset_bypass`) forwards the event payload to email. Complements the direct push detector — catches bypasses that don't result in a commit (e.g. a force-push attempt that was blocked but logged).
+**Batch D — Governance & audit controls** ✅ done 2026-03-21:
+- [x] **Bump GitHub Actions to Node 24** — `actions/checkout@v6.0.2`, `actions/setup-python@v6.2.0`, `actions/upload-artifact@v7.0.0`, `actions/download-artifact@v8.0.1`, `actions/cache@v5.0.4`. ✅
+- [x] **SSH commit signing** — personal commits now signed with `id_ed25519_github` via 1Password SSH agent. Registered on GitHub as a signing key. ✅
+- [x] **Direct push detector** — `.github/workflows/push-detector.yml` triggers on push to `main`; creates a GitHub Issue if `head_commit.author.name != 'github-actions[bot]'` AND commit message doesn't start with `'Merge pull request'`. ✅
+- ~~**Ruleset bypass alerting**~~ — decided against. See "Discussed and decided against" below.
 - ~~**Require two approvers on PRs**~~ — decided against. Four-eyes requires a second human; enforcing it on a solo project is security theatre. The meaningful controls are branch protection + signed commits + bypass alerting + audit log. Revisit if collaborators are added.
-- [ ] **Bot commit signing** — configure `github-actions[bot]` commits to be signed. GitHub Actions supports this via `actions/github-script` with a GPG key stored as a secret, or by using a GitHub App (which signs commits automatically). Prevents impersonation of the bot in commit history.
+- [x] **Bot commit signing** — `github-actions[bot]` commits signed with a dedicated GPG key stored as `BOT_GPG_KEY` GitHub Secret. `gpg --batch --import` + `git config commit.gpgsign true` added to `build.yml` before the commit step. ✅
 
 **Deferred — bundle with future iterations:**
 - [ ] **Worker KV caching for now-playing** — cache Last.fm response in Cloudflare KV for ~15 seconds so rapid page loads don't hammer the API. One extra step in the Worker fetch handler. Bundle with a future iteration rather than shipping alone.
@@ -220,3 +221,4 @@ Theatrical data experience. The biggest lift — requires a dedicated design ses
 ## Discussed and decided against
 - Separate `twitter_title`/`twitter_description` in TOML — unnecessary, they always match `site.title`/`site.description`
 - Moving JSON-LD fields to TOML — they correctly come from Gravatar (single source of truth)
+- Ruleset bypass alerting — `repository_ruleset_bypass` is not a GitHub Actions workflow trigger. Polling the audit log adds complexity (PAT + state tracking) with low signal for a solo project; direct push detector covers the consequential case.
